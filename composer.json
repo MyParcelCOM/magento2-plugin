@@ -1,5 +1,5 @@
 {
-    "name": "myparcelcom/magento",
+    "name": "myparcelcom-test/magento",
     "description": "A Magento 2 module for MyParcel.com",
     "type": "magento2-module",
     "version": "1.0.0",
