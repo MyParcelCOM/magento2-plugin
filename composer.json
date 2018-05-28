@@ -5,7 +5,6 @@
     "version": "1.0.0",
     "homepage": "https://www.myparcel.com/",
     "keywords": ["MyParcel", "My Parcel", "Magento 2"],
-    "license": "CC BY-NC-ND 3.0 NL",
     "require": {
         "php": "~5.6.5 || ^7.0",
         "myparcelcom/api-sdk": "0.7.1"
