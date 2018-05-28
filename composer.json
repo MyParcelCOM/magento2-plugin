@@ -19,5 +19,5 @@
             "MyParcelCOM\\Magento\\" : ""
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }
