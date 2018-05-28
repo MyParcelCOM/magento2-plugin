@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/myparcelcom/delivery/retrievePickupLocations/" method="GET">
+        <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="retrievePickupLocations"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/myparcelcom/delivery/retrieveCarriers/" method="GET">
+        <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="retrieveCarriers"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/myparcelcom/delivery/retrieveFirstPickupLocation/" method="GET">
+        <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="retrieveFirstPickupLocation"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/myparcelcom/delivery/checkShipmentAvailableForPDF/" method="GET">
+        <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="checkShipmentAvailableForPDF"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>

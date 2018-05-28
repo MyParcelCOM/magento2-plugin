@@ -1,0 +1,17 @@
+<?php /** @var $block \MyParcelCOM\Magento\Block\Sales\CheckoutDelivery */ ?>
+<script type="text/x-magento-init">
+   {
+       ".page-footer": {
+           "myparcelcom_delivery_app": {
+                "api_key"                   : "<?= $block->getGoogleMapApiKey(); ?>",
+                "url_mp_get_locations"      : "<?= $block->getLocationsAjaxUrl(); ?>",
+                "url_mp_get_carriers"       : "<?= $block->getCarriersAjaxUrl(); ?>"
+           }
+       }
+   }
+</script>
+<script>
+    var mp_url_get_first_location       = "<?= $block->getFirstLocationAjaxUrl(); ?>";
+    var mpAjaxCall;
+</script>
+<div id="delivery-window"></div>

@@ -1,0 +1,139 @@
+<div id="mypa-options">
+    <form id="mypa-options-form">
+        <input id="selected_ids" name="selected_ids" type="hidden">
+        <div class="mypa__field__container" id="mypa_container-request_type">
+            <div class="admin__field">
+                <label class="admin__field-label">
+                    <span trans="Action type"></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_request_type-download"
+                               name="mypa_request_type" value="download">
+                        <label class="admin__field-label" for="mypa_request_type-download" trans="Download label"></label>
+                    </div>
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_request_type-open_new_tab"
+                               name="mypa_request_type" value="open_new_tab">
+                        <label class="admin__field-label" for="mypa_request_type-open_new_tab" trans="Open in new tab"></label>
+                    </div>
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_request_type-concept"
+                               name="mypa_request_type" value="concept">
+                        <label class="admin__field-label" for="mypa_request_type-concept" trans="Concept"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mypa__field__container" id="mypa_container-package_type">
+            <div class="admin__field">
+                <label class="admin__field-label">
+                    <span trans="Package Type"></span>
+                </label>
+                <div class="admin__field-control">
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_package_type-default"
+                               name="mypa_package_type" value="default">
+                        <label class="admin__field-label" for="mypa_package_type-default" trans="Default"></label>
+                    </div>
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_package_type-package"
+                               name="mypa_package_type" value="1">
+                        <label class="admin__field-label" for="mypa_package_type-package" trans="Package"></label>
+                    </div>
+                    <div class="admin__field admin__field-option" id="mypa_container-package_type-mailbox">
+                        <input type="radio" class="admin__control-radio" id="mypa_package_type-mailbox"
+                               name="mypa_package_type" value="2">
+                        <label class="admin__field-label" for="mypa_package_type-mailbox" trans="Mailbox"></label>
+                    </div>
+                    <div class="admin__field admin__field-option">
+                        <input type="radio" class="admin__control-radio" id="mypa_package_type-letter"
+                               name="mypa_package_type" value="3">
+                        <label class="admin__field-label" for="mypa_package_type-letter" trans="Letter"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mypa__field__container" id="mypa_container-print_position">
+            <div class="admin__field mypa_position_container">
+                <div class="mypa__field-group">
+                    <label class="mypa__field-label">
+                        <span trans="Page size"></span>
+                    </label>
+                    <div class="paper_size_wrapper">
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="paper_size-A6"
+                                   name="mypa_paper_size" value="A6">
+                            <label class="admin__field-label" for="paper_size-A6">A6</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="paper_size-A5"
+                                   name="mypa_paper_size" value="A5">
+                            <label class="admin__field-label" for="paper_size-A5">A5</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="paper_size-A4"
+                                   name="mypa_paper_size" value="A4">
+                            <label class="admin__field-label" for="paper_size-A4">A4</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mypa__field-group">
+                    <label class="mypa__field-label">
+                        <span trans="Print position"></span>
+                    </label>
+                    <div id="mypa_position_selector-a4" class="mypa_position_selector">
+                        <!-- <select name="mypa_position_a4" id="mypa_position_a4">
+                             <option value="9">TOP LEFT</option>
+                             <option value="5">TOP RIGHT</option>
+                             <option value="10">BOTTOM LEFT</option>
+                             <option value="6">BOTTOM RIGHT</option>
+                         </select>-->
+
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-1" checked
+                                   name="mypa_position_a4" value="9">
+                            <label class="admin__field-label" for="mypa_position_a4-1">TOP LEFT</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-2"
+                                   name="mypa_position_a4" value="5">
+                            <label class="admin__field-label" for="mypa_position_a4-2">TOP RIGHT</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-3"
+                                   name="mypa_position_a4" value="10">
+                            <label class="admin__field-label" for="mypa_position_a4-3">BOTTOM LEFT</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-4"
+                                   name="mypa_position_a4" value="6">
+                            <label class="admin__field-label" for="mypa_position_a4-4">BOTTOM RIGHT</label>
+                        </div>
+                    </div>
+
+                    <div id="mypa_position_selector-a5" class="mypa_position_selector">
+                        <!--<select name="mypa_position_a5" id="mypa_position_a5">
+                            <option value="1">TOP</option>
+                            <option value="2">BOTTOM</option>
+                        </select>-->
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" checked class="admin__control-radio" id="mypa_position_a5-1"
+                                   name="mypa_position_a5" value="1">
+                            <label class="admin__field-label" for="mypa_position_a5-1">TOP</label>
+                        </div>
+                        <div class="admin__field admin__field-option">
+                            <input type="radio" class="admin__control-radio" id="mypa_position_a5-2"
+                                   name="mypa_position_a5" value="2">
+                            <label class="admin__field-label" for="mypa_position_a5-2">BOTTOM</label>
+                        </div>
+                    </div>
+
+                    <div id="mypa_position_selector-a6" class="mypa_position_selector">
+                        <span>No print positions available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

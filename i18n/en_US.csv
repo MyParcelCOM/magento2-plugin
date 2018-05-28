@@ -1,0 +1,19 @@
+status_shipment_concept,Concept
+status_shipment_registered,Registered
+status_shipment_at_carrier,At Carrier
+status_shipment_at_courier,At Courier
+status_shipment_at_sorting,At Sorting
+status_shipment_delivered,Delivered
+status_shipment_completed,Completed
+status_shipment_failed,Failed
+status_shipment_inactive,Inactive
+delivery/signature_and_only_recipient_title,Do not deliver to the neighbors + signature
+morning/title,Morning delivery
+morning_signature/title,Morning delivery + signature
+pickup_express/title,Extra early at a PostNL location
+evening_signature/title,Evening delivery with signature
+evening/title,Evening delivery
+checkout_validation_pickup_select_location, Please select a pickup location
+address,Address
+company,Company
+phone_number,Phone number
