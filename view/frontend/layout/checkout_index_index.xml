@@ -6,6 +6,9 @@
         <css  src="MyParcelCOM_Magento::css/mp-delivery-custom.css" />
     </head>
     <body>
+        <referenceBlock name="minicart" remove="true" />
+        <referenceContainer name="header.panel" remove="true" />
+        <referenceBlock name="top.search" remove="true" />
         <referenceContainer name="content">
             <block class="MyParcelCOM\Magento\Block\Sales\CheckoutDelivery" name="myparcelcom.delieveryplugin" template="checkout_delivery.phtml" after="-" />
         </referenceContainer>

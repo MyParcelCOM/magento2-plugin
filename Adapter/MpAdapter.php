@@ -1,10 +1,10 @@
 <?php
 namespace MyParcelCOM\Magento\Adapter;
 
+use Magento\Framework\App\ObjectManager;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
 use \MyParcelCom\ApiSdk\MyParcelComApi;
 use \MyParcelCom\ApiSdk\Authentication\ClientCredentials;
-use Magento\Framework\ObjectManagerInterface;
 
 abstract class MpAdapter
 {
@@ -14,10 +14,10 @@ abstract class MpAdapter
      */
     protected $_configHelper;
 
-    function __construct(ObjectManagerInterface $objectManager)
+    function __construct()
     {
-        $this->_objectManager = $objectManager;
-        $this->_configHelper = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
+        $this->_objectManager   = ObjectManager::getInstance();
+        $this->_configHelper    = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
 
         $this->singletonApi();
     }

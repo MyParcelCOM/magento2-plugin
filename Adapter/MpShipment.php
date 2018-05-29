@@ -3,15 +3,10 @@
 namespace MyParcelCOM\Magento\Adapter;
 
 use MyParcelCom\ApiSdk\Resources\Address;
-use MyParcelCom\ApiSdk\Resources\Carrier;
-use MyParcelCom\ApiSdk\Resources\CarrierContract;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\ApiSdk\Resources\Service;
-use MyParcelCom\ApiSdk\Resources\ServiceContract;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use Magento\Framework\ObjectManagerInterface;
-use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -43,7 +38,7 @@ class MpShipment extends MPAdapter
     {
         $this->logger = $logger ?: new NullLogger();
 
-        parent::__construct($objectManager);
+        parent::__construct();
     }
 
     function createShipment($addressData, $shipmentData, $registerAt = '')
@@ -52,6 +47,9 @@ class MpShipment extends MPAdapter
          * Get instance of MyParcelCOM API
         **/
         $api = MyParcelComApi::getSingleton();
+
+        $mpCarrier  = new MpCarrier();
+        $mpShop     = new MpShop();
 
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
@@ -79,6 +77,7 @@ class MpShipment extends MPAdapter
         }
 
         /**
+         * SET PICKUP ADDRESS
          * Setup pickup location data
         **/
         if (!empty($shipmentData['pickup'])) {
@@ -103,19 +102,38 @@ class MpShipment extends MPAdapter
             /**
              * Set Contract Carrier for shipment
              **/
-            $carrierId = $shipmentData['pickup']['carrier_id'];
+           /* $carrierId = $shipmentData['pickup']['carrier_id'];
             if (!empty($carrierId)) {
-                $mpCarrier = new MpCarrier();
                 $serviceContract = $mpCarrier->getServiceContract($shipment, $carrierId);
                 if (!empty($serviceContract)) {
                    $shipment->setServiceContract($serviceContract);
                 }
-            }
+            }*/
         }
 
         /**
          * //TODO Setup delivery location data
          **/
+
+        /**
+         * SET SERVICE CONTRACT
+         * If service contract is not set, set it!
+        **/
+        $serviceContract = $shipment->getServiceContract();
+        if (empty($serviceContract)) {
+            $serviceContract = $mpCarrier->getServiceContract($shipment);
+            if (!empty($serviceContract)) {
+                $shipment->setServiceContract($serviceContract);
+            }
+        }
+
+        /**
+         * SET SENDER ADDRESS
+         * In some cases, sender address is required
+         **/
+        $shop = $mpShop->getDefaultShop();
+        $senderAddress = $shop->getSenderAddress();
+        $shipment->setSenderAddress($senderAddress);
 
         /**
          * Set Register At value for shipment

@@ -1,8 +1,7 @@
 <?php
 
-namespace MyParcelCOM\Magento\Adapter\MpService;
+namespace MyParcelCOM\Magento\Adapter;
 
-use MyParcel\MyParcelGlobal\Adapter\MpAdapter;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 
 class MpRegion extends MpAdapter

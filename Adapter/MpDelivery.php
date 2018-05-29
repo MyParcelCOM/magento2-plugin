@@ -2,7 +2,6 @@
 
 namespace MyParcelCOM\Magento\Adapter;
 
-use MyParcel\MyParcelGlobal\Adapter\MpAdapter;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 
 class MpDelivery extends MpAdapter
