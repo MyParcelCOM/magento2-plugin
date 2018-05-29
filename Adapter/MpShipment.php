@@ -7,7 +7,6 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 class MpShipment extends MPAdapter
