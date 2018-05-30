@@ -16,7 +16,7 @@ class MpDelivery extends MpAdapter
         // Get the Pickup Dropoff Locations through the sdk.
         $api = MyParcelComApi::getSingleton();
         try {
-            $locations = $api->getPickUpDropOffLocations('NL', '2131BC');
+            $locations = $api->getPickUpDropOffLocations($countryCode, $postalCode);
 
             // Merge all the locations to a single array.
             $allLocations = array_reduce($locations, function (array $combinedLocations, $carrierLocations) {

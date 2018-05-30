@@ -93,7 +93,7 @@ class Index extends Action {
         /**
          * Set registerAt
         **/
-        /*$shipmentId = '63bfa1e3-9130-47a0-9e4c-483c5fc2bdb9';
+        /*$shipmentId = 'd0455b55-2abf-4fb2-8774-2e9c70cf0ba4';
         $mpShipment = new MpShipment($this->_objectManager);
         $shipment = $mpShipment->getShipment($shipmentId);
         $result = $mpShipment->setRegisterAt($shipment, 'now');*/
@@ -107,11 +107,12 @@ class Index extends Action {
             $this->getRequest()
         );
 
-        $orderIds = [15];
+        $orderIds = [17];
         $orderCollection->addOrdersToCollection($orderIds);
 
         try {
             $orderCollection
+                ->setNewMagentoShipment()
                 ->setMagentoTrack()
                 ->createShipmentConcepts(true)
                 ->updateGridByOrder()

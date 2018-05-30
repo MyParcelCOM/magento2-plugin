@@ -56,12 +56,12 @@ class View extends \Magento\Sales\Block\Adminhtml\Order\AbstractOrder
 
                 $addressData    =   $deliveryOptions['attributes']['address'];
                 $street         =   $addressData['street_1'];
-                $houseNumber    =   $addressData['street_number'];
+                $houseNumber    =   isset($addressData['street_number']) ? $addressData['street_number'] : '';
                 $postalCode     =   $addressData['postal_code'];
                 $city           =   $addressData['city'];
                 $country        =   $addressData['country_code'];
                 $company        =   $addressData['company'];
-                $phoneNumber    =   $addressData['phone_number'];
+                $phoneNumber    =   isset($addressData['phone_number']) ? $addressData['phone_number'] : '';
 
                 $address        = '<b>' . __('address')         . '</b>'    . ': '  . $street . ' ' . $houseNumber . ', ' . $postalCode . ', ' . $city . ', ' . $country;
                 $company        = '<b>' . __('company')         . '</b>'    . ': '  . $company;

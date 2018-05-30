@@ -76,9 +76,7 @@ class MpShipment extends MPAdapter
         $shipment = new Shipment();
 
         $shipment->setRecipientAddress($recipient);
-
         if (!empty($shipmentData['weight'])) {
-            $shipmentData['weight'] = 2;
             $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
         }
 
@@ -129,7 +127,7 @@ class MpShipment extends MPAdapter
         if (empty($serviceContract)) {
             $serviceContract = $mpCarrier->getServiceContract($shipment);
             if (!empty($serviceContract)) {
-                $shipment->setServiceContract($serviceContract);
+                //$shipment->setServiceContract($serviceContract);
             }
         }
 

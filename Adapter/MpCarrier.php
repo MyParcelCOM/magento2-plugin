@@ -4,6 +4,7 @@ namespace MyParcelCOM\Magento\Adapter;
 
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Carrier;
+use MyParcelCom\ApiSdk\Resources\Service;
 use MyParcelCom\ApiSdk\Resources\ServiceContract;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
@@ -46,7 +47,7 @@ class MpCarrier extends MpAdapter
                     if ($serviceMatcher->matches($shipment, $service)) {
                         $contracts = $service->getServiceContracts();
                         if (!empty($contracts)) {
-                            $contract = $contracts[0];
+                            $contract = $contracts[2];
                             return $contract;
                         }
                     }
@@ -54,10 +55,11 @@ class MpCarrier extends MpAdapter
             }
         } else {
 
+            /** @var Service $service;**/
             $services = $api->getServices($shipment);
 
             if (!empty($services)) {
-                foreach ($services as $service) {
+                foreach ($services as $key => $service) {
                     $contracts = $service->getServiceContracts();
                     if (!empty($contracts)) {
                         $contract = $contracts[0];

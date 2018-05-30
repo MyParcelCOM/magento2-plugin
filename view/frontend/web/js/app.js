@@ -79,8 +79,8 @@ define(
                     }
 
                     const initialLocation = {
-                        countryCode: 'NL',
-                        postalCode: '2131BC'
+                        countryCode: mpSelectedCC ? mpSelectedCC : 'GB',
+                        postalCode: mpSelectedPC ? mpSelectedPC : 'SE1 7GL'
                     };
 
                     // Open the delivery popup on the #delivery-window element and pass the settings.

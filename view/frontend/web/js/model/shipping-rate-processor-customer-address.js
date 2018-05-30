@@ -24,6 +24,9 @@ define([
             shippingService.isLoading(true);
             cache = rateRegistry.get(address.getKey());
 
+            mpSelectedCC = address.countryId;
+            mpSelectedPC = address.postcode;
+
             if (cache) {
                 shippingService.setShippingRates(cache);
                 shippingService.isLoading(false);

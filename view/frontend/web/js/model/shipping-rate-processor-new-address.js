@@ -21,6 +21,9 @@ define([
         getRates: function (address) {
             var cache, serviceUrl, payload;
 
+            mpSelectedCC = address.countryId;
+            mpSelectedPC = address.postcode;
+
             shippingService.isLoading(true);
             cache = rateRegistry.get(address.getCacheKey());
             serviceUrl = resourceUrlManager.getUrlForEstimationShippingMethodsForNewAddress(quote);

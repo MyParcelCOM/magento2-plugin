@@ -112,6 +112,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             **/
             /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
             $track = $this->myParcelTrack->getTrackByOrderId($order->getId());
+
             $shipmentId = $track->getData('myparcel_consignment_id');
             if ($printMode && !empty($shipmentId)) {
                 continue;
@@ -161,12 +162,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
                     $pickupAddressAttribute  =   $deliveryOptions['attributes']['address'];
                     $street         =   $pickupAddressAttribute['street_1'];
-                    $houseNumber    =   intval($pickupAddressAttribute['street_number']);
+                    $houseNumber    =   !empty($pickupAddressAttribute['street_number']) ? intval($pickupAddressAttribute['street_number']) : 0;
                     $postalCode     =   $pickupAddressAttribute['postal_code'];
                     $city           =   $pickupAddressAttribute['city'];
                     $country        =   $pickupAddressAttribute['country_code'];
                     $company        =   $pickupAddressAttribute['company'];
-                    $phoneNumber    =   $pickupAddressAttribute['phone_number'];
+                    $phoneNumber    =   !empty($pickupAddressAttribute['phone_number']) ? $pickupAddressAttribute['phone_number'] : '';
 
                     $pickupAddressData = [
                         'street'        => $street,
