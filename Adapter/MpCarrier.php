@@ -4,6 +4,8 @@ namespace MyParcelCOM\Magento\Adapter;
 
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Carrier;
+use MyParcelCom\ApiSdk\Resources\ServiceContract;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 
 class MpCarrier extends MpAdapter
@@ -21,6 +23,12 @@ class MpCarrier extends MpAdapter
         return $carriers;
     }
 
+    /**
+     * Get the service contract suitable for the shipment
+     * @param Shipment $shipment
+     * @param string $carrierId
+     * @return ServiceContract
+    **/
     function getServiceContract($shipment, $carrierId = null)
     {
         $api = MyParcelComApi::getSingleton();
