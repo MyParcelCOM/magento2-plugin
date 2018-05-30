@@ -40,6 +40,13 @@ class MpShipment extends MPAdapter
         parent::__construct();
     }
 
+    /**
+     * Prepare the necessary data and create shipment
+     * @param array $addressData
+     * @param array $shipmentData
+     * @param string $registerAt
+     * @return object response of the api
+    **/
     function createShipment($addressData, $shipmentData, $registerAt = '')
     {
         /**
