@@ -105,7 +105,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         /**@var \Magento\Sales\Model\Order $order **/
 
         foreach ($orders as $order) {
-
             /**
              * If this is printPDF mode, we don't need to create new shipment
              * for an order that has already been exported
@@ -138,7 +137,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'first_name' => $shippingAddressObj->getFirstname(),
                 'last_name' => $shippingAddressObj->getLastname(),
                 'country_code' => $shippingAddressObj->getCountryId(),
-                'email' => $shippingAddressObj->getEmail()
+                'email' => $shippingAddressObj->getEmail(),
+                'region_code'   => $shippingAddressObj->getRegionCode()
             ];
 
             $shipmentData = [

@@ -8,11 +8,6 @@ use MyParcelCom\ApiSdk\Resources\Carrier;
 
 class MpService extends MpAdapter
 {
-    function __construct()
-    {
-        parent::__construct();
-    }
-
     function getService(Shipment $shipment = null)
     {
         $api = MyParcelComApi::getSingleton();

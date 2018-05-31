@@ -6,11 +6,6 @@ use MyParcelCom\ApiSdk\MyParcelComApi;
 
 class MpDelivery extends MpAdapter
 {
-    function __construct()
-    {
-        parent::__construct();
-    }
-
     function getLocations($countryCode, $postalCode)
     {
         // Get the Pickup Dropoff Locations through the sdk.

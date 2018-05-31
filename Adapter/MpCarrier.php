@@ -11,11 +11,6 @@ use MyParcelCom\ApiSdk\Shipments\ServiceMatcher;
 
 class MpCarrier extends MpAdapter
 {
-    function __construct()
-    {
-        parent::__construct();
-    }
-
     function getCarriers()
     {
         $api = MyParcelComApi::getSingleton();
@@ -39,7 +34,6 @@ class MpCarrier extends MpAdapter
             $carrier->setId($carrierId);
 
             $services = $api->getServicesForCarrier($carrier);
-
             if (!empty($services)) {
                 $serviceMatcher = new ServiceMatcher();
 
@@ -47,17 +41,15 @@ class MpCarrier extends MpAdapter
                     if ($serviceMatcher->matches($shipment, $service)) {
                         $contracts = $service->getServiceContracts();
                         if (!empty($contracts)) {
-                            $contract = $contracts[2];
+                            $contract = $contracts[0];
                             return $contract;
                         }
                     }
                 }
             }
         } else {
-
             /** @var Service $service;**/
             $services = $api->getServices($shipment);
-
             if (!empty($services)) {
                 foreach ($services as $key => $service) {
                     $contracts = $service->getServiceContracts();

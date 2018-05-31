@@ -72,6 +72,10 @@ class MpShipment extends MPAdapter
             ->setCountryCode($addressData['country_code'])
             ->setEmail($addressData['email']);
 
+        if (!empty($addressData['region_code'])) {
+            $recipient->setRegionCode($addressData['region_code']);
+        }
+
         // Define the weight.
         $shipment = new Shipment();
 
@@ -127,6 +131,9 @@ class MpShipment extends MPAdapter
         if (empty($serviceContract)) {
             $serviceContract = $mpCarrier->getServiceContract($shipment);
             if (!empty($serviceContract)) {
+                /**
+                 * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication
+                **/
                 //$shipment->setServiceContract($serviceContract);
             }
         }
