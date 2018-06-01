@@ -351,7 +351,31 @@ define(
                     var url = this.options.url + '?' + urlParams;
                     var self = this;
 
-                    this.mpCheckAvailablePdfAjax = storage.get(
+                    this.mpCheckAvailablePdfAjax = $.ajax({
+                        url: mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
+                        type: 'GET',
+                        global: null,
+                        contentType: false,
+                        async: false
+                    }).done(function (response) {
+                        if (Array.isArray(response)) {
+                            response = response[0];
+
+                            if (response.status === 'success' && response.ready === true) {
+                                console.log('PDF file is ready to download', orderIds);
+                                clearInterval(self.mpTimer);
+                                $('body').loadingPopup().hide();
+                                window.open(url);
+                                location.reload();
+                            }
+                        }
+                    }).fail(function (response) {
+
+                    }).always(function () {
+
+                    });
+
+                    /*this.mpCheckAvailablePdfAjax = storage.get(
                         mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
                         null,
                         false
@@ -371,7 +395,7 @@ define(
 
                     }).always(function () {
 
-                    });
+                    });*/
                 },
 
                 _startLoading: function () {
