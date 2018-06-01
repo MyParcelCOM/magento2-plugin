@@ -9,7 +9,7 @@ use MyParcelCom\ApiSdk\MyParcelComApi;
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\NullLogger;
 
-class MpShipment extends MPAdapter
+class MpShipment extends MpAdapter
 {
     private $logger;
 
