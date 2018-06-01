@@ -351,11 +351,13 @@ define(
                     var url = this.options.url + '?' + urlParams;
                     var self = this;
 
-                    this.mpCheckAvailablePdfAjax = storage.get(
-                        mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
-                        null,
-                        false
-                    ).done(function (response) {
+                    this.mpCheckAvailablePdfAjax = $.ajax({
+                        url: mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
+                        type: 'GET',
+                        global: null,
+                        contentType: false,
+                        async: false
+                    }).done(function (response) {
                         if (Array.isArray(response)) {
                             response = response[0];
 
