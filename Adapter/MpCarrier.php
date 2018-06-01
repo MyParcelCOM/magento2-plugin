@@ -24,7 +24,10 @@ class MpCarrier extends MpAdapter
      * @param Shipment $shipment
      * @param string $carrierId
      * @return ServiceContract
-    **/
+     *
+     * @throws Exception
+     * @throws \Exception
+     */
     function getServiceContract($shipment, $carrierId = null)
     {
         $api = MyParcelComApi::getSingleton();
@@ -49,7 +52,15 @@ class MpCarrier extends MpAdapter
             }
         } else {
             /** @var Service $service;**/
-            $services = $api->getServices($shipment);
+
+            try {
+                $services = $api->getServices($shipment);
+            } catch (\Exception $e) {
+                return null;
+            } catch (\Throwable  $e) {
+                return null;
+            }
+
             if (!empty($services)) {
                 foreach ($services as $key => $service) {
                     $contracts = $service->getServiceContracts();
