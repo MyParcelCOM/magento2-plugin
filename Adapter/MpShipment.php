@@ -129,7 +129,12 @@ class MpShipment extends MpAdapter
         **/
         $serviceContract = $shipment->getServiceContract();
         if (empty($serviceContract)) {
-            $serviceContract = $mpCarrier->getServiceContract($shipment);
+            try {
+                $serviceContract = $mpCarrier->getServiceContract($shipment);
+            } catch (\Throwable $e) {
+                $recipient->setRegionCode(null);
+            }
+
             if (!empty($serviceContract)) {
                 /**
                  * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication

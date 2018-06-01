@@ -68,7 +68,10 @@ class MyParcelTrack
             // Set all Track data in array
             if ($track['myparcel_status'] !== null) {
                 $data['track_status'][] = __('status_' . $track['myparcel_status']);
+            } else {
+                $data['track_status'][] = __('status_' . MyParcelTrack::STATUS_CONCEPT);
             }
+
             if ($track['track_number']) {
                 $data['track_number'][] = $track['track_number'];
             }

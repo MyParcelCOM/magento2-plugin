@@ -2,6 +2,7 @@
 
 namespace MyParcelCOM\Magento\Adapter;
 
+use MyParcelCom\ApiSdk\Exceptions\InvalidResourceException;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Carrier;
 use MyParcelCom\ApiSdk\Resources\Service;
@@ -25,7 +26,6 @@ class MpCarrier extends MpAdapter
      * @param string $carrierId
      * @return ServiceContract
      *
-     * @throws Exception
      * @throws \Exception
      */
     function getServiceContract($shipment, $carrierId = null)
@@ -56,9 +56,13 @@ class MpCarrier extends MpAdapter
             try {
                 $services = $api->getServices($shipment);
             } catch (\Exception $e) {
-                return null;
+                throw new InvalidResourceException(
+                    'Region code is invalid'
+                );
             } catch (\Throwable  $e) {
-                return null;
+                throw new InvalidResourceException(
+                    'Region code is invalid'
+                );
             }
 
             if (!empty($services)) {
