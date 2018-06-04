@@ -5,6 +5,9 @@
             <myparcel_group_general>
                 <enable>1</enable>
             </myparcel_group_general>
+            <myparcel_group_shipment>
+                <create_new_if_one_exists>0</create_new_if_one_exists>
+            </myparcel_group_shipment>
         </myparcel_section_general>
         <carriers>
             <myparcelpickup>

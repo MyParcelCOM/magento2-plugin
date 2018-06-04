@@ -48,7 +48,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         /** @var $order Order */
         /** @var Order\Shipment $shipment */
         foreach ($this->getOrders() as $order) {
-            if ($order->canShip()) {
+            if ($order->canShip() && !$order->hasShipments()) {
                 $this->createShipment($order);
             }
         }
@@ -386,22 +386,24 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
             if (is_a($shipment, 'MyParcelCom\ApiSdk\Resources\Shipment')) {
                 $fileProxies = $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL);
-                if (empty($fileProxies)) {
-
+                if (!empty($fileProxies)) {
+                  return true;
+                } else {
                     // Try to setRegisterAt to the shipment to change its status to registered/completed
-                    $mpShipment->setRegisterAt($shipment, 'now');
-                    return false;
+                    if (empty($shipment->getRegisterAt())) {
+                        $mpShipment->setRegisterAt($shipment, 'now');
+                    }
                 }
             } else {
 
                 // Try to create shipment if it does not exist
-                $this->setMagentoTrack()
+                $this
                     ->createShipmentConcepts()
                     ->updateGridByOrder();
             }
         }
 
-        return true;
+        return false;
     }
 
     /**

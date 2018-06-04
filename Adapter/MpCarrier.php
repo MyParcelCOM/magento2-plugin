@@ -66,7 +66,14 @@ class MpCarrier extends MpAdapter
             }
 
             if (!empty($services)) {
+                $totalService = count($services);
+
                 foreach ($services as $key => $service) {
+
+                    if ($totalService > 1 && strpos($service->getName(), 'Unstamped') !== false) {
+                        continue;
+                    }
+
                     $contracts = $service->getServiceContracts();
                     if (!empty($contracts)) {
                         $contract = $contracts[0];

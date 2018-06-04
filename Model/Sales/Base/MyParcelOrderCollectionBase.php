@@ -101,7 +101,7 @@ class MyParcelOrderCollectionBase
 
         // Register shipment
         $shipment->register();
-        $shipment->getOrder()->setIsInProcess(true);
+        $shipment->getOrder()->setStatus(Order::STATE_PROCESSING);
 
         try {
             // Save created shipment and order

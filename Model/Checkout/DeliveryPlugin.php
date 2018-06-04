@@ -73,7 +73,12 @@ class DeliveryPlugin implements DeliveryPluginInterface
             []
         );
 
-        $orderCollection->addOrdersToCollection($orderIds)->setMagentoTrack(true);
+        $orderCollection
+            ->addOrdersToCollection($orderIds)
+            ->setNewMagentoShipment()
+            ->setMagentoTrack(true)
+            ->createShipmentConcepts(true)
+            ->updateGridByOrder();
 
         try {
             if ($orderCollection->isAllOrderShipmentsAvailableToPrint()) {

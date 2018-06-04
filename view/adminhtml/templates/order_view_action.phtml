@@ -15,7 +15,7 @@
                         "request_type": false,
                         "package_type": false,
                         "package_type-mailbox": <?= $block->getCountry() == 'NL' ? 'false' : 'false'; ?>,
-                        "print_position": <?= $block->isCdCountry() == true ? 'false' : 'false'; ?>
+                        "print_position": <?= $block->isAllowedCountry() ? 'true' : 'false'; ?>
                     }
                 <?php else: ?>
                     "action_options": {

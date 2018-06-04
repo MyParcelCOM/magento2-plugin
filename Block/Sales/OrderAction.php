@@ -8,7 +8,7 @@ namespace MyParcelCOM\Magento\Block\Sales;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\App\ObjectManager;
-use MyParcelCom\ApiSdk\src\Model\MyParcelClassConstants;
+use MyParcelCOM\Magento\Helper\MyParcelConfig;
 
 class OrderAction extends OrdersAction
 {
@@ -46,6 +46,7 @@ class OrderAction extends OrdersAction
      * @var \Magento\Sales\Model\Order
      */
     private $order;
+    private $mpConfig;
 
     /**
      * @param Context                     $context
@@ -59,7 +60,9 @@ class OrderAction extends OrdersAction
         array $data = []
     ) {
         // Set order
+        $objectManager    = ObjectManager::getInstance();
         $this->order = $registry->registry('sales_order');
+        $this->mpConfig = $objectManager->get('\MyParcelCOM\Magento\Helper\MyParcelConfig');
         parent::__construct($context, $frontUrlModel, $data);
     }
 
@@ -87,11 +90,16 @@ class OrderAction extends OrdersAction
 
     /**
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getCountry()
     {
         return $this->order->getShippingAddress()->getCountryId();
+    }
+
+    public function isAllowedCountry()
+    {
+        $cc = $this->getCountry();
+        return $this->mpConfig->isAllowedCountry($cc);
     }
 
     /**

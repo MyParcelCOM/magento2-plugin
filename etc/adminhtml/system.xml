@@ -8,7 +8,7 @@
             <class>separator-top</class>
             <label>General</label>
             <tab>myparcel_tab</tab>
-            <resource>MyParcel_MyParcelGlobal::general_configuration</resource>
+            <resource>MyParcelCOM_Magento::general_configuration</resource>
             <group id="myparcel_group_api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>API Configuration</label>
                 <field id="api_client_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">

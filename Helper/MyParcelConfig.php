@@ -54,4 +54,19 @@ class MyParcelConfig extends AbstractHelper
 
         return $configValue;
     }
+
+    function isAllowedCountry($cc)
+    {
+        $allowSpecificCountry =  boolval($this->scopeConfig->getValue('carriers/myparcelpickup/sallowspecific', ScopeInterface::SCOPE_STORE));
+
+        if ($allowSpecificCountry) {
+            $allowedCountriesInString = $this->scopeConfig->getValue('carriers/myparcelpickup/specificcountry', ScopeInterface::SCOPE_STORE);
+            $allowedCountries = explode(',', $allowedCountriesInString);
+            if (is_array($allowedCountries) && in_array($cc, $allowedCountries)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

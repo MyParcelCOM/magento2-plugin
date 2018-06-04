@@ -91,6 +91,29 @@ class Index extends Action {
     public function execute()
     {
         /**
+         * Test registered Now
+        **/
+        /*MyParcelComApi::createSingleton(
+            new ClientCredentials(
+                'f20ab545-93df-492e-824c-6ae4e5e236fb',
+                'F1C7hVQPLZMO2toWHrwYAwDNPQq104CvxOPkD8QISNkPSDXVSXk3lxZIBsRx9Odq',
+                'https://sandbox-auth.myparcel.com'
+            ),
+            'https://sandbox-api.myparcel.com'
+        );
+        $api = MyParcelComApi::getSingleton();
+        $shipment = $api->getShipment('0cdf9b76-1a6d-4690-8d91-04769c2b9fdd');
+        $mpShipment = new MpShipment($this->_objectManager);
+        $result = $mpShipment->setRegisterAt($shipment, 'now');
+
+        var_dump($result->getRegisterAt());
+        die('Updated Shipment');*/
+
+        /**
+         * Test MyParcel Config
+        **/
+       // $this->helper->isAllowedCountry('NL');die;
+        /**
          * Set registerAt
         **/
         /*$shipmentId = 'd0455b55-2abf-4fb2-8774-2e9c70cf0ba4';
@@ -113,8 +136,8 @@ class Index extends Action {
         try {
             $orderCollection
                 ->setNewMagentoShipment()
-                ->setMagentoTrack()
-                ->createShipmentConcepts(true)
+                ->setMagentoTrack(true)
+                ->createShipmentConcepts(false)
                 ->updateGridByOrder()
                 ->downloadPdfOfLabels();
 

@@ -367,6 +367,7 @@ define(
                                 $('body').loadingPopup().hide();
                                 window.open(url);
                                 location.reload();
+                                console.log('downloaded---------------');
                             }
                         }
                     }).fail(function (response) {
