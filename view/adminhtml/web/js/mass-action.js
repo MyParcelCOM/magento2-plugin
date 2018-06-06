@@ -334,6 +334,7 @@ define(
                     var orderIds = self.selectedIds;
 
                     this._checkPdfFileAvailability(orderIds);
+                    this.mpTryCount = 0;
                     this.mpTimer = setInterval(function() {
                         if (self.mpCheckAvailablePdfAjax.readyState > 0 && self.mpCheckAvailablePdfAjax.readyState < 4) {
                             console.log('[MyParcel] Delay running pdf check because another process is running');
@@ -351,29 +352,31 @@ define(
                     var url = this.options.url + '?' + urlParams;
                     var self = this;
 
-                    this.mpCheckAvailablePdfAjax = $.ajax({
-                        url: mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
-                        type: 'GET',
-                        global: null,
-                        contentType: false,
-                        async: false
-                    }).done(function (response) {
+                    this.mpCheckAvailablePdfAjax = storage.get(
+                        mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
+                        null,
+                        false
+                    ).done(function (response) {
                         if (Array.isArray(response)) {
                             response = response[0];
 
                             if (response.status === 'success' && response.ready === true) {
-                                console.log('PDF file is ready to download', orderIds);
                                 clearInterval(self.mpTimer);
-                                $('body').loadingPopup().hide();
-                                window.open(url);
-                                location.reload();
-                                console.log('downloaded---------------');
+                                console.log('PDF file is ready to download', orderIds);
+                                jQuery('body').trigger('hideLoadingPopup');
+                                window.location.href = url;
+                            } else {
+                                if (self.mpTryCount >= 10) {
+                                    clearInterval(self.mpTimer);
+                                    jQuery('body').trigger('hideLoadingPopup');
+                                    window.alert($t('error_shipment_pdf_not_ready'));
+                                }
                             }
                         }
                     }).fail(function (response) {
 
                     }).always(function () {
-
+                        self.mpTryCount++;
                     });
                 },
 
