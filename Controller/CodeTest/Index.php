@@ -4,6 +4,7 @@ namespace MyParcelCOM\Magento\Controller\CodeTest;
 use Braintree\Exception;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Result\PageFactory;
 use MyParcelCOM\Magento\Adapter\MpDelivery;
 use MyParcelCOM\Magento\Adapter\MpShipment;
@@ -90,6 +91,26 @@ class Index extends Action {
      */
     public function execute()
     {
+        /**
+         * Delete a shipment from order id
+        **/
+        $orderCollection = new MyParcelOrderCollection(
+            $this->_objectManager,
+            $this->getRequest()
+        );
+        $orderCollection->addOrdersToCollection([23]);
+
+        try {
+            $orderCollection->setNewMagentoShipment();
+            $orderCollection->refreshOrdersCollection();
+
+            /**@var \Magento\Sales\Model\Order $order **/
+            var_dump($orderCollection->hasShipment());
+            die('123');
+        } catch (LocalizedException $e) {
+            var_dump($e->getMessage());die;
+        }
+        die;
         /**
          * Test registered Now
         **/

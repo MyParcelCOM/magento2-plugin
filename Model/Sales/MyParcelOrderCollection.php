@@ -1,6 +1,7 @@
 <?php
 namespace MyParcelCOM\Magento\Model\Sales;
 
+use Magento\Framework\EntityManager\Operation\Delete;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
 use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
 use Magento\Sales\Model\Order;
@@ -15,8 +16,10 @@ use Magento\Framework\App\ObjectManager;
 
 class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 {
-    const ERROR_ORDER_HAS_NO_SHIPMENT = 'No shipment can be made with this order. Shipments can not be created if the status is On Hold or if the product is digital.';
-    const ERROR_SHIPMENT_CREATE_FAIL = 'Some of the selected shipments have not been created successfully.';
+    const ERROR_ORDER_HAS_NO_SHIPMENT = 'error_order_has_no_shipment';
+    const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
+    const SUCCESS_SHIPMENT_CREATED = 'success_shipment_created';
+
     const PATH_MODEL_ORDER = '\Magento\Sales\Model\ResourceModel\Order\Collection';
 
     /**
@@ -54,6 +57,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         }
 
         $this->getOrders()->save();
+
+        $this->refreshOrdersCollection();
 
         return $this;
     }
@@ -404,6 +409,17 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         }
 
         return false;
+    }
+
+    public function refreshOrdersCollection()
+    {
+        $orderIds = [];
+        /**@var \Magento\Sales\Model\Order $order **/
+        foreach ($this->getOrders() as $order) {
+            $orderIds[] = $order->getId();
+        }
+        $this->getOrders()->clear();
+        return $this->addOrdersToCollection($orderIds);
     }
 
     /**

@@ -8,6 +8,9 @@ status_shipment_completed,Completed
 status_shipment_failed,Failed
 status_shipment_inactive,Inactive
 error_shipment_pdf_not_ready,The select orders are not ready to print PDF, please try again
+error_order_has_no_shipment,No shipment can be made with this order. Shipments can not be created if the status is On Hold or if the product is digital
+error_shipment_create_fail,Some of the selected shipments have not been created.
+success_shipment_created,Selected shipments from orders: %s have been created successfully
 delivery/signature_and_only_recipient_title,Do not deliver to the neighbors + signature
 morning/title,Morning delivery
 morning_signature/title,Morning delivery + signature
