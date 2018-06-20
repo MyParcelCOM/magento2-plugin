@@ -6,7 +6,7 @@
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">create_myparcel_shipment</item>
                         <item name="id" xsi:type="string">create_myparcel_shipment</item>
-                        <item name="label" xsi:type="string" translate="true">Create MyParcel Shipment</item>
+                        <item name="label" xsi:type="string" translate="true">Export orders to MyParcel.com</item>
                         <item name="url" xsi:type="url" path="myparcelcom/order/CreateMyParcelTrack"/>
                     </item>
                 </argument>
@@ -30,7 +30,7 @@
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="visible" xsi:type="boolean">true</item>
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Track status</item>
+                    <item name="label" xsi:type="string" translate="true">Shipment Status</item>
                     <item name="sortOrder" xsi:type="number">5</item>
                     <item name="resizeEnabled" xsi:type="boolean">true</item>
                     <item name="resizeDefaultWidth" xsi:type="string">160</item>
@@ -43,7 +43,7 @@
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="visible" xsi:type="boolean">true</item>
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Track number</item>
+                    <item name="label" xsi:type="string" translate="true">Tracking Number</item>
                     <item name="sortOrder" xsi:type="number">6</item>
                     <item name="resizeEnabled" xsi:type="boolean">true</item>
                     <item name="resizeDefaultWidth" xsi:type="string">160</item>

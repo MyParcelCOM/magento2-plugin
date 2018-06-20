@@ -72,7 +72,7 @@ define(
                                 if (actionSelector.length) {
                                     clearInterval(massSelectorLoadIntervalPrintDefault);
                                     actionSelector.append(
-                                        '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel Shipment</span></li>'
+                                        '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
                                     );
 
                                     $('.action-myparcel-print-default').on(
@@ -97,7 +97,7 @@ define(
                                 if (actionSelector.length) {
                                     clearInterval(massSelectorLoadInterval);
                                     actionSelector.append(
-                                        '<li><span class="action-menu-item action-myparcel">Print MyParcel Shipment Custom</span></li>'
+                                        '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
                                     );
 
                                     $('.action-myparcel').on(
