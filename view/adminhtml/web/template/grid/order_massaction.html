@@ -66,7 +66,7 @@
                                    name="mypa_paper_size" value="A6">
                             <label class="admin__field-label" for="paper_size-A6">A6</label>
                         </div>
-                        <div class="admin__field admin__field-option">
+                        <div class="admin__field admin__field-option" style="display: none;">
                             <input type="radio" class="admin__control-radio" id="paper_size-A5"
                                    name="mypa_paper_size" value="A5">
                             <label class="admin__field-label" for="paper_size-A5">A5</label>
@@ -83,32 +83,26 @@
                         <span trans="Print position"></span>
                     </label>
                     <div id="mypa_position_selector-a4" class="mypa_position_selector">
-                        <!-- <select name="mypa_position_a4" id="mypa_position_a4">
-                             <option value="9">TOP LEFT</option>
-                             <option value="5">TOP RIGHT</option>
-                             <option value="10">BOTTOM LEFT</option>
-                             <option value="6">BOTTOM RIGHT</option>
-                         </select>-->
-
-                        <div class="admin__field admin__field-option">
-                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-1" checked
-                                   name="mypa_position_a4" value="9">
-                            <label class="admin__field-label" for="mypa_position_a4-1">TOP LEFT</label>
-                        </div>
-                        <div class="admin__field admin__field-option">
-                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-2"
-                                   name="mypa_position_a4" value="5">
-                            <label class="admin__field-label" for="mypa_position_a4-2">TOP RIGHT</label>
-                        </div>
-                        <div class="admin__field admin__field-option">
-                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-3"
-                                   name="mypa_position_a4" value="10">
-                            <label class="admin__field-label" for="mypa_position_a4-3">BOTTOM LEFT</label>
-                        </div>
-                        <div class="admin__field admin__field-option">
-                            <input type="radio" class="admin__control-radio" id="mypa_position_a4-4"
-                                   name="mypa_position_a4" value="6">
-                            <label class="admin__field-label" for="mypa_position_a4-4">BOTTOM RIGHT</label>
+                        <div id="label-select-grid">
+                            <input-radio-group>
+                                <label></label>
+                                <input-radio title="BOTTOM LEFT">
+                                    <input class="admin__control-radio" id="mypa_position_a4-3" name="mypa_position_a4" type="radio" value="10" /> 
+                                    <label for="mypa_position_a4-3">3</label>
+                                </input-radio>
+                                <input-radio title="TOP LEFT">
+                                    <input class="admin__control-radio" id="mypa_position_a4-1" name="mypa_position_a4" type="radio" value="9" />
+                                    <label for="mypa_position_a4-1">1</label>
+                                </input-radio>
+                                <input-radio title="BOTTOM RIGHT">
+                                    <input class="admin__control-radio" id="mypa_position_a4-4" name="mypa_position_a4" type="radio" value="6" />
+                                    <label for="mypa_position_a4-4">4</label>
+                                </input-radio>
+                                <input-radio title="TOP RIGHT">
+                                    <input class="admin__control-radio" id="mypa_position_a4-2" name="mypa_position_a4" type="radio" value="5" />
+                                    <label for="mypa_position_a4-2">2</label>
+                                </input-radio>
+                            </input-radio-group>
                         </div>
                     </div>
 
@@ -130,7 +124,7 @@
                     </div>
 
                     <div id="mypa_position_selector-a6" class="mypa_position_selector">
-                        <span>No print positions available</span>
+                        <span>No print positions available.</span>
                     </div>
                 </div>
             </div>
