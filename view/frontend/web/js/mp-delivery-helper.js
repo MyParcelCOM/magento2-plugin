@@ -47,7 +47,8 @@ define([
                 var postalCode      =   pickupAddress.postal_code;
                 var city            =   pickupAddress.city;
 
-                return street1 + ' ' + streetNumber + ', ' + postalCode + ', ' + city;
+                var street = streetNumber ? (street1 + ' ' + streetNumber) : street1;
+                return street + ', ' + postalCode + ', ' + city;
             },
 
             isPickupLoading : function(show) {
