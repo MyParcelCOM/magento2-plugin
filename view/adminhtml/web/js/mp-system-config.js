@@ -20,6 +20,8 @@ require(['jquery'], function($){
 		}  
 		
 		if(input_google_map_key.length > 0){
+			var delay_google;
+
 			input_google_map_key.on('change, keyup, input', function(){ 
 				var container = $(this);
 				var script_id = 'googlemap';				
@@ -27,17 +29,21 @@ require(['jquery'], function($){
 				var google_map_key = container.val();
 
 				if(google_map_key.length > 0){
-					_notification_loading('show');
-					
-					if(file_script){
-						file_script.remove();
-					}
-					
-					file_script = document.createElement('script');
-					file_script.setAttribute('type', 'text/javascript');
-					file_script.id = script_id;
-					file_script.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key='+google_map_key);
-					document.getElementsByTagName('body')[0].appendChild(file_script);
+					clearTimeout(delay_google);
+
+					delay_google = setTimeout(function() {
+						_notification_loading('show');
+						
+						if(file_script){
+							file_script.remove();
+						}
+						
+						file_script = document.createElement('script');
+						file_script.setAttribute('type', 'text/javascript');
+						file_script.id = script_id;
+						file_script.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key='+google_map_key);
+						document.getElementsByTagName('body')[0].appendChild(file_script);
+					}, 1000);
 				}
 			});
 		}
