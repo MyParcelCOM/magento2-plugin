@@ -143,7 +143,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'last_name' => $shippingAddressObj->getLastname(),
                 'country_code' => $shippingAddressObj->getCountryId(),
                 'email' => $shippingAddressObj->getEmail(),
-                'region_code'   => $shippingAddressObj->getRegionCode()
+                'region_code'   => $shippingAddressObj->getRegionCode(),
+                'phone_number'  => $shippingAddressObj->getTelephone(),
             ];
 
             $shipmentData = [
