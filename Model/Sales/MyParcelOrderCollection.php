@@ -173,7 +173,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     $city           =   $pickupAddressAttribute['city'];
                     $country        =   $pickupAddressAttribute['country_code'];
                     $company        =   $pickupAddressAttribute['company'];
-                    $phoneNumber    =   !empty($pickupAddressAttribute['phone_number']) ? $pickupAddressAttribute['phone_number'] : '';
+                    $phoneNumber    =   !empty($pickupAddressAttribute['phone_number']) ? $pickupAddressAttribute['phone_number'] : $addressData['phone_number'];
 
                     $pickupAddressData = [
                         'street'        => $street,
