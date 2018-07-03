@@ -82,7 +82,7 @@ class MpShipment extends MpAdapter
 
         $shipment->setRecipientAddress($recipient);
         if (!empty($shipmentData['weight'])) {
-            $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
+            $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_POUND);
         }
 
         /**

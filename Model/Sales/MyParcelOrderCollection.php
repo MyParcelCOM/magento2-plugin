@@ -148,8 +148,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'region_code' => 'ENG',
             ];
 
+            /**
+             * Weight
+             **/
+			$shipmentWeight = $order->getWeight();
             $shipmentData = [
-                'weight'    => 1
+                'weight'    => ($shipmentWeight > 1) ? $shipmentWeight : 1,
             ];
 
             /**
