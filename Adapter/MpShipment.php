@@ -70,7 +70,8 @@ class MpShipment extends MpAdapter
             ->setFirstName($addressData['first_name'])
             ->setLastName($addressData['last_name'])
             ->setCountryCode($addressData['country_code'])
-            ->setEmail($addressData['email']);
+            ->setEmail($addressData['email'])
+            ->setPhoneNumber($addressData['phone_number']);
 
         if (!empty($addressData['region_code'])) {
             $recipient->setRegionCode($addressData['region_code']);
