@@ -47,7 +47,7 @@ class MpShipment extends MpAdapter
      * @param string $registerAt
      * @return object response of the api
     **/
-    function createShipment($addressData, $shipmentData, $registerAt = '')
+    function createShipment($addressData, $shipmentData, $registerAt = '', $description = '')
     {
         /**
          * Get instance of MyParcelCOM API
@@ -71,7 +71,7 @@ class MpShipment extends MpAdapter
             ->setLastName($addressData['last_name'])
             ->setCountryCode($addressData['country_code'])
             ->setEmail($addressData['email'])
-            ->setPhoneNumber($addressData['phone_number']);
+            ->setPhoneNumber($addressData['phone_number']); 
 
         if (!empty($addressData['region_code'])) {
             $recipient->setRegionCode($addressData['region_code']);
@@ -133,7 +133,7 @@ class MpShipment extends MpAdapter
             try {
                 $serviceContract = $mpCarrier->getServiceContract($shipment);
             } catch (\Throwable $e) {
-                $recipient->setRegionCode(null);
+                // $recipient->setRegionCode(null);
             }
 
             if (!empty($serviceContract)) {
@@ -157,6 +157,13 @@ class MpShipment extends MpAdapter
         **/
         if (!empty($registerAt)) {
             $shipment->setRegisterAt($registerAt);
+        }
+
+        /**
+         * Set Description At value for shipment
+        **/
+        if (!empty($description)) {
+            $shipment->setDescription($description);
         }
 
         // Create the shipment

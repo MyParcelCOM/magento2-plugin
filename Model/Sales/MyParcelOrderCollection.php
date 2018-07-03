@@ -145,6 +145,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'email' => $shippingAddressObj->getEmail(),
                 'region_code'   => $shippingAddressObj->getRegionCode(),
                 'phone_number'  => $shippingAddressObj->getTelephone(),
+                'region_code' => 'ENG',
             ];
 
             $shipmentData = [
@@ -182,7 +183,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                         'postcode'      => $postalCode,
                         'country_code'  => $country,
                         'phone_number'  => $phoneNumber,
-                        'company'       => $company
+                        'company'       => $company,
+						'region_code' => 'ENG',
                     ];
 
                     $pickupLocationCode = $deliveryOptions['attributes']['code'];
@@ -205,6 +207,20 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             }
 
             /**
+             * Add Description
+             * @var object $data Data from checkout
+             **/
+			//Send description to MyParcel. Please name it `storename` Order #`ordernumber`
+			
+			$storeName = $order->getStoreName();
+			$storeName = explode ("\n", trim($storeName));
+			$storeName = $storeName[(count($storeName) - 1)];
+			
+			$orderID = $order->getID();
+			
+			$description = $storeName.' Order #'.$orderID;
+			 
+            /**
              * Add Pickup information into $shipmentData
              * @var object $data Data from checkout
              **/
@@ -214,7 +230,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 $shipment = new MpShipment($this->objectManager);
                 /** @var Shipment $response **/
                 $registerAt = $printMode ? 'now' : '';
-                $response = $shipment->createShipment($addressData, $shipmentData, $registerAt);
+                $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description);
 
             } catch ( \Exception $e ) {
                 throw new \Exception($e->getMessage());
