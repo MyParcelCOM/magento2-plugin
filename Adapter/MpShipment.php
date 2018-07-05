@@ -142,10 +142,12 @@ class MpShipment extends MpAdapter
                 /**
                  * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication
                 **/
-                //$shipment->setServiceContract($serviceContract);
+                $shipment->setServiceContract($serviceContract);
+            }else{
+                $recipient->setRegionCode($this->_defaultRegion);
             }
         }else{
-            $recipient->setRegionCode($this->_defaultRegion);
+            $shipment->setServiceContract($serviceContract);
         }
 
         /**
