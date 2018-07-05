@@ -25,7 +25,7 @@ class MpShipment extends MpAdapter
     ];
 
     private $_defaultShipmentData = [
-        'weight'        => '',
+        'weight'        => '0.1',
     ];
 
     private $_defaultRegion = 'ENG';
