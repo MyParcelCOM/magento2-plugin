@@ -7,7 +7,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\NullLogger; 
 
 class MpShipment extends MpAdapter
 {
@@ -27,6 +27,8 @@ class MpShipment extends MpAdapter
     private $_defaultShipmentData = [
         'weight'        => '',
     ];
+
+    private $_defaultRegion = 'ENG';
 
     /**
      * MpShipment constructor.
@@ -133,7 +135,7 @@ class MpShipment extends MpAdapter
             try {
                 $serviceContract = $mpCarrier->getServiceContract($shipment);
             } catch (\Throwable $e) {
-                // $recipient->setRegionCode(null);
+                $recipient->setRegionCode($this->_defaultRegion);
             }
 
             if (!empty($serviceContract)) {
@@ -142,6 +144,8 @@ class MpShipment extends MpAdapter
                 **/
                 //$shipment->setServiceContract($serviceContract);
             }
+        }else{
+            $recipient->setRegionCode($this->_defaultRegion);
         }
 
         /**

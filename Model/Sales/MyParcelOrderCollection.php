@@ -14,7 +14,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\LabelCombiner;
 use Magento\Framework\App\ObjectManager;
 
-class MyParcelOrderCollection extends MyParcelOrderCollectionBase
+class MyParcelOrderCollection extends MyParcelOrderCollectionBase 
 {
     const ERROR_ORDER_HAS_NO_SHIPMENT = 'error_order_has_no_shipment';
     const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
