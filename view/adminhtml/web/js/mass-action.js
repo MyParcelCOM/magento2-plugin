@@ -15,7 +15,7 @@ define(
         return function MassAction(
             options,
             element
-        ) {
+        ) { 
 
             var model = {
 
@@ -68,12 +68,21 @@ define(
 
                         massSelectorLoadIntervalPrintDefault = setInterval(
                             function () {
+								var customOptionHtml = '';
                                 var actionSelector = $('.action-select-wrap .action-menu');
+								
                                 if (actionSelector.length) {
-                                    clearInterval(massSelectorLoadIntervalPrintDefault);
-                                    actionSelector.append(
-                                        '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
-                                    );
+									clearInterval(massSelectorLoadIntervalPrintDefault);
+									
+									var actionSelectorItems = actionSelector.find('> li');
+									var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
+									
+									customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>';
+									
+									$(customOptionHtml).insertBefore(actionSelectorItemLast);
+                                    // actionSelector.append(
+                                        // '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
+                                    // );
 
                                     $('.action-myparcel-print-default').on(
                                         "click",
@@ -93,12 +102,22 @@ define(
 
                         massSelectorLoadInterval = setInterval(
                             function () {
+								var customOptionHtml = '';
                                 var actionSelector = $('.action-select-wrap .action-menu');
+								
                                 if (actionSelector.length) {
                                     clearInterval(massSelectorLoadInterval);
-                                    actionSelector.append(
-                                        '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
-                                    );
+									
+									var actionSelectorItems = actionSelector.find('> li');
+									var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
+									
+									customOptionHtml = '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>';
+									
+									$(customOptionHtml).insertBefore(actionSelectorItemLast);
+									
+                                    // actionSelector.append(
+                                        // '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
+                                    // );
 
                                     $('.action-myparcel').on(
                                         "click",
