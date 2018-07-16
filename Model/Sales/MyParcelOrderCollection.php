@@ -247,7 +247,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 $myParcelStatus = $statusProxy->getCode();
                 $myparcelShipmentId = $response->getId();
 
-                $track
+                $track->setTitle($addressData['postcode'].': '.$addressData['street'])
                     ->setData('myparcel_consignment_id', $myparcelShipmentId)
                     ->setData('myparcel_status', $myParcelStatus)
                     ->save();
