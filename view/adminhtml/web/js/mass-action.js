@@ -69,33 +69,37 @@ define(
                         massSelectorLoadIntervalPrintDefault = setInterval(
                             function () {
 								var customOptionHtml = '';
-                                var actionSelector = $('.action-select-wrap .action-menu');
 								
-                                if (actionSelector.length) {
-									clearInterval(massSelectorLoadIntervalPrintDefault);
-									
-									var actionSelectorItems = actionSelector.find('> li');
-									var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
-									
-									customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>';
-									
-									$(customOptionHtml).insertBefore(actionSelectorItemLast);
-                                    // actionSelector.append(
-                                        // '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
-                                    // );
+								$('.action-select-wrap').each(function(){
+									var container = $(this);
+									var actionSelector = container.find('.action-menu');
+								
+                                    if (actionSelector.length) {
+                                        clearInterval(massSelectorLoadIntervalPrintDefault);
+                                        
+                                        var actionSelectorItems = actionSelector.find('> li');
+                                        var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
+                                        
+                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>';
+                                        
+                                        $(customOptionHtml).insertBefore(actionSelectorItemLast);
+                                        // actionSelector.append(
+                                            // '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
+                                        // );
 
-                                    $('.action-myparcel-print-default').on(
-                                        "click",
-                                        function () {
-                                            parentThis
-                                                ._setSelectedIds();
+                                        $('.action-myparcel-print-default').on(
+                                            "click",
+                                            function () {
+                                                parentThis
+                                                    ._setSelectedIds();
 
-                                            parentThis
-                                                ._startLoading()
-                                                ._createConsignment();
-                                        }
-                                    );
-                                }
+                                                parentThis
+                                                    ._startLoading()
+                                                    ._createConsignment();
+                                            }
+                                        );
+                                    }
+                                });
                             },
                             1000
                         );
@@ -103,29 +107,33 @@ define(
                         massSelectorLoadInterval = setInterval(
                             function () {
 								var customOptionHtml = '';
-                                var actionSelector = $('.action-select-wrap .action-menu');
 								
-                                if (actionSelector.length) {
-                                    clearInterval(massSelectorLoadInterval);
-									
-									var actionSelectorItems = actionSelector.find('> li');
-									var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
-									
-									customOptionHtml = '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>';
-									
-									$(customOptionHtml).insertBefore(actionSelectorItemLast);
-									
-                                    // actionSelector.append(
-                                        // '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
-                                    // );
+								$('.action-select-wrap').each(function(){
+									var container = $(this);
+									var actionSelector = container.find('.action-menu');
+								
+                                    if (actionSelector.length) {
+                                        clearInterval(massSelectorLoadInterval);
+                                        
+                                        var actionSelectorItems = actionSelector.find('> li');
+                                        var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
+                                        
+                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>';
+                                        
+                                        $(customOptionHtml).insertBefore(actionSelectorItemLast);
+                                        
+                                        // actionSelector.append(
+                                            // '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
+                                        // );
 
-                                    $('.action-myparcel').on(
-                                        "click",
-                                        function () {
-                                            parentThis._showMyParcelModal();
-                                        }
-                                    );
-                                }
+                                        $('.action-myparcel').on(
+                                            "click",
+                                            function () {
+                                                parentThis._showMyParcelModal();
+                                            }
+                                        );
+                                    }
+                                });
                             },
                             1000
                         );
