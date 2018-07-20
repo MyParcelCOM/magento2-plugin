@@ -19,6 +19,7 @@ class MyParcelPickup extends \Magento\Shipping\Model\Carrier\AbstractCarrier imp
      * @var string
      */
     const CODE = 'myparcelpickup';
+	const CARRIERTITLE = 'Ship to Parcelshop';
 
     /**
      * Code of the carrier
@@ -110,7 +111,7 @@ class MyParcelPickup extends \Magento\Shipping\Model\Carrier\AbstractCarrier imp
             /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $rate */
             $rate = $this->_rateMethodFactory->create();
             $rate->setCarrier($this->_code);
-            $rate->setCarrierTitle('MyParcel');
+            $rate->setCarrierTitle(self::CARRIERTITLE);
             $rate->setMethod($shippingMethod['code']);
             $rate->setMethodTitle($shippingMethod['title']);
             $rate->setCost($shippingMethod['price']);

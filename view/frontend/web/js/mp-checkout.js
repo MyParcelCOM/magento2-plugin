@@ -42,8 +42,10 @@ define([
                                 var location = response.data[0];
                                 $('textarea[name="delivery_options"]').text(JSON.stringify(location));
 
-                                var address = mpHelper.getPickUpSummaryAddress(location);
-                                $('#myparcel-shipping-pickup-closest').text(address);
+                                var addressData = mpHelper.getPickUpSummaryAddress(location);
+								var addressHtml = '<span class="abs-add-clearfix myparcel-shipping-pickup-name">'+addressData.name+'</span><span class="abs-add-clearfix myparcel-shipping-pickup-address">'+addressData.address+'</span>';
+                                
+                                $('#myparcel-shipping-pickup-closest').html(addressHtml);
 
                                 // Hide validation error because now the pickup location is selected
                                 self.setValidationMessage(false);
