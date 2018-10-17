@@ -152,6 +152,20 @@ Pickup Express fee,Extra vroeg ophalen prijs
 Drop off day,Verzenddagen
 Select the days that you send the orders.,Selecteer de dagen waarop jij de orders verzend.
 Set the number of days to let the customer make an order on a different day than to deliver the first one.,Stel hier het aantal dagen in om de klant de keuze te laten maken een bestelling op een andere dag dan de eerst volgende te laten bezorgen.
+API Client is available,API Client is beschikbaar
+API Client ID,API Client ID
+API Client Secret Key,API Client Secret Key
+API Configuration,API configuratie
+Client id or client secret is invalid,Klant-id of klantgeheim is ongeldig
+Current Version,Huidige versie
+Google API,Google API
+Google Map API Key,Google Map API Key
+MyParcelCOM Settings,MyParcelCOM instellingen
+MyParcel.com support,MyParcel.com support
+MyParcel.com backoffice,MyParcel.com backoffice
+Print MyParcel.com labels,Print MyParcel.com labels
+Save orders to MyParcel.com,Bewaar bestellingen op MyParcel.com
+Shipment Settings,Verzendinstellingen
 
 
 

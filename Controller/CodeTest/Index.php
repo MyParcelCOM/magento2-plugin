@@ -76,7 +76,6 @@ class Index extends Action {
                 ->downloadPdfOfLabels();
 
         } catch (\Throwable  $e) {
-            var_dump($e->getMessage());die;
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL . ': ' . $e->getMessage()));
             return $this;
         } catch (\Exception $e) {

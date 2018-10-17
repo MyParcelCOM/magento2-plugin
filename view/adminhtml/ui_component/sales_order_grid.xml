@@ -6,7 +6,7 @@
                     <item name="config" xsi:type="array">
                         <item name="type" xsi:type="string">create_myparcel_shipment</item>
                         <item name="id" xsi:type="string">create_myparcel_shipment</item>
-                        <item name="label" xsi:type="string" translate="true">Export orders to MyParcel.com</item>
+                        <item name="label" xsi:type="string" translate="true">Save orders to MyParcel.com</item>
                         <item name="url" xsi:type="url" path="myparcelcom/order/CreateMyParcelTrack"/>
                     </item>
                 </argument>

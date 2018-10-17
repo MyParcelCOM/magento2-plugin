@@ -9,13 +9,13 @@ define(
         'myparcelcom_delivery_helper',
         'mage/translate'
     ],
-    function ($, confirmation, template, alert, loadingPopup, storage, mpHelper, $t) {
+    function($, confirmation, template, alert, loadingPopup, storage, mpHelper, $t) {
         'use strict';
 
         return function MassAction(
             options,
             element
-        ) { 
+        ) {
 
             var model = {
 
@@ -28,7 +28,7 @@ define(
                  *
                  * @returns {MassAction} Chainable.
                  */
-                initialize: function (options, element) {
+                initialize: function(options, element) {
                     this.options = options;
                     this.element = element;
                     this.selectedIds = [];
@@ -41,15 +41,14 @@ define(
                  *
                  * @protected
                  */
-                _setMyParcelMassAction: function () {
-                    var massSelectorLoadInterval;
+                _setMyParcelMassAction: function() {
                     var massSelectorLoadIntervalPrintDefault;
                     var parentThis = this;
 
                     if (this.options['button_send_return_mail_present']) {
                         $('.action-myparcel_send_return_mail').on(
                             "click",
-                            function () {
+                            function() {
                                 parentThis._setSelectedIds();
                                 window.location.href = parentThis.options.url_send_return_mail + '?selected_ids=' + parentThis.selectedIds.join(';');
                             }
@@ -59,7 +58,7 @@ define(
                     if (this.options['button_present']) {
                         $('.action-myparcel').on(
                             "click",
-                            function () {
+                            function() {
                                 parentThis._showMyParcelModal();
                             }
                         );
@@ -67,69 +66,32 @@ define(
                         /* In order grid, button don't exist. Append a button */
 
                         massSelectorLoadIntervalPrintDefault = setInterval(
-                            function () {
-								var customOptionHtml = '';
-								
-								$('.action-select-wrap').each(function(){
-									var container = $(this);
-									var actionSelector = container.find('.action-menu');
-								
+                            function() {
+                                var customOptionHtml = '';
+
+                                $('.action-select-wrap').each(function() {
+                                    var container = $(this);
+                                    var actionSelector = container.find('.action-menu');
+
                                     if (actionSelector.length) {
                                         clearInterval(massSelectorLoadIntervalPrintDefault);
-                                        
+
                                         var actionSelectorItems = actionSelector.find('> li');
                                         var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
-                                        
-                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>';
-                                        
+
+                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">'+$.mage.__('Print MyParcel.com labels')+'</span></li>';
+
                                         $(customOptionHtml).insertBefore(actionSelectorItemLast);
-                                        // actionSelector.append(
-                                            // '<li><span class="action-menu-item action-myparcel-print-default">Print MyParcel.com labels</span></li>'
-                                        // );
 
                                         $('.action-myparcel-print-default').on(
                                             "click",
-                                            function () {
+                                            function() {
                                                 parentThis
                                                     ._setSelectedIds();
 
                                                 parentThis
                                                     ._startLoading()
                                                     ._createConsignment();
-                                            }
-                                        );
-                                    }
-                                });
-                            },
-                            1000
-                        );
-
-                        massSelectorLoadInterval = setInterval(
-                            function () {
-								var customOptionHtml = '';
-								
-								$('.action-select-wrap').each(function(){
-									var container = $(this);
-									var actionSelector = container.find('.action-menu');
-								
-                                    if (actionSelector.length) {
-                                        clearInterval(massSelectorLoadInterval);
-                                        
-                                        var actionSelectorItems = actionSelector.find('> li');
-                                        var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
-                                        
-                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>';
-                                        
-                                        $(customOptionHtml).insertBefore(actionSelectorItemLast);
-                                        
-                                        // actionSelector.append(
-                                            // '<li><span class="action-menu-item action-myparcel">Print custom MyParcel.com labels</span></li>'
-                                        // );
-
-                                        $('.action-myparcel').on(
-                                            "click",
-                                            function () {
-                                                parentThis._showMyParcelModal();
                                             }
                                         );
                                     }
@@ -145,51 +107,49 @@ define(
                  *
                  * @protected
                  */
-                _showMyParcelModal: function () {
+                _showMyParcelModal: function() {
                     var parentThis = this;
                     parentThis
                         ._setSelectedIds()
                         ._translateTemplate();
 
                     if (this.selectedIds.length === 0) {
-                        alert({title: $.mage.__('Please select an item from the list')});
+                        alert({ title: $.mage.__('Please select an item from the list') });
 
                         return this;
                     }
 
                     if (('has_api_key' in this.options) && (this.options['has_api_key'] == false)) {
-                        alert({title: $.mage.__('No key found. Go to Configuration and then to MyParcel to enter the key.')});
+                        alert({ title: $.mage.__('No key found. Go to Configuration and then to MyParcel to enter the key.') });
 
                         return this;
                     }
 
-                    confirmation(
-                        {
-                            title: $.mage.__('MyParcel options'),
-                            content: template,
-                            focus: function () {
-                                $('#selected_ids').val(parentThis.selectedIds.join(','));
+                    confirmation({
+                        title: $.mage.__('MyParcel options'),
+                        content: template,
+                        focus: function() {
+                            $('#selected_ids').val(parentThis.selectedIds.join(','));
+                            parentThis
+                                ._setMyParcelMassActionObserver()
+                                ._setActions()
+                                ._setDefaultSettings()
+                                ._showMyParcelOptions();
+                        },
+                        actions: {
+                            confirm: function() {
                                 parentThis
-                                    ._setMyParcelMassActionObserver()
-                                    ._setActions()
-                                    ._setDefaultSettings()
-                                    ._showMyParcelOptions();
-                            },
-                            actions: {
-                                confirm: function () {
-                                    parentThis
-                                        ._startLoading()
-                                        ._createConsignment();
-                                }
+                                    ._startLoading()
+                                    ._createConsignment();
                             }
                         }
-                    );
+                    });
                 },
 
                 /**
                  * Translate html templates
                  **/
-                _translateTemplate: function () {
+                _translateTemplate: function() {
                     /*
                     Magento only index these variables in js-translation if you define
                     $.mage.__('Action type');
@@ -204,7 +164,7 @@ define(
                     $.mage.__('Print position');
                     */
 
-                    $($.parseHTML(template)).find("[trans]").each(function( index ) {
+                    $($.parseHTML(template)).find("[trans]").each(function(index) {
                         var oldElement = $(this).get(0).outerHTML;
                         var newElement = $(this).html($.mage.__($(this).attr('trans'))).get(0).outerHTML;
                         template = template.replace(oldElement, newElement);
@@ -216,11 +176,11 @@ define(
                  *
                  * @protected
                  */
-                _setActions: function () {
+                _setActions: function() {
                     var parentThis = this;
                     var actionOptions = ["request_type", "package_type", "package_type-mailbox", "print_position"];
 
-                    actionOptions.forEach(function (option) {
+                    actionOptions.forEach(function(option) {
                         if (!(option in parentThis.options['action_options']) || (parentThis.options['action_options'][option] == false)) {
                             $('#mypa_container-' + option).hide();
                         }
@@ -234,7 +194,7 @@ define(
                  *
                  * @protected
                  */
-                _setDefaultSettings: function () {
+                _setDefaultSettings: function() {
                     var selectAmount;
 
                     if ('number_of_positions' in this.options) {
@@ -273,7 +233,7 @@ define(
                  *
                  * @protected
                  */
-                _showMyParcelOptions: function () {
+                _showMyParcelOptions: function() {
                     $('div#mypa-options').addClass('_active');
 
                     return this;
@@ -284,10 +244,10 @@ define(
                  *
                  * @protected
                  */
-                _setMyParcelMassActionObserver: function () {
+                _setMyParcelMassActionObserver: function() {
                     $("input[name='mypa_paper_size']").on(
                         "change",
-                        function () {
+                        function() {
                             if ($('#paper_size-A4').prop('checked')) {
                                 $('#mypa_position_selector-a4').addClass('_active');
                                 $('#mypa_position_selector-a5').removeClass('_active');
@@ -306,7 +266,7 @@ define(
 
                     $("input[name='mypa_request_type']").on(
                         "change",
-                        function () {
+                        function() {
                             if ($('#mypa_request_type-concept').prop('checked')) {
                                 $('.mypa_position_container').hide();
                             } else {
@@ -322,7 +282,7 @@ define(
                  *
                  * @protected
                  */
-                _setSelectedIds: function () {
+                _setSelectedIds: function() {
                     var parentThis = this;
                     var oneOrderIdSelector = $('input[name="order_id"]');
                     this.selectedIds = [];
@@ -337,7 +297,7 @@ define(
                     }
 
                     $('.data-grid-checkbox-cell-inner input.admin__control-checkbox:checked').each(
-                        function () {
+                        function() {
                             parentThis.selectedIds.push($(this).attr('value'));
                         }
                     );
@@ -350,7 +310,7 @@ define(
                  *
                  * @protected
                  */
-                _createConsignment: function () {
+                _createConsignment: function() {
 
                     /*if ($('#mypa_request_type-open_new_tab').prop('checked')) {
                         window.open(url);
@@ -372,10 +332,10 @@ define(
                     }, 5000);
                 },
 
-                _checkPdfFileAvailability : function(orderIds) {
+                _checkPdfFileAvailability: function(orderIds) {
 
                     var formData = $("#mypa-options-form").serialize();
-                    var urlParams =  formData ? formData : 'selected_ids=' + orderIds.join(',');
+                    var urlParams = formData ? formData : 'selected_ids=' + orderIds.join(',');
                     var url = this.options.url + '?' + urlParams;
                     var self = this;
 
@@ -383,7 +343,7 @@ define(
                         mpHelper.getUrlForCheckShipmentFileAvailability(orderIds),
                         null,
                         false
-                    ).done(function (response) {
+                    ).done(function(response) {
                         if (Array.isArray(response)) {
                             response = response[0];
 
@@ -400,15 +360,15 @@ define(
                                 }
                             }
                         }
-                    }).fail(function (response) {
+                    }).fail(function(response) {
 
-                    }).always(function () {
+                    }).always(function() {
                         self.mpTryCount++;
                     });
                 },
 
-                _startLoading: function () {
-                    $('body').loadingPopup({timeout: 0});
+                _startLoading: function() {
+                    $('body').loadingPopup({ timeout: 0 });
                     return this;
                 }
             };

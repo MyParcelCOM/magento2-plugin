@@ -24,9 +24,10 @@ define(
                     // This is the pickupLocation as it was passed in as part of the array of locations.
                     // You could use it here in the JavaScript code or pass it to your backend.
 
-                    var address = mpHelper.getPickUpSummaryAddress(pickupLocation.originalData);
+                    var addressData = mpHelper.getPickUpSummaryAddress(pickupLocation.originalData);
+					var addressHtml = '<span class="abs-add-clearfix myparcel-shipping-pickup-name">' + addressData.name + '</span><span class="abs-add-clearfix myparcel-shipping-pickup-address">' + addressData.address + '</span>';
 
-                    $('#myparcel-shipping-pickup-closest').text(address);
+                    $('#myparcel-shipping-pickup-closest').html(addressHtml);
                 },
                 // The callback we will use when the delivery popup is closed without choosing a location.
                 onCancelCallback: function () {

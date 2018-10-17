@@ -86,10 +86,10 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
             $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIds)));
 
         } catch (\Throwable  $e) {
-            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL . ': ' . $e->getMessage()));
+            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
             return $this;
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL . ': ' . $e->getMessage()));
+            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }
 
        return $this;

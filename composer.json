@@ -10,7 +10,7 @@
     ],
     "require": {
 		"magento/product-community-edition": "2.2.4",
-        "myparcelcom/api-sdk": "0.7.3"
+        "myparcelcom/api-sdk": "0.7.4"
     },
     "autoload": {
         "files": [ "registration.php" ],

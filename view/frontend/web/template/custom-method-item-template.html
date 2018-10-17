@@ -1,35 +1,29 @@
-<tr class="row"
-    click="element.selectShippingMethod">
+<tr class="row" click="element.selectShippingMethod">
     <td class="col col-method">
-        <input type="radio"
-               class="radio"
-               ifnot="method.error_message"
-               ko-checked="element.isSelected"
-               ko-value="method.carrier_code + '_' + method.method_code"
-               attr="'aria-labelledby': 'label_method_' + method.method_code + '_' + method.carrier_code + ' ' + 'label_carrier_' + method.method_code + '_' + method.carrier_code,
+        <input type="radio" class="radio" ifnot="method.error_message" ko-checked="element.isSelected" ko-value="method.carrier_code + '_' + method.method_code" attr="'aria-labelledby': 'label_method_' + method.method_code + '_' + method.carrier_code + ' ' + 'label_carrier_' + method.method_code + '_' + method.carrier_code,
                     'checked': element.rates().length == 1 || element.isSelected" />
     </td>
     <td class="col col-price">
         <each args="element.getRegion('price')" render="" />
     </td>
-    <td class="col col-method"
-        attr="'id': 'label_method_' + method.method_code + '_' + method.carrier_code"
-        text="method.method_title" />
-    <td class="col col-carrier"
-        attr="'id': 'label_carrier_' + method.method_code + '_' + method.carrier_code">
-        <div class="shipping-method-title" text="method.carrier_title"></div>
+    <td class="col col-method" attr="'id': 'label_method_' + method.method_code + '_' + method.carrier_code" text="method.method_title" />
+    <td class="col col-carrier" attr="'id': 'label_carrier_' + method.method_code + '_' + method.carrier_code">
+        <div class="shipping-method-title" text="method.carrier_title" style="display: inline;"></div>
         <!-- ko if: (method.method_code == "myparcelpickup") -->
         <div id="myparcel-shipping-pickup-closest" class="myparcel-shipping-chosen"></div>
-        <div id="myparcel-shipping-pickup-link" class="myparcel-shipping-link"><a translate="'Select different delivery location'"></a></div>
+        <div id="myparcel-shipping-pickup-link" class="myparcel-shipping-link">
+            <a translate="'Select different delivery location'"></a>
+        </div>
         <!-- /ko -->
         <!-- ko if: (method.method_code == "myparceldelivery") -->
         <div id="myparcel-shipping-delivery-title"></div>
-        <div id="myparcel-shipping-delivery-link" class="myparcel-shipping-link"><a translate="'Select different pickup location'"></a></div>
+        <div id="myparcel-shipping-delivery-link" class="myparcel-shipping-link">
+            <a translate="'Select different pickup location'"></a>
+        </div>
         <!-- /ko -->
     </td>
 </tr>
-<tr class="row row-error"
-    if="method.error_message">
+<tr class="row row-error" if="method.error_message">
     <td class="col col-error" colspan="4">
         <div role="alert" class="message error">
             <div text="method.error_message"></div>

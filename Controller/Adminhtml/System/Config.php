@@ -34,12 +34,12 @@ class Config extends Action
             if(isset($auth_header['Authorization']) && $auth_header['Authorization'] !== ''){
                 $response = array(
                     'status' => 'SUCCESS',
-                    'message' => 'API Client is available',
+                    'message' => __('API Client is available'),
                 );
             }else{
                 $response = array(
                     'status' => 'ERROR',
-                    'message' => 'Client id or client secret is invalid',
+                    'message' => __('Client id or client secret is invalid'),
                 );
             }
         }catch(Exception $e){

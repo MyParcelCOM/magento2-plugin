@@ -202,8 +202,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                        $carrierId = $carrier['id'];
                     }
 
-                    $shipmentData['pickup'] = [
-                        'address_data'      => $pickupAddressData,
+                    $shipmentData['pickup_location'] = [
+                        'address'      => $pickupAddressData,
                         'location_code'     => $pickupLocationCode,
                         'carrier_id'        => $carrierId
                     ];

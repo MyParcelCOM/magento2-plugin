@@ -49,8 +49,10 @@ class DeliveryPlugin implements DeliveryPluginInterface
         }
 
         $location = current($locations);
+		
+		$extraData = $this->retrievetPickupLocationData($location);
 
-        return [['status' => 'success', 'data' => [$location]]];
+        return [['status' => 'success', 'data' => [$location], 'carrier_name' => $extraData['carrier_name'], 'transit_time_max' => $extraData['transit_time_max'], 'transit_time_min' => $extraData['transit_time_min']]];
     }
 
     function retrieveCarriers()
@@ -60,6 +62,21 @@ class DeliveryPlugin implements DeliveryPluginInterface
 
         return [['data' => $carriers]];
     }
+	
+	function retrievetPickupLocationData($pickup)
+	{		
+		$data = array(
+			'carrier_name' => '',
+			'transit_time_max' => '',
+			'transit_time_min' => '',
+		);
+		
+		$data['carrier_name'] = $pickup->getCarrier()->getName();		
+		// $data['transit_time_max'] = $pickup->getTransitTimeMax();
+		// $data['transit_time_min'] = $pickup->getTransitTimeMin();
+		
+		return $data;
+	}
 
     /**
      * @param mixed $orderIds
