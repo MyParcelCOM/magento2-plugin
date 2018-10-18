@@ -220,7 +220,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 			$storeName = explode ("\n", trim($storeName));
 			$storeName = $storeName[(count($storeName) - 1)];
 			
-			$orderID = $order->getID();
+			$orderID = $order->getIncrementId();
 			
 			$description = $storeName.' Order #'.$orderID;
 			 
