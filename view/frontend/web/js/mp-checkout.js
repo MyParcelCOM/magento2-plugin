@@ -48,7 +48,7 @@ define([
                             $('#myparcel-shipping-pickup-closest').html(addressHtml);
 							
 							if ($('#myparcel-shipping-carrier-name').length == 0) {
-								var carrierHtml = '<div id="myparcel-shipping-carrier-name" class="shipping-method-title" style="display: inline;"> / ' + addressData.name + '</div>';
+								var carrierHtml = '<div id="myparcel-shipping-carrier-name" class="shipping-method-title" style="display: inline;"> / ' + response.carrier_name + '</div>';
 								$(carrierHtml).insertBefore('#myparcel-shipping-pickup-closest');
 							}
 	

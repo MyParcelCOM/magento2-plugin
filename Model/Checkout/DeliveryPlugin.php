@@ -57,8 +57,7 @@ class DeliveryPlugin implements DeliveryPluginInterface
 
     function retrieveCarriers()
     {
-        $carrier = new MpCarrier();
-        $carriers = $carrier->getCarriers();
+        $carriers = $this->getCarriers();
 
         return [['data' => $carriers]];
     }
@@ -71,12 +70,35 @@ class DeliveryPlugin implements DeliveryPluginInterface
 			'transit_time_min' => '',
 		);
 		
-		$data['carrier_name'] = $pickup->getCarrier()->getName();		
+		// carrier name
+		$carriers = $this->getCarriers();
+		if (count($carriers) > 0) {
+			foreach ($carriers as $carrier) {
+				if ($carrier->getId() == $pickup->getCarrier()->getId()) {
+					$data['carrier_name'] = $carrier->getName();
+					break;
+				}
+			}
+		}else{
+			$data['carrier_name'] = $pickup->getCarrier()->getName();	
+		}
+		
 		// $data['transit_time_max'] = $pickup->getTransitTimeMax();
 		// $data['transit_time_min'] = $pickup->getTransitTimeMin();
 		
 		return $data;
 	}
+	
+	function getCarriers()
+	{
+		try {
+			$carrier = new MpCarrier();
+			
+			return $carrier->getCarriers();
+        } catch (\Exception $e) {
+            return [];
+        }
+	}	
 
     /**
      * @param mixed $orderIds
