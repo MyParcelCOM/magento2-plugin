@@ -9,7 +9,6 @@
         "AFL-3.0"
     ],
     "require": {
-		"magento/product-community-edition": "2.2.4",
         "myparcelcom/api-sdk": "0.7.4"
     },
     "autoload": {
