@@ -47,9 +47,14 @@ define([
 
                             $('#myparcel-shipping-pickup-closest').html(addressHtml);
 							
-							if ($('#myparcel-shipping-carrier-name').length == 0) {
+							if ($('#myparcel-shipping-carrier-name').length == 0 && response.carrier_name.length > 0) {
 								var carrierHtml = '<div id="myparcel-shipping-carrier-name" class="shipping-method-title" style="display: inline;"> / ' + response.carrier_name + '</div>';
 								$(carrierHtml).insertBefore('#myparcel-shipping-pickup-closest');
+							}
+							
+							if ($('#myparcel-shipping-transit-time').length == 0 && response.transit_time.length > 0) {
+								var transitHtml = '<div id="myparcel-shipping-transit-time" class="shipping-method-title" style="display: inline;"> / ' + response.transit_time + '</div>';
+								$(transitHtml).insertBefore('#myparcel-shipping-pickup-closest');
 							}
 	
                             // Hide validation error because now the pickup location is selected

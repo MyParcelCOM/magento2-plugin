@@ -4,9 +4,11 @@ namespace MyParcelCOM\Magento\Model\Checkout;
 use function MongoDB\BSON\toJSON;
 use MyParcelCOM\Magento\Adapter\MpCarrier;
 use MyParcelCOM\Magento\Adapter\MpDelivery;
+use MyParcelCOM\Magento\Adapter\MpService;
 use MyParcelCOM\Magento\Adapter\MpShipment;
 use MyParcelCOM\Magento\Api\DeliveryPluginInterface;
 use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
+use MyParcelCom\ApiSdk\Resources\Shipment;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\App\ObjectManager;
 use MyParcelCOM\Magento\Model\Sales\MyParcelOrderCollection;
@@ -52,7 +54,7 @@ class DeliveryPlugin implements DeliveryPluginInterface
 		
 		$extraData = $this->retrievetPickupLocationData($location);
 
-        return [['status' => 'success', 'data' => [$location], 'carrier_name' => $extraData['carrier_name'], 'transit_time_max' => $extraData['transit_time_max'], 'transit_time_min' => $extraData['transit_time_min']]];
+        return [['status' => 'success', 'data' => [$location], 'carrier_name' => $extraData['carrier_name'], 'transit_time' => $extraData['transit_time'],]];
     }
 
     function retrieveCarriers()
@@ -66,15 +68,18 @@ class DeliveryPlugin implements DeliveryPluginInterface
 	{		
 		$data = array(
 			'carrier_name' => '',
-			'transit_time_max' => '',
-			'transit_time_min' => '',
+			'transit_time' => '',
+			'transit_time_arg' => array(),
 		);
 		
 		// carrier name
 		$carriers = $this->getCarriers();
+		$carrierService = false;
+		
 		if (count($carriers) > 0) {
 			foreach ($carriers as $carrier) {
 				if ($carrier->getId() == $pickup->getCarrier()->getId()) {
+					$carrierService = $carrier;
 					$data['carrier_name'] = $carrier->getName();
 					break;
 				}
@@ -83,8 +88,32 @@ class DeliveryPlugin implements DeliveryPluginInterface
 			$data['carrier_name'] = $pickup->getCarrier()->getName();	
 		}
 		
-		// $data['transit_time_max'] = $pickup->getTransitTimeMax();
-		// $data['transit_time_min'] = $pickup->getTransitTimeMin();
+		// transit time
+		$address = $pickup->getAddress();
+		$shipment = new Shipment();
+		$shipment->setRecipientAddress($address)->setWeight(500);
+		
+		$service = new MpService();
+		$services = $service->getService($shipment);
+		
+		if (count($services) > 0) {
+			foreach ($services as $service) {
+				$transMin = $service->getTransitTimeMin();
+				$transMax = $service->getTransitTimeMax();
+				
+				if ($transMin > 0)
+					$data['transit_time_arg'][] = $transMin;
+				
+				if ($transMax > 0)
+					$data['transit_time_arg'][] = $transMax;
+				
+				break;
+			}
+			
+			if (count($data['transit_time_arg']) > 0) {
+				$data['transit_time'] = implode(' - ', $data['transit_time_arg']).' '.__('days');
+			}
+		} 
 		
 		return $data;
 	}
