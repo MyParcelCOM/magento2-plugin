@@ -15,7 +15,7 @@
  * @link        https://github.com/MyParcelCOM/magento
  * @since       File available since Release 1.0.2
  */
-namespace MyParcelNL\Magento\Plugin\Magento\Sales\Model\Order\Email\Container;
+namespace MyParcelCOM\Magento\Plugin\Magento\Sales\Model\Order\Email\Container;
 
 use Magento\Framework\App\ObjectManager;
 

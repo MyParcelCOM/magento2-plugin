@@ -16,7 +16,7 @@
  * @since       File available since Release 0.1.0
  */
 
-namespace MyParcelNL\Magento\Block\System\Config\Form;
+namespace MyParcelCOM\Magento\Block\System\Config\Form;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
@@ -32,8 +32,8 @@ class SupportTab extends \Magento\Backend\Block\AbstractBlock implements
     public function render(AbstractElement $element)
     {
         $template = $this->getLayout()
-            ->createBlock('MyParcelNL\Magento\Block\System\Config\Form\SupportTabRepository')
-            ->setTemplate('MyParcelNL_Magento::support_tab.phtml')
+            ->createBlock('MyParcelCOM\Magento\Block\System\Config\Form\SupportTabRepository')
+            ->setTemplate('MyParcelCOM_Magento::support_tab.phtml')
             ->toHtml();
 
         return $template;
