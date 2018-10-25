@@ -56,14 +56,13 @@ class OrderAction extends OrdersAction
     public function __construct(
         Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\UrlInterface $frontUrlModel,
         array $data = []
     ) {
         // Set order
         $objectManager    = ObjectManager::getInstance();
         $this->order = $registry->registry('sales_order');
         $this->mpConfig = $objectManager->get('\MyParcelCOM\Magento\Helper\MyParcelConfig');
-        parent::__construct($context, $frontUrlModel, $data);
+        parent::__construct($context, $data);
     }
 
     /**
