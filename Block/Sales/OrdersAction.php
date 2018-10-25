@@ -29,7 +29,6 @@ class OrdersAction extends Template
      */
     public function __construct(
         Context $context,
-        \Magento\Framework\UrlInterface $frontUrlModel,
         array $data = []
     ) {
         $this->objectManager    = ObjectManager::getInstance();
