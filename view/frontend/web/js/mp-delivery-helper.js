@@ -7,72 +7,94 @@
  * @api
  */
 define([
-        'jquery',
-        'Magento_Checkout/js/model/url-builder',
-        'myparcelcom_url_helper',
-        'mageUtils'
-    ], function ($, urlBuilder, mpUrlHelper, utils) {
-        'use strict';
+    'jquery',
+    'Magento_Checkout/js/model/url-builder',
+    'myparcelcom_url_helper',
+    'mageUtils'
+], function($, urlBuilder, mpUrlHelper, utils) {
+    'use strict';
 
-        return {
-            getUrlForFirstLocationByAddress : function (pc, cc) {
+    return {
+        getUrlForFirstLocationByAddress: function(pc, cc) {
 
-                var url = mp_url_get_first_location;
-                var urlParams = {
-                    'postalCode' : pc,
-                    'countryCode': cc
-                };
-                url = urlBuilder.createUrl(url, {});
-                url = mpUrlHelper.addUrlParams(url, urlParams);
-                return url;
-            },
+            var url = mp_url_get_first_location;
+            var urlParams = {
+                'postalCode': pc,
+                'countryCode': cc
+            };
+            url = urlBuilder.createUrl(url, {});
+            url = mpUrlHelper.addUrlParams(url, urlParams);
+            return url;
+        },
 
-            getUrlForCheckShipmentFileAvailability : function (orderIds) {
-                var url = mp_url_check_file_availability;
+        getUrlForFirstDelivery: function(pc, cc, ad) {
 
-                var urlParams = {
-                    'orderIds[]' : orderIds
-                };
+            var url = mp_url_get_first_delivery;
+            var urlParams = {
+                'postalCode': pc,
+                'countryCode': cc,
+                'streetName': ad
+            };
+            url = urlBuilder.createUrl(url, {});
+            url = mpUrlHelper.addUrlParams(url, urlParams);
+            return url;
+        },
 
-                url = urlBuilder.createUrl(url, {});
-                url = mpUrlHelper.addUrlParams(url, urlParams);
-                return url;
-            },
+        getUrlForCheckShipmentFileAvailability: function(orderIds) {
+            var url = mp_url_check_file_availability;
 
-            getPickUpSummaryAddress : function(pickupLocation) {
+            var urlParams = {
+                'orderIds[]': orderIds
+            };
 
-                var pickupAddress   =   pickupLocation.attributes.address;
-                var street1         =   pickupAddress.street_1;
-                var streetNumber    =   pickupAddress.street_number;
-                var postalCode      =   pickupAddress.postal_code;
-                var city            =   pickupAddress.city;
-                var locationName    =   pickupAddress.company;
+            url = urlBuilder.createUrl(url, {});
+            url = mpUrlHelper.addUrlParams(url, urlParams);
+            return url;
+        },
 
-                var street = streetNumber ? (street1 + ' ' + streetNumber) : street1;
-                
-                return {
-					name: locationName,
-					address: street + ', ' + postalCode + ', ' + city
-				};
-            },
+        getPickUpSummaryAddress: function(pickupLocation) {
 
-            isPickupLoading : function(show) {
-                if (show) {
-                    setTimeout(function () {
-                        $('#myparcel-shipping-pickup-closest').addClass('mp-loader');
-                    }, 200);
-                } else {
-                    $('#myparcel-shipping-pickup-closest').removeClass('mp-loader');
-                }
-            },
+            var pickupAddress = pickupLocation.attributes.address;
+            var street1 = pickupAddress.street_1;
+            var streetNumber = pickupAddress.street_number;
+            var postalCode = pickupAddress.postal_code;
+            var city = pickupAddress.city;
+            var locationName = pickupAddress.company;
 
-            isCountrySupported : function(cc) {
+            var street = streetNumber ? (street1 + ' ' + streetNumber) : street1;
 
-                if (cc === 'NL' || cc ==='GB') {
-                    return true;
-                }
-                return false;
+            return {
+                name: locationName,
+                address: street + ', ' + postalCode + ', ' + city
+            };
+        },
+
+        isPickupLoading: function(show) {
+            if (show) {
+                setTimeout(function() {
+                    $('#myparcel-shipping-pickup-closest').addClass('mp-loader');
+                }, 200);
+            } else {
+                $('#myparcel-shipping-pickup-closest').removeClass('mp-loader');
             }
+        },
+
+        isDeliveryLoading: function(show) {
+            if (show) {
+                setTimeout(function() {
+                    $('#myparcel-shipping-delivery-closest').addClass('mp-loader');
+                }, 200);
+            } else {
+                $('#myparcel-shipping-delivery-closest').removeClass('mp-loader');
+            }
+        },
+
+        isCountrySupported: function(cc) {
+
+            if (cc === 'NL' || cc === 'GB') {
+                return true;
+            }
+            return false;
         }
     }
-);
+});

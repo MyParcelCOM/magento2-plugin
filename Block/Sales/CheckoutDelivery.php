@@ -55,6 +55,16 @@ class CheckoutDelivery extends Template
     }
 
     /**
+     * Retrieve the api ajax url that would return the first home delivery location defined by shipping address
+     *
+     * @return string
+     */
+    public function getFirstDeliveryAjaxUrl()
+    {
+        return '/myparcelcom/delivery/retrieveFirstDelivery/';
+    }
+
+    /**
      * Retrieve the api ajax url that would return all locations based on countryCode and postalCode
      *
      * @return string

@@ -6,12 +6,12 @@ use MyParcelCom\ApiSdk\MyParcelComApi;
 
 class MpDelivery extends MpAdapter
 {
-    function getLocations($countryCode, $postalCode)
+    function getLocations($countryCode, $postalCode, $streetName = null, $streetNumber = null)
     {
         // Get the Pickup Dropoff Locations through the sdk.
         $api = MyParcelComApi::getSingleton();
         try {
-            $locations = $api->getPickUpDropOffLocations($countryCode, $postalCode);
+            $locations = $api->getPickUpDropOffLocations($countryCode, $postalCode, $streetName, $streetNumber);
 
             // Merge all the locations to a single array.
             $allLocations = array_reduce($locations, function (array $combinedLocations, $carrierLocations) {

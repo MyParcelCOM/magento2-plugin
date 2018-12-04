@@ -10,6 +10,16 @@
             </myparcel_group_shipment>
         </myparcel_section_general>
         <carriers>
+            <myparcelhomedelivery>
+                <active>1</active>
+                <title>MyParcel Home Delivery</title>
+                <model>MyParcelCOM\Magento\Model\Carrier\MyParcelHomeDelivery</model>
+                <price>10.00</price>
+                <sallowspecific>1</sallowspecific>
+                <specificcountry>NL,GB</specificcountry>
+                <type>I</type>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
+            </myparcelhomedelivery>
             <myparcelpickup>
                 <active>1</active>
                 <title>MyParcel Pickup</title>

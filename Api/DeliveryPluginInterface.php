@@ -31,6 +31,16 @@ Interface DeliveryPluginInterface
     public function retrievePickupLocations($countryCode, $postalCode);
 
     /**
+     * Retrieve first delivery location returned from the data according to provided $countryCode and $postalCode
+     * @param string $countryCode
+     * @param string $postalCode
+     *
+     * @api
+     * @return array All Locations
+     */
+    public function retrieveFirstDelivery($countryCode, $postalCode);
+
+    /**
      * Retrieve first location returned from the data according to provided $countryCode and $postalCode
      * @param string $countryCode
      * @param string $postalCode

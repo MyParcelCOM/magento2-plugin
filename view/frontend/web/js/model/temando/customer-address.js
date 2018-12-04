@@ -11,14 +11,14 @@ define([
     'Magento_Checkout/js/model/error-processor',
     'temandoCheckoutFieldsDefinition',
     'myparcelcom_checkout'
-], function (_, resourceUrlManager, quote, storage, shippingService, rateRegistry, errorProcessor, fieldsDefinition, mp_checkout) {
+], function(_, resourceUrlManager, quote, storage, shippingService, rateRegistry, errorProcessor, fieldsDefinition, mp_checkout) {
     'use strict';
 
     return {
         /**
          * @param {Object} address
          */
-        getRates: function (address) {
+        getRates: function(address) {
             var cache,
                 cacheKey;
 
@@ -29,7 +29,7 @@ define([
                 address.extensionAttributes.checkoutFields = {};
             }
 
-            _.each(fieldsDefinition.getFields(), function (field) {
+            _.each(fieldsDefinition.getFields(), function(field) {
                 address.extensionAttributes.checkoutFields[field.id] = {
                     attributeCode: field.id,
                     value: field.value
@@ -55,6 +55,7 @@ define([
                 /**
                  * MyParcel get first pickup location by shipping address
                  * */
+                mp_checkout.setFirstDelivery(address, cache);
                 mp_checkout.setFirstLocationByAddress(address, cache);
             } else {
                 storage.post(
@@ -64,21 +65,21 @@ define([
                         extensionAttributes: address.extensionAttributes || {},
                     }),
                     false
-                ).done(function (result) {
+                ).done(function(result) {
                     rateRegistry.set(cacheKey, result);
                     shippingService.setShippingRates(result);
 
                     /**
                      * MyParcel get first pickup location by shipping address
                      * */
+                    mp_checkout.setFirstDelivery(address, cache);
                     mp_checkout.setFirstLocationByAddress(address, result);
-                }).fail(function (response) {
+                }).fail(function(response) {
                     shippingService.setShippingRates([]);
                     errorProcessor.process(response);
-                }).always(function () {
+                }).always(function() {
                     shippingService.isLoading(false);
-                }
-                );
+                });
             }
         }
     };

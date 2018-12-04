@@ -413,7 +413,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             if (is_a($shipment, 'MyParcelCom\ApiSdk\Resources\Shipment')) {
                 $fileProxies = $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL);
                 if (!empty($fileProxies)) {
-                  return true;
+                    return true;
                 } else {
                     // Try to setRegisterAt to the shipment to change its status to registered/completed
                     if (empty($shipment->getRegisterAt())) {

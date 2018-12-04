@@ -10,7 +10,7 @@ define([
     'Magento_Checkout/js/model/shipping-rate-registry',
     'Magento_Checkout/js/model/error-processor',
     'myparcelcom_checkout'
-], function (resourceUrlManager, quote, storage, shippingService, rateRegistry, errorProcessor, mp_checkout) {
+], function(resourceUrlManager, quote, storage, shippingService, rateRegistry, errorProcessor, mp_checkout) {
     'use strict';
 
     return {
@@ -18,7 +18,7 @@ define([
          * Get shipping rates for specified address.
          * @param {Object} address
          */
-        getRates: function (address) {
+        getRates: function(address) {
             var cache, serviceUrl, payload;
 
             mpSelectedCC = address.countryId;
@@ -28,29 +28,28 @@ define([
             cache = rateRegistry.get(address.getCacheKey());
             serviceUrl = resourceUrlManager.getUrlForEstimationShippingMethodsForNewAddress(quote);
             payload = JSON.stringify({
-                    address: {
-                        'street': address.street,
-                        'city': address.city,
-                        'region_id': address.regionId,
-                        'region': address.region,
-                        'country_id': address.countryId,
-                        'postcode': address.postcode,
-                        'email': address.email,
-                        'customer_id': address.customerId,
-                        'firstname': address.firstname,
-                        'lastname': address.lastname,
-                        'middlename': address.middlename,
-                        'prefix': address.prefix,
-                        'suffix': address.suffix,
-                        'vat_id': address.vatId,
-                        'company': address.company,
-                        'telephone': address.telephone,
-                        'fax': address.fax,
-                        'custom_attributes': address.customAttributes,
-                        'save_in_address_book': address.saveInAddressBook
-                    }
+                address: {
+                    'street': address.street,
+                    'city': address.city,
+                    'region_id': address.regionId,
+                    'region': address.region,
+                    'country_id': address.countryId,
+                    'postcode': address.postcode,
+                    'email': address.email,
+                    'customer_id': address.customerId,
+                    'firstname': address.firstname,
+                    'lastname': address.lastname,
+                    'middlename': address.middlename,
+                    'prefix': address.prefix,
+                    'suffix': address.suffix,
+                    'vat_id': address.vatId,
+                    'company': address.company,
+                    'telephone': address.telephone,
+                    'fax': address.fax,
+                    'custom_attributes': address.customAttributes,
+                    'save_in_address_book': address.saveInAddressBook
                 }
-            );
+            });
 
             if (cache) {
                 shippingService.setShippingRates(cache);
@@ -58,23 +57,25 @@ define([
                 /**
                  * MyParcel get first pickup location by shipping address
                  * */
+                mp_checkout.setFirstDelivery(address, cache);
                 mp_checkout.setFirstLocationByAddress(address, cache);
 
             } else {
                 storage.post(
                     serviceUrl, payload, false
-                ).done(function (result) {
+                ).done(function(result) {
                     rateRegistry.set(address.getCacheKey(), result);
                     shippingService.setShippingRates(result);
 
                     /**
                      * MyParcel get first pickup location by shipping address
                      * */
+                    mp_checkout.setFirstDelivery(address, cache);
                     mp_checkout.setFirstLocationByAddress(address, result);
-                }).fail(function (response) {
+                }).fail(function(response) {
                     shippingService.setShippingRates([]);
                     errorProcessor.process(response);
-                }).always(function () {
+                }).always(function() {
                     shippingService.isLoading(false);
                 });
             }

@@ -18,6 +18,12 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <route url="/V1/myparcelcom/delivery/retrieveFirstDelivery/" method="GET">
+        <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="retrieveFirstDelivery"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
     <route url="/V1/myparcelcom/delivery/checkShipmentAvailableForPDF/" method="GET">
         <service class="MyParcelCOM\Magento\Api\DeliveryPluginInterface" method="checkShipmentAvailableForPDF"/>
         <resources>

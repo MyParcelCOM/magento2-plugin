@@ -41,6 +41,22 @@ class DeliveryPlugin implements DeliveryPluginInterface
         return [['data' => $locations]];
     }
 
+    function retrieveFirstDelivery($countryCode, $postalCode)
+    {
+        $delivery = new MpDelivery();
+        $locations = $delivery->getLocations($countryCode, $postalCode, '');
+
+        if (empty($locations)) {
+            return ['status' => 'success_empty'];
+        }
+
+        $location = current($locations);
+		
+		$extraData = $this->retrieveLocationData($location);
+
+        return [['status' => 'success', 'data' => [$location], 'carrier_name' => $extraData['carrier_name'], 'transit_time' => $extraData['transit_time'],]];
+    }
+
     function retrieveFirstPickupLocation($countryCode, $postalCode)
     {
         $delivery = new MpDelivery();
@@ -52,7 +68,7 @@ class DeliveryPlugin implements DeliveryPluginInterface
 
         $location = current($locations);
 		
-		$extraData = $this->retrievetPickupLocationData($location);
+		$extraData = $this->retrieveLocationData($location);
 
         return [['status' => 'success', 'data' => [$location], 'carrier_name' => $extraData['carrier_name'], 'transit_time' => $extraData['transit_time'],]];
     }
@@ -64,7 +80,7 @@ class DeliveryPlugin implements DeliveryPluginInterface
         return [['data' => $carriers]];
     }
 	
-	function retrievetPickupLocationData($pickup)
+	function retrieveLocationData($pickup)
 	{		
 		$data = array(
 			'carrier_name' => '',
@@ -149,8 +165,10 @@ class DeliveryPlugin implements DeliveryPluginInterface
             ->updateGridByOrder();
 
         try {
-            if ($orderCollection->isAllOrderShipmentsAvailableToPrint()) {
+            if ($result = $orderCollection->isAllOrderShipmentsAvailableToPrint()) {
                 return [['status' => 'success', 'ready' => true]];
+            }else{
+                return [['status' => 'failure', 'data' => $result]];
             }
         } catch (\Exception $e) {
             return [['status' => 'failure']];
