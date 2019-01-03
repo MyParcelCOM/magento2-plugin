@@ -9,7 +9,7 @@
         "AFL-3.0"
     ],
     "require": {
-        "myparcelcom/api-sdk": "0.7.4"
+        "myparcelcom/api-sdk": "0.8.1"
     },
     "autoload": {
         "files": [ "registration.php" ],
