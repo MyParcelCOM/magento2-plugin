@@ -9,7 +9,7 @@
                 <create_new_if_one_exists>0</create_new_if_one_exists>
             </myparcel_group_shipment>
         </myparcel_section_general>
-        <carriers>
+        <!--<carriers>
             <myparcelhomedelivery>
                 <active>1</active>
                 <title>MyParcel Home Delivery</title>
@@ -30,6 +30,6 @@
                 <type>I</type>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
             </myparcelpickup>
-        </carriers>
+        </carriers>-->
     </default>
 </config>

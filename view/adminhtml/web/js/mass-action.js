@@ -79,9 +79,9 @@ define(
                                         var actionSelectorItems = actionSelector.find('> li');
                                         var actionSelectorItemLast = actionSelectorItems.eq(actionSelectorItems.length - 1);
 
-                                        customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">'+$.mage.__('Print MyParcel.com labels')+'</span></li>';
+                                        // customOptionHtml = '<li><span class="action-menu-item action-myparcel-print-default">'+$.mage.__('Print MyParcel.com labels')+'</span></li>';
 
-                                        $(customOptionHtml).insertBefore(actionSelectorItemLast);
+                                        // $(customOptionHtml).insertBefore(actionSelectorItemLast);
 
                                         $('.action-myparcel-print-default').on(
                                             "click",

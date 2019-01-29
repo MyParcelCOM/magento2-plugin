@@ -130,7 +130,7 @@ class MpShipment extends MpAdapter
          * SET SERVICE CONTRACT
          * If service contract is not set, set it!
         **/
-        $serviceContract = $shipment->getServiceContract();
+        $serviceContract = $shipment->getService();
         if (empty($serviceContract)) {
             try {
                 $serviceContract = $mpCarrier->getServiceContract($shipment);

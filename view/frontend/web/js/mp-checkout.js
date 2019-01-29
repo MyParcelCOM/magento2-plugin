@@ -75,7 +75,7 @@ define([
             var self = this;
             var pc = address.postcode;
             var cc = address.countryId;
-            var ad = address.street.length > 0 ? address.street.join(',') : '';
+            var ad = (address.street && address.street.length) > 0 ? address.street.join(',') : '';
 
             if (pc && cc && mpHelper.isCountrySupported(cc)) {
 
