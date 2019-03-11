@@ -13,11 +13,13 @@ abstract class MpAdapter
      * @var MyParcelConfig $_configHelper
      */
     protected $_configHelper;
+	protected $_authAPI;
 
     function __construct()
     {
         $this->_objectManager   = ObjectManager::getInstance();
         $this->_configHelper    = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
+		$this->_authAPI           = 'https://staging-auth.myparcel.com'; // https://sandbox-auth.myparcel.com
 
         $this->singletonApi();
     }
@@ -27,7 +29,7 @@ abstract class MpAdapter
         /**@var MyParcelConfig $this->_configHelper **/
 
         // force token refresh (to get a token with new ACL scopes)
-        $authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials($this->_configHelper->getApiClientId(),  $this->_configHelper->getApiSecretKey(), 'https://sandbox-auth.myparcel.com');
+        $authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials($this->_configHelper->getApiClientId(),  $this->_configHelper->getApiSecretKey(), $this->_authAPI);
         $authenticator->getAuthorizationHeader(true);
         // force cache refresh (to get a new list of services)
         $cache = new \Symfony\Component\Cache\Simple\FilesystemCache('myparcelcom');
@@ -37,9 +39,9 @@ abstract class MpAdapter
             new ClientCredentials(
                 $this->_configHelper->getApiClientId(),
                 $this->_configHelper->getApiSecretKey(),
-                'https://sandbox-auth.myparcel.com'
+                $this->_authAPI
             ),
-            'https://sandbox-api.myparcel.com'
+            $this->_authAPI
         );
     }
 }

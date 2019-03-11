@@ -27,14 +27,14 @@
                     <comment>Google Map API Key.</comment>
                 </field>
             </group>
-            <group id="myparcel_group_print" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
+            <!--<group id="myparcel_group_print" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>Print settings</label>
                 <field id="paper_type" translate="label comment" type="select" sortOrder="211" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Paper type</label>
                     <comment>Select a standard orientation for printing labels.</comment>
                     <source_model>MyParcelCOM\Magento\Model\Source\PaperType</source_model>
                 </field>
-            </group>
+            </group>-->
             <group id="myparcel_support" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>MyParcel.com</label>
                 <field id="current_version" translate="label" type="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -51,7 +51,7 @@
                 </field>
             </group>
         </section>
-        <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
+        <!--<section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
             <group id="myparcelhomedelivery" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>MyParcel.com Home Delivery</label>
                 <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
@@ -126,6 +126,6 @@
                     <label>Sort Order</label>
                 </field>
             </group>
-        </section>
+        </section>-->
     </system>
 </config>
