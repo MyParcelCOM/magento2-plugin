@@ -19,8 +19,8 @@ abstract class MpAdapter
     {
         $this->_objectManager   = ObjectManager::getInstance();
         $this->_configHelper    = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
-		$this->_authAPI           = 'https://staging-auth.myparcel.com'; // https://sandbox-auth.myparcel.com
-		$this->_urlAPI           = 'https://staging-api.myparcel.com'; // https://sandbox-api.myparcel.com
+		$this->_authAPI         = 'https://staging-auth.myparcel.com'; // https://sandbox-auth.myparcel.com
+		$this->_urlAPI          = 'https://staging-api.myparcel.com'; // https://sandbox-api.myparcel.com
 
         $this->singletonApi();
     }
@@ -28,9 +28,11 @@ abstract class MpAdapter
     function singletonApi()
     {
         /**@var MyParcelConfig $this->_configHelper **/
+		$urlAPI = getenv('MP_API_URL') ? : $this->_urlAPI;
+		$authAPI = getenv('MP_AUTH_URL') ? : $this->_authAPI;
 
         // force token refresh (to get a token with new ACL scopes)
-        $authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials($this->_configHelper->getApiClientId(),  $this->_configHelper->getApiSecretKey(), $this->_authAPI);
+        $authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials($this->_configHelper->getApiClientId(),  $this->_configHelper->getApiSecretKey(), $authAPI);
         $authenticator->getAuthorizationHeader(true);
         // force cache refresh (to get a new list of services)
         $cache = new \Symfony\Component\Cache\Simple\FilesystemCache('myparcelcom');
@@ -40,9 +42,9 @@ abstract class MpAdapter
             new ClientCredentials(
                 $this->_configHelper->getApiClientId(),
                 $this->_configHelper->getApiSecretKey(),
-                $this->_authAPI
+                $authAPI
             ),
-            $this->_urlAPI
+            $urlAPI
         );
     }
 }
