@@ -20,6 +20,7 @@ abstract class MpAdapter
         $this->_objectManager   = ObjectManager::getInstance();
         $this->_configHelper    = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
 		$this->_authAPI           = 'https://staging-auth.myparcel.com'; // https://sandbox-auth.myparcel.com
+		$this->_urlAPI           = 'https://staging-api.myparcel.com'; // https://sandbox-api.myparcel.com
 
         $this->singletonApi();
     }
@@ -41,7 +42,7 @@ abstract class MpAdapter
                 $this->_configHelper->getApiSecretKey(),
                 $this->_authAPI
             ),
-            $this->_authAPI
+            $this->_urlAPI
         );
     }
 }
