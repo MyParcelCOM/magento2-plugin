@@ -153,7 +153,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
              **/
 			$shipmentWeight = $order->getWeight();
             $shipmentData = [
-                'weight'    => ($shipmentWeight > 1) ? $shipmentWeight : 1,
+                'weight'    => floatval($shipmentWeight),
             ];
 
             /**
