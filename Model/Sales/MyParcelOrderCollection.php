@@ -151,9 +151,20 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             /**
              * Weight
              **/
-			$shipmentWeight = $order->getWeight();
+			$shipmentWeight = $order->getWeight(); 
+            $unitWeight = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general/locale/weight_unit');
+            			
+			switch($unitWeight){
+				case 'lbs':
+					$shipmentWeight = intval($shipmentWeight * 0.45359237);
+					break;
+					
+				default:
+					$shipmentWeight = intval($shipmentWeight);
+            }
+            
             $shipmentData = [
-                'weight'    => intval($shipmentWeight),
+                'weight'    => $shipmentWeight,
             ];
 
             /**
