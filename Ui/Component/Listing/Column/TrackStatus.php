@@ -23,6 +23,7 @@ use \Magento\Framework\Api\SearchCriteriaBuilder;
 
 class TrackStatus extends Column
 {
+    private  $status_processing = 'Exported to <a href="https://www.myparcel.com/">MyParcel.com</a>';
     /**
      * Set column MyParcel track status to order grid
      *
@@ -39,7 +40,7 @@ class TrackStatus extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if (isset($item['track_status'])) {
-                    $item[$this->getData('name')] = $item['track_status'];
+                    $item[$this->getData('name')] = $this->status_processing;
                 }
             }
         }

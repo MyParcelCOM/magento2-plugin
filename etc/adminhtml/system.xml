@@ -40,6 +40,32 @@
                     <source_model>MyParcelCOM\Magento\Model\Source\PaperType</source_model>
                 </field>
             </group>-->
+            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Default Custom Value</label>
+                <field id="default_hs_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>HS Code</label>
+                    <comment>Classifies the goods with HS code.</comment>
+                </field>
+                <field id="default_origin_coutry_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Origin Country Code</label>
+                    <comment>Country where the goods are originated from.</comment>
+                </field>
+                <field id="content_type" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Content Type</label>
+                    <comment>Classifies the type of goods.</comment>
+                    <source_model>MyParcelCOM\Magento\Model\Source\ContentType</source_model>
+                </field>
+                <field id="incoterm" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Incoterm</label>
+                    <comment>Specifies the incoterm.</comment>
+                    <source_model>MyParcelCOM\Magento\Model\Source\Incoterm</source_model>
+                </field>
+                <field id="non_delivery" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Non Delivery</label>
+                    <comment>Determines what needs to be done with the goods in case of unsuccessful delivery.</comment>
+                    <source_model>MyParcelCOM\Magento\Model\Source\NonDelivery</source_model>
+                </field>
+            </group>
             <group id="myparcel_support" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>MyParcel.com</label>
                 <field id="current_version" translate="label" type="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">

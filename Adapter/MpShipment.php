@@ -5,9 +5,11 @@ namespace MyParcelCOM\Magento\Adapter;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
 use MyParcelCom\ApiSdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Resources\ShipmentItem;
+use MyParcelCom\ApiSdk\Resources\Customs;
 use MyParcelCom\ApiSdk\MyParcelComApi;
 use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\NullLogger; 
+use Psr\Log\NullLogger;
 
 class MpShipment extends MpAdapter
 {
@@ -48,12 +50,12 @@ class MpShipment extends MpAdapter
      * @param array $shipmentData
      * @param string $registerAt
      * @return object response of the api
-    **/
-    function createShipment($addressData, $shipmentData, $registerAt = '', $description = '')
+     **/
+    function createShipment($addressData, $shipmentData, $registerAt = '', $description = '', $items = '', $customs = '')
     {
         /**
          * Get instance of MyParcelCOM API
-        **/
+         **/
         $api = MyParcelComApi::getSingleton();
 
         $mpCarrier  = new MpCarrier();
@@ -73,7 +75,7 @@ class MpShipment extends MpAdapter
             ->setLastName($addressData['last_name'])
             ->setCountryCode($addressData['country_code'])
             ->setEmail($addressData['email'])
-            ->setPhoneNumber($addressData['phone_number']); 
+            ->setPhoneNumber($addressData['phone_number']);
 
         if (!empty($addressData['region_code'])) {
             $recipient->setRegionCode($addressData['region_code']);
@@ -90,7 +92,7 @@ class MpShipment extends MpAdapter
         /**
          * SET PICKUP ADDRESS
          * Setup pickup location data
-        **/
+         **/
         if (!empty($shipmentData['pickup'])) {
 
             $pickupLocationCode = $shipmentData['pickup']['location_code'];
@@ -113,13 +115,13 @@ class MpShipment extends MpAdapter
             /**
              * Set Contract Carrier for shipment
              **/
-           /* $carrierId = $shipmentData['pickup']['carrier_id'];
-            if (!empty($carrierId)) {
-                $serviceContract = $mpCarrier->getServiceContract($shipment, $carrierId);
-                if (!empty($serviceContract)) {
-                   $shipment->setServiceContract($serviceContract);
-                }
-            }*/
+            /* $carrierId = $shipmentData['pickup']['carrier_id'];
+             if (!empty($carrierId)) {
+                 $serviceContract = $mpCarrier->getServiceContract($shipment, $carrierId);
+                 if (!empty($serviceContract)) {
+                    $shipment->setServiceContract($serviceContract);
+                 }
+             }*/
         }
 
         /**
@@ -129,7 +131,7 @@ class MpShipment extends MpAdapter
         /**
          * SET SERVICE CONTRACT
          * If service contract is not set, set it!
-        **/
+         **/
         $serviceContract = $shipment->getService();
         if (empty($serviceContract)) {
             try {
@@ -141,7 +143,7 @@ class MpShipment extends MpAdapter
             if (!empty($serviceContract)) {
                 /**
                  * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication
-                **/
+                 **/
                 $shipment->setServiceContract($serviceContract);
             }else{
                 $recipient->setRegionCode($this->_defaultRegion);
@@ -159,17 +161,64 @@ class MpShipment extends MpAdapter
         $shipment->setSenderAddress($senderAddress);
 
         /**
+         * SET RETURN ADDRESS
+         * In some cases, return  address is required
+         **/
+        $returnAddress = $shop->getReturnAddress();
+        $shipment->setReturnAddress($returnAddress);
+
+        /**
          * Set Register At value for shipment
-        **/
+         **/
         if (!empty($registerAt)) {
             $shipment->setRegisterAt($registerAt);
         }
 
         /**
+         * set relationship shop for shipment
+         */
+        $shipment->setShop($shop);
+
+
+        /**
          * Set Description At value for shipment
-        **/
+         **/
         if (!empty($description)) {
             $shipment->setDescription($description);
+        }
+
+        /**
+         * Set Items value for shipment.
+         */
+        if(!empty($items)){
+
+            $shipmentItems = [];
+            foreach ($items as $item){
+                $shipmentItem = new ShipmentItem();
+                $shipmentItem->setSku($item['sku']);
+                $shipmentItem->setDescription($item['description']);
+                $shipmentItem->setQuantity($item['quantity']);
+                $shipmentItem->setHsCode($item['hs_code']);
+                $shipmentItem->setOriginCountryCode($item['origin_country_code']);
+                $shipmentItem->setCurrency($item['item_value']['currency']);
+                $shipmentItem->setItemValue($item['item_value']['amount']);
+
+                $shipmentItems[] = $shipmentItem;
+            }
+            $shipment->setItems($shipmentItems);
+        }
+
+        /**
+         * Set customs value for shipment
+         */
+        if(!empty($customs)){
+            $shipmentCustoms = new Customs();
+            $shipmentCustoms->setContentType($customs['content_type']);
+            $shipmentCustoms->setInvoiceNumber($customs['invoice_number']);
+            $shipmentCustoms->setIncoterm($customs['incoterm']);
+            $shipmentCustoms->setNonDelivery($customs['non_delivery']);
+
+            $shipment->setCustoms($shipmentCustoms);
         }
 
         // Create the shipment

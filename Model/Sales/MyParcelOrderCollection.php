@@ -14,7 +14,7 @@ use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\LabelCombiner;
 use Magento\Framework\App\ObjectManager;
 
-class MyParcelOrderCollection extends MyParcelOrderCollectionBase 
+class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 {
     const ERROR_ORDER_HAS_NO_SHIPMENT = 'error_order_has_no_shipment';
     const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
@@ -113,7 +113,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             /**
              * If this is printPDF mode, we don't need to create new shipment
              * for an order that has already been exported
-            **/
+             **/
             /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
             $track = $this->myParcelTrack->getTrackByOrderId($order->getId());
 
@@ -151,18 +151,18 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             /**
              * Weight
              **/
-			$shipmentWeight = $order->getWeight(); 
+            $shipmentWeight = $order->getWeight();
             $unitWeight = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general/locale/weight_unit');
-            			
-			switch($unitWeight){
-				case 'lbs':
-					$shipmentWeight = intval($shipmentWeight * 0.45359237);
-					break;
-					
-				default:
-					$shipmentWeight = intval($shipmentWeight);
+
+            switch($unitWeight){
+                case 'lbs':
+                    $shipmentWeight = intval($shipmentWeight * 0.45359237);
+                    break;
+
+                default:
+                    $shipmentWeight = intval($shipmentWeight);
             }
-            
+
             $shipmentData = [
                 'weight'    => $shipmentWeight,
             ];
@@ -172,6 +172,58 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
              **/
             $data = $order->getData('delivery_options');
             $shippingMethod = $order->getShippingMethod();
+
+            /**
+             * get current currency code
+             */
+            $priceCurrency = $this->objectManager->get('\Magento\Framework\Pricing\PriceCurrencyInterface');
+            $currencyCode = $priceCurrency->getCurrency()->getCurrencyCode();
+
+            /**
+             * retrive default hs code and default origin country code
+             */
+            $myparcelExportSetting = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('myparcel_section_general/myparcel_group_setting');
+
+
+            $defaultHsCode = $myparcelExportSetting['default_hs_code'];
+            $defaultOriginCountryCode = $myparcelExportSetting['default_origin_coutry_code'];
+
+
+
+            /**
+             * Retrieve items options from Order database
+             **/
+            $items = [];
+            $orderItems = $order->getItems();
+            foreach ($orderItems as $orderItem){
+                $product = $this->objectManager->get('Magento\Catalog\Model\Product')->load($orderItem->getProductId());
+                $item = array(
+                    'sku' => $product->getData('sku'),
+                    'description' => $product->getData('name'),
+                    'item_value' => array(
+                        'amount' => ($orderItem->getPrice() > 0) ? $orderItem->getPrice() : 1,
+                        'currency' => $currencyCode
+                    ),
+                    'quantity' => intval($orderItem->getData('qty_ordered')),
+                    'hs_code' => (!empty($product->getData('hs_code'))) ? $product->getData('hs_code') : $defaultHsCode,
+                    'origin_country_code' => (!empty($product->getData('origin_country_code'))) ? $product->getData('origin_country_code') : $defaultOriginCountryCode,
+                    'nett_weight' => ($unitWeight == 'lbs') ? intval($orderItem->getData('weight') * 0.45359237) : intval($orderItem->getData('weight'))
+                );
+                $items[] = $item;
+            }
+
+            /**
+             * Retrieve customs options from setting
+             **/
+
+
+
+            $customs = array(
+                "content_type" => $myparcelExportSetting['content_type'],
+                "invoice_number" => '#' . $order->getId(),
+                "non_delivery" => $myparcelExportSetting['non_delivery'],
+                "incoterm" => $myparcelExportSetting['incoterm']
+            );
 
             /**
              * Add Pickup information into $shipmentData
@@ -199,18 +251,18 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                         'country_code'  => $country,
                         'phone_number'  => $phoneNumber,
                         'company'       => $company,
-						'region_code' => 'ENG',
+                        'region_code' => 'ENG',
                     ];
 
                     $pickupLocationCode = $deliveryOptions['attributes']['code'];
 
                     /**
                      * Get carrier id from the payload
-                    **/
+                     **/
                     $carrier    = $deliveryOptions['relationships']['carrier']['data'];
                     $carrierId  = null;
                     if (!empty($carrier)) {
-                       $carrierId = $carrier['id'];
+                        $carrierId = $carrier['id'];
                     }
 
                     $shipmentData['pickup_location'] = [
@@ -225,16 +277,16 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
              * Add Description
              * @var object $data Data from checkout
              **/
-			//Send description to MyParcel. Please name it `storename` Order #`ordernumber`
-			
-			$storeName = $order->getStoreName();
-			$storeName = explode ("\n", trim($storeName));
-			$storeName = $storeName[(count($storeName) - 1)];
-			
-			$orderID = $order->getIncrementId();
-			
-			$description = $storeName.' Order #'.$orderID;
-			 
+            //Send description to MyParcel. Please name it `storename` Order #`ordernumber`
+
+            $storeName = $order->getStoreName();
+            $storeName = explode ("\n", trim($storeName));
+            $storeName = $storeName[(count($storeName) - 1)];
+
+            $orderID = $order->getIncrementId();
+
+            $description = $storeName.' Order #'.$orderID;
+
             /**
              * Add Pickup information into $shipmentData
              * @var object $data Data from checkout
@@ -245,10 +297,11 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 $shipment = new MpShipment($this->objectManager);
                 /** @var Shipment $response **/
                 $registerAt = $printMode ? 'now' : '';
-                $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description);
+                $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description, $items, $customs);
 
             } catch ( \Exception $e ) {
                 throw new \Exception($e->getMessage());
+
             }
 
             if (!empty($response->getId())) {
@@ -467,5 +520,21 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         $collection->addAttributeToFilter('entity_id', ['in' => $orderIds]);
         $this->setOrderCollection($collection);
         return $this;
+    }
+
+    /**
+     * @return $orderIncrementId string[]
+     */
+    public function getIncrementIds(){
+        $this->objectManager    = ObjectManager::getInstance();
+        $this->helper           = $this->objectManager->get('\MyParcelCOM\Magento\Helper\Order');
+
+        $orders = $this->getOrders();
+        $orderIncrementId = [];
+        $orders = $this->getOrders();
+        foreach ( $orders as $order){
+            $orderIncrementId[] = '#' .$order->getIncrementId();
+        }
+        return $orderIncrementId;
     }
 }

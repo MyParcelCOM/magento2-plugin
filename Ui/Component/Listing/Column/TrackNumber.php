@@ -39,7 +39,8 @@ class TrackNumber extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 if (key_exists('track_number', $item)) {
-                    $item[$this->getData('name')] = $item['track_number'];
+                    //$item[$this->getData('name')] = $item['track_number'];
+                    $item[$this->getData('name')] = '';
                 }
             }
         }

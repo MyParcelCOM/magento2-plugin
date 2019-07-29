@@ -19,10 +19,10 @@ abstract class MpAdapter
     {
         $this->_objectManager   = ObjectManager::getInstance();
         $this->_configHelper    = $this->_objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
-		$this->_authAPI         = 'https://sandbox-auth.myparcel.com';
-		$this->_urlAPI          = 'https://sandbox-api.myparcel.com';
-		$this->_stage_authAPI   = 'https://staging-auth.myparcel.com';
-		$this->_stage_urlAPI    = 'https://staging-api.myparcel.com';
+        $this->_sanbox_authAPI  = 'https://sandbox-auth.myparcel.com';
+        $this->_sanbox_urlAPI   = 'https://sandbox-api.myparcel.com';
+        $this->_prod_authAPI   	= 'https://auth.myparcel.com';
+        $this->_prod_urlAPI    	= 'https://api.myparcel.com';
 
         $this->singletonApi();
     }
@@ -31,12 +31,12 @@ abstract class MpAdapter
     {
         /**@var MyParcelConfig $this->_configHelper **/
 		$environment = $this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('myparcel_section_general/myparcel_group_api/api_client_environment');
-		$urlAPI = ($environment == 0) ? $this->_urlAPI : $this->_stage_urlAPI;
-		$authAPI = ($environment == 0) ? $this->_authAPI : $this->_stage_authAPI;
-		
-		// env
-		$urlAPI = getenv('MP_API_URL') ? : $this->_urlAPI;
-		$authAPI = getenv('MP_AUTH_URL') ? : $this->_authAPI;
+        $urlAPI = ($environment == 0) ? $this->_prod_urlAPI : $this->_sanbox_urlAPI;
+        $authAPI = ($environment == 0) ? $this->_prod_authAPI : $this->_sanbox_authAPI;
+
+        // env
+        $urlAPI = getenv('MP_API_URL') ? : $urlAPI;
+        $authAPI = getenv('MP_AUTH_URL') ? : $authAPI;
 		
 
         // force token refresh (to get a token with new ACL scopes)

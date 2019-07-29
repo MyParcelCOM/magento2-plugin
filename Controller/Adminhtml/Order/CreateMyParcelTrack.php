@@ -76,6 +76,7 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_ORDER_HAS_NO_SHIPMENT));
             return $this;
         }
+        $orderIncrementIds = $this->orderCollection->getIncrementIds();
 
         try {
             $this->orderCollection
@@ -83,7 +84,7 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
                 ->createShipmentConcepts()
                 ->updateGridByOrder();
 
-            $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIds)));
+            $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIncrementIds)));
 
         } catch (\Throwable  $e) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
@@ -92,6 +93,6 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }
 
-       return $this;
+        return $this;
     }
 }
