@@ -18,8 +18,8 @@ class Incoterm implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'DDP', 'label' => __('DDP')],
             ['value' => 'DAP', 'label' => __('DAP')],
+            ['value' => 'DDP', 'label' => __('DDP')],
         ];
     }
 
@@ -31,8 +31,8 @@ class Incoterm implements ArrayInterface
     public function toArray()
     {
         return [
-            'DDP' => __('DDP'),
             'DAP' => __('DAP'),
+            'DDP' => __('DDP'),
         ];
     }
 }
