@@ -37,14 +37,11 @@ abstract class MpAdapter
         // env
         $urlAPI = getenv('MP_API_URL') ? : $urlAPI;
         $authAPI = getenv('MP_AUTH_URL') ? : $authAPI;
-		
+
 
         // force token refresh (to get a token with new ACL scopes)
         $authenticator = new \MyParcelCom\ApiSdk\Authentication\ClientCredentials($this->_configHelper->getApiClientId(),  $this->_configHelper->getApiSecretKey(), $authAPI);
         $authenticator->getAuthorizationHeader(true);
-        // force cache refresh (to get a new list of services)
-        $cache = new \Symfony\Component\Cache\Simple\FilesystemCache('myparcelcom');
-        $cache->prune();
 
         MyParcelComApi::createSingleton(
             new ClientCredentials(
