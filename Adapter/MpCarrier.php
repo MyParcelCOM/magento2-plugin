@@ -55,10 +55,6 @@ class MpCarrier extends MpAdapter
 
             try {
                 $services = $api->getServices($shipment);
-            } catch (\Exception $e) {
-                throw new InvalidResourceException(
-                    'Region code is invalid'
-                );
             } catch (\Throwable  $e) {
                 throw new InvalidResourceException(
                     'Region code is invalid'

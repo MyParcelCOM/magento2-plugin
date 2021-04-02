@@ -30,8 +30,6 @@ class MpShipment extends MpAdapter
         'weight'        => '0.1',
     ];
 
-    private $_defaultRegion = 'ENG';
-
     /**
      * MpShipment constructor.
      * @param ObjectManagerInterface $objectManager
@@ -53,9 +51,6 @@ class MpShipment extends MpAdapter
      **/
     function createShipment($addressData, $shipmentData, $registerAt = '', $description = '', $items = '', $customs = '')
     {
-        /**
-         * Get instance of MyParcelCOM API
-         **/
         $api = MyParcelComApi::getSingleton();
 
         $mpCarrier  = new MpCarrier();
@@ -64,7 +59,6 @@ class MpShipment extends MpAdapter
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
 
-        // Define the recipient address.
         $recipient = new Address();
 
         $recipient
@@ -77,14 +71,10 @@ class MpShipment extends MpAdapter
             ->setEmail($addressData['email'])
             ->setPhoneNumber($addressData['phone_number']);
 
-        if (!empty($addressData['region_code'])) {
-            $recipient->setRegionCode($addressData['region_code']);
-        }
-
-        // Define the weight.
         $shipment = new Shipment();
 
         $shipment->setRecipientAddress($recipient);
+
         if (!empty($shipmentData['weight'])) {
             $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_POUND);
         }
@@ -125,10 +115,6 @@ class MpShipment extends MpAdapter
         }
 
         /**
-         * //TODO Setup delivery location data
-         **/
-
-        /**
          * SET SERVICE CONTRACT
          * If service contract is not set, set it!
          **/
@@ -137,16 +123,11 @@ class MpShipment extends MpAdapter
             try {
                 $serviceContract = $mpCarrier->getServiceContract($shipment);
             } catch (\Throwable $e) {
-                $recipient->setRegionCode($this->_defaultRegion);
+//                $recipient->setRegionCode($this->_defaultRegion);
             }
 
             if (!empty($serviceContract)) {
-                /**
-                 * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication
-                 **/
                 $shipment->setServiceContract($serviceContract);
-            }else{
-                $recipient->setRegionCode($this->_defaultRegion);
             }
         }else{
             $shipment->setServiceContract($serviceContract);
@@ -178,7 +159,6 @@ class MpShipment extends MpAdapter
          * set relationship shop for shipment
          */
         $shipment->setShop($shop);
-
 
         /**
          * Set Description At value for shipment
@@ -221,9 +201,7 @@ class MpShipment extends MpAdapter
             $shipment->setCustoms($shipmentCustoms);
         }
 
-        // Create the shipment
         $response = $api->createShipment($shipment);
-        //$this->logger->error(print_r($response, true));
 
         return $response;
     }

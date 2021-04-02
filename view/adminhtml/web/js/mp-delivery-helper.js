@@ -35,14 +35,6 @@ define([
 
                 return street1 + ' ' + streetNumber + ', ' + postalCode + ', ' + city;
             },
-
-            isCountrySupported : function(cc) {
-
-                if (cc === 'NL' || cc ==='GB') {
-                    return true;
-                }
-                return false;
-            }
         }
     }
 );

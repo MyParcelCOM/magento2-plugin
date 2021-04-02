@@ -143,9 +143,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'last_name' => $shippingAddressObj->getLastname(),
                 'country_code' => $shippingAddressObj->getCountryId(),
                 'email' => $shippingAddressObj->getEmail(),
-                'region_code'   => $shippingAddressObj->getRegionCode(),
                 'phone_number'  => $shippingAddressObj->getTelephone(),
-                'region_code' => 'ENG',
             ];
 
             /**
@@ -215,9 +213,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             /**
              * Retrieve customs options from setting
              **/
-
-
-
             $customs = array(
                 "content_type" => $myparcelExportSetting['content_type'],
                 "invoice_number" => '#' . $order->getId(),
@@ -251,7 +246,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                         'country_code'  => $country,
                         'phone_number'  => $phoneNumber,
                         'company'       => $company,
-                        'region_code' => 'ENG',
                     ];
 
                     $pickupLocationCode = $deliveryOptions['attributes']['code'];
@@ -287,21 +281,13 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
             $description = $storeName.' Order #'.$orderID;
 
-            /**
-             * Add Pickup information into $shipmentData
-             * @var object $data Data from checkout
-             **/
-            //TODO add delivery data into $shipmentData
-
             try {
                 $shipment = new MpShipment($this->objectManager);
                 /** @var Shipment $response **/
                 $registerAt = $printMode ? 'now' : '';
                 $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description, $items, $customs);
-
             } catch ( \Exception $e ) {
                 throw new \Exception($e->getMessage());
-
             }
 
             if (!empty($response->getId())) {
