@@ -13,11 +13,4 @@
     <!--<type name="Magento\Sales\Block\Adminhtml\Order\View">
         <plugin name="mypa-massaction-button" sortOrder="10" type="MyParcelCOM\Magento\Plugin\Block\Adminhtml\Order\View"/>
     </type>-->
-    <preference for="MyParcelCOM\Magento\Api\DeliveryPluginInterface" type="MyParcelCOM\Magento\Model\Checkout\DeliveryPlugin" />
-    <!-- Save address information in checkout -->
-    <type name="Magento\Checkout\Model\ShippingInformationManagement">
-        <plugin name="save-in-quote" type="MyParcelCOM\Magento\Model\Checkout\ShippingInformationManagementPlugin" sortOrder="10"/>
-    </type>
-    <!-- Get all Rates -->
-    <!--<preference for="Magento\Shipping\Model\Rate\Result" type="MyParcelCOM\Magento\Model\Rate\Result" />-->
 </config>

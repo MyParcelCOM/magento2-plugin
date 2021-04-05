@@ -1,8 +1,4 @@
 <?php
-/**
- * Get paper types for MyParcel system settings
- *
- */
 
 namespace MyParcelCOM\Magento\Model\Source;
 
@@ -11,8 +7,6 @@ use Magento\Framework\Option\ArrayInterface;
 class ContentType implements ArrayInterface
 {
     /**
-     * Options getter
-     *
      * @return array
      */
     public function toOptionArray()
@@ -27,17 +21,15 @@ class ContentType implements ArrayInterface
     }
 
     /**
-     * Get options in "key-value" format
-     *
      * @return array
      */
     public function toArray()
     {
         return [
-            'gifts' => __('Gifts'),
-            'documents' => __('Documents'),
-            'merchandise' => __('Merchandise'),
-            'sample_merchandise' => __('Merchandise'),
+            'gifts'                => __('Gifts'),
+            'documents'            => __('Documents'),
+            'merchandise'          => __('Merchandise'),
+            'sample_merchandise'   => __('Merchandise'),
             'returned_merchandise' => __('Returned'),
         ];
     }

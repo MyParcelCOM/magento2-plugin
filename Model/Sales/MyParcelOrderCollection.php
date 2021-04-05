@@ -1,18 +1,16 @@
 <?php
 namespace MyParcelCOM\Magento\Model\Sales;
 
-use Magento\Framework\EntityManager\Operation\Delete;
-use MyParcelCOM\Magento\Helper\MyParcelConfig;
-use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
-use Magento\Sales\Model\Order;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
-use MyParcelCOM\Magento\Adapter\MpShipment;
+use Magento\Sales\Model\Order;
+use MyParcelCom\ApiSdk\LabelCombiner;
+use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
 use MyParcelCom\ApiSdk\Resources\Proxy\StatusProxy;
 use MyParcelCom\ApiSdk\Resources\Shipment;
-use PHPUnit\Exception;
-use MyParcelCom\ApiSdk\Resources\Interfaces\FileInterface;
-use MyParcelCom\ApiSdk\LabelCombiner;
-use Magento\Framework\App\ObjectManager;
+use MyParcelCOM\Magento\Adapter\MpShipment;
+use MyParcelCOM\Magento\Helper\MyParcelConfig;
+use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
 
 class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 {
@@ -21,11 +19,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     const SUCCESS_SHIPMENT_CREATED = 'success_shipment_created';
 
     const PATH_MODEL_ORDER = '\Magento\Sales\Model\ResourceModel\Order\Collection';
-
-    /**
-     * @var \MyParcelCOM\Magento\Helper\Order
-     */
-    protected $helper;
 
     /**
      * Set Magento collection
@@ -103,7 +96,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     public function createShipmentConcepts($printMode = false)
     {
         $this->objectManager    = ObjectManager::getInstance();
-        $this->helper           = $this->objectManager->get('\MyParcelCOM\Magento\Helper\Order');
 
         $orders = $this->getOrders();
 
@@ -152,24 +144,19 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             $shipmentWeight = $order->getWeight();
             $unitWeight = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general/locale/weight_unit');
 
-            switch($unitWeight){
+            switch ($unitWeight) {
                 case 'lbs':
-                    $shipmentWeight = intval($shipmentWeight * 0.45359237);
+                    $weightInGrams = (int) round($shipmentWeight * 100 * 0.45359237);
                     break;
 
+                case 'kgs':
                 default:
-                    $shipmentWeight = intval($shipmentWeight);
+                    $weightInGrams = (int) round($shipmentWeight * 100);
             }
 
             $shipmentData = [
-                'weight'    => $shipmentWeight,
+                'weight' => $weightInGrams,
             ];
-
-            /**
-             * Retrieve delivery options from Order database
-             **/
-            $data = $order->getData('delivery_options');
-            $shippingMethod = $order->getShippingMethod();
 
             /**
              * get current currency code
@@ -182,11 +169,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
              */
             $myparcelExportSetting = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('myparcel_section_general/myparcel_group_setting');
 
-
             $defaultHsCode = $myparcelExportSetting['default_hs_code'];
             $defaultOriginCountryCode = $myparcelExportSetting['default_origin_coutry_code'];
-
-
 
             /**
              * Retrieve items options from Order database
@@ -221,55 +205,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             );
 
             /**
-             * Add Pickup information into $shipmentData
-             * @var object $data Data from checkout
-             **/
-            if ($this->helper->isPickupLocation($shippingMethod)) {
-                $deliveryOptions = json_decode($data, true);
-
-                if ($deliveryOptions) {
-
-                    $pickupAddressAttribute  =   $deliveryOptions['attributes']['address'];
-                    $street         =   $pickupAddressAttribute['street_1'];
-                    $houseNumber    =   !empty($pickupAddressAttribute['street_number']) ? intval($pickupAddressAttribute['street_number']) : 0;
-                    $postalCode     =   $pickupAddressAttribute['postal_code'];
-                    $city           =   $pickupAddressAttribute['city'];
-                    $country        =   $pickupAddressAttribute['country_code'];
-                    $company        =   $pickupAddressAttribute['company'];
-                    $phoneNumber    =   !empty($pickupAddressAttribute['phone_number']) ? $pickupAddressAttribute['phone_number'] : $addressData['phone_number'];
-
-                    $pickupAddressData = [
-                        'street'        => $street,
-                        'house_number'  => $houseNumber,
-                        'city'          => $city,
-                        'postcode'      => $postalCode,
-                        'country_code'  => $country,
-                        'phone_number'  => $phoneNumber,
-                        'company'       => $company,
-                    ];
-
-                    $pickupLocationCode = $deliveryOptions['attributes']['code'];
-
-                    /**
-                     * Get carrier id from the payload
-                     **/
-                    $carrier    = $deliveryOptions['relationships']['carrier']['data'];
-                    $carrierId  = null;
-                    if (!empty($carrier)) {
-                        $carrierId = $carrier['id'];
-                    }
-
-                    $shipmentData['pickup_location'] = [
-                        'address'      => $pickupAddressData,
-                        'location_code'     => $pickupLocationCode,
-                        'carrier_id'        => $carrierId
-                    ];
-                }
-            }
-
-            /**
              * Add Description
-             * @var object $data Data from checkout
              **/
             //Send description to MyParcel. Please name it `storename` Order #`ordernumber`
 
@@ -291,10 +227,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             }
 
             if (!empty($response->getId())) {
-                /** @var StatusProxy $statusProxy **/
                 $shipmentStatus = $response->getShipmentStatus();
-                $statusProxy  = $shipmentStatus->getStatus();
-                $myParcelStatus = $statusProxy->getCode();
+                $myParcelStatus = $shipmentStatus->getStatus()->getCode();
                 $myparcelShipmentId = $response->getId();
 
                 $track
@@ -412,10 +346,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                             $myparcelShipmentId = $shipmentResponse->getId();
                             $barcode = $shipmentResponse->getBarcode();
 
-                            /** @var StatusProxy $statusProxy **/
                             $shipmentStatus = $shipmentResponse->getShipmentStatus();
-                            $statusProxy  = $shipmentStatus->getStatus();
-                            $myParcelStatus = $statusProxy->getCode();
+                            $myParcelStatus = $shipmentStatus->getStatus()->getCode();
 
                             $trackNumber        = !empty($barcode) ? $barcode : '';
 
@@ -438,48 +370,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         }
 
         return $this;
-    }
-
-    /**
-     * When print PDF for order(s), we need to check if all shipments contain the file
-     * Since we cannot predict how much time it will take the carrier to answer, you might have to poll multiple times.
-     * Then if all shipments contain file to print then we can print PDF
-     * @return boolean
-     * @throws \Exception
-     */
-    public function isAllOrderShipmentsAvailableToPrint()
-    {
-        $mpShipment = new MpShipment($this->objectManager);
-
-        foreach ($this->getOrders() as $order) {
-
-            /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
-            $track = $this->myParcelTrack->getTrackByOrderId($order->getId());
-
-            $shipmentId = $track->getData('myparcel_consignment_id');
-            /** @var Shipment $shipment **/
-            $shipment = $mpShipment->getShipment($shipmentId);
-
-            if (is_a($shipment, 'MyParcelCom\ApiSdk\Resources\Shipment')) {
-                $fileProxies = $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL);
-                if (!empty($fileProxies)) {
-                    return true;
-                } else {
-                    // Try to setRegisterAt to the shipment to change its status to registered/completed
-                    if (empty($shipment->getRegisterAt())) {
-                        $mpShipment->setRegisterAt($shipment, 'now');
-                    }
-                }
-            } else {
-
-                // Try to create shipment if it does not exist
-                $this
-                    ->createShipmentConcepts()
-                    ->updateGridByOrder();
-            }
-        }
-
-        return false;
     }
 
     public function refreshOrdersCollection()
@@ -513,7 +403,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
      */
     public function getIncrementIds(){
         $this->objectManager    = ObjectManager::getInstance();
-        $this->helper           = $this->objectManager->get('\MyParcelCOM\Magento\Helper\Order');
 
         $orders = $this->getOrders();
         $orderIncrementId = [];

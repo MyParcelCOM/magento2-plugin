@@ -8,8 +8,6 @@ use \Magento\Store\Model\ScopeInterface;
 class MyParcelConfig extends AbstractHelper
 {
     const GENERAL_PATH                              = 'myparcel_section_general/';
-    const CHECKOUT_PATH                             = 'myparcel_section_checkout/';
-
     const GENERAL_API_CLIENT_ID_PATH                =  self::GENERAL_PATH . 'myparcel_group_api/api_client_id';
     const GENERAL_API_CLIENT_SECRET_PATH            =  self::GENERAL_PATH . 'myparcel_group_api/api_client_secret_key';
     const GENERAL_SHIPMENT_CREATE_NEW_ONE_EXISTS    =  self::GENERAL_PATH . 'myparcel_group_shipment/create_new_if_one_exists';
@@ -53,20 +51,5 @@ class MyParcelConfig extends AbstractHelper
         }
 
         return $configValue;
-    }
-
-    function isAllowedCountry($cc)
-    {
-        $allowSpecificCountry =  boolval($this->scopeConfig->getValue('carriers/myparcelpickup/sallowspecific', ScopeInterface::SCOPE_STORE));
-
-        if ($allowSpecificCountry) {
-            $allowedCountriesInString = $this->scopeConfig->getValue('carriers/myparcelpickup/specificcountry', ScopeInterface::SCOPE_STORE);
-            $allowedCountries = explode(',', $allowedCountriesInString);
-            if (is_array($allowedCountries) && in_array($cc, $allowedCountries)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

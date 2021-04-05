@@ -2,50 +2,35 @@
 
 namespace MyParcelCOM\Magento\Adapter;
 
+use MyParcelCom\ApiSdk\MyParcelComApi;
 use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Customs;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
-use MyParcelCom\ApiSdk\Resources\Customs;
-use MyParcelCom\ApiSdk\MyParcelComApi;
-use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\NullLogger;
 
 class MpShipment extends MpAdapter
 {
-    private $logger;
-
     private $_defaultAddressData = [
-        'street'        => '',
-        'house_number'  => '',
-        'city'          => '',
-        'postcode'      => '',
-        'first_name'    => '',
-        'last_name'     => '',
-        'country_code'  => '',
-        'email'         => ''
+        'street'       => '',
+        'house_number' => '',
+        'city'         => '',
+        'postcode'     => '',
+        'first_name'   => '',
+        'last_name'    => '',
+        'country_code' => '',
+        'email'        => '',
     ];
 
     private $_defaultShipmentData = [
-        'weight'        => '0.1',
+        'weight' => '0.1',
     ];
 
     /**
-     * MpShipment constructor.
-     * @param ObjectManagerInterface $objectManager
-     * @param \Psr\Log\LoggerInterface|null $logger
-     */
-    function __construct(ObjectManagerInterface $objectManager, \Psr\Log\LoggerInterface $logger= null)
-    {
-        $this->logger = $logger ?: new NullLogger();
-
-        parent::__construct();
-    }
-
-    /**
      * Prepare the necessary data and create shipment
-     * @param array $addressData
-     * @param array $shipmentData
+     * @param array  $addressData
+     * @param array  $shipmentData
      * @param string $registerAt
      * @return object response of the api
      **/
@@ -53,8 +38,8 @@ class MpShipment extends MpAdapter
     {
         $api = MyParcelComApi::getSingleton();
 
-        $mpCarrier  = new MpCarrier();
-        $mpShop     = new MpShop();
+        $mpCarrier = new MpCarrier();
+        $mpShop = new MpShop();
 
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
@@ -76,61 +61,9 @@ class MpShipment extends MpAdapter
         $shipment->setRecipientAddress($recipient);
 
         if (!empty($shipmentData['weight'])) {
-            $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_POUND);
-        }
-
-        /**
-         * SET PICKUP ADDRESS
-         * Setup pickup location data
-         **/
-        if (!empty($shipmentData['pickup'])) {
-
-            $pickupLocationCode = $shipmentData['pickup']['location_code'];
-            $pickupAddressData  = $shipmentData['pickup']['address_data'];
-
-            // Define the recipient address.
-            $pickupAddress = new Address();
-            $pickupAddress
-                ->setStreet1(       $pickupAddressData['street'])
-                ->setStreetNumber(  $pickupAddressData['house_number'])
-                ->setCity(          $pickupAddressData['city'])
-                ->setPostalCode(    $pickupAddressData['postcode'])
-                ->setCountryCode(   $pickupAddressData['country_code'])
-                ->setCompany(       $pickupAddressData['company'])
-                ->setPhoneNumber(   $pickupAddressData['phone_number']);
-
-            $shipment->setPickupLocationCode($pickupLocationCode);
-            $shipment->setPickupLocationAddress($pickupAddress);
-
-            /**
-             * Set Contract Carrier for shipment
-             **/
-            /* $carrierId = $shipmentData['pickup']['carrier_id'];
-             if (!empty($carrierId)) {
-                 $serviceContract = $mpCarrier->getServiceContract($shipment, $carrierId);
-                 if (!empty($serviceContract)) {
-                    $shipment->setServiceContract($serviceContract);
-                 }
-             }*/
-        }
-
-        /**
-         * SET SERVICE CONTRACT
-         * If service contract is not set, set it!
-         **/
-        $serviceContract = $shipment->getService();
-        if (empty($serviceContract)) {
-            try {
-                $serviceContract = $mpCarrier->getServiceContract($shipment);
-            } catch (\Throwable $e) {
-//                $recipient->setRegionCode($this->_defaultRegion);
-            }
-
-            if (!empty($serviceContract)) {
-                $shipment->setServiceContract($serviceContract);
-            }
-        }else{
-            $shipment->setServiceContract($serviceContract);
+            $physicalProperties = (new PhysicalProperties())
+                ->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
+            $shipment->setPhysicalProperties($physicalProperties);
         }
 
         /**
@@ -170,10 +103,9 @@ class MpShipment extends MpAdapter
         /**
          * Set Items value for shipment.
          */
-        if(!empty($items)){
-
+        if (!empty($items)) {
             $shipmentItems = [];
-            foreach ($items as $item){
+            foreach ($items as $item) {
                 $shipmentItem = new ShipmentItem();
                 $shipmentItem->setSku($item['sku']);
                 $shipmentItem->setDescription($item['description']);
@@ -191,7 +123,7 @@ class MpShipment extends MpAdapter
         /**
          * Set customs value for shipment
          */
-        if(!empty($customs)){
+        if (!empty($customs)) {
             $shipmentCustoms = new Customs();
             $shipmentCustoms->setContentType($customs['content_type']);
             $shipmentCustoms->setInvoiceNumber($customs['invoice_number']);
@@ -235,7 +167,7 @@ class MpShipment extends MpAdapter
 
     /**
      * @param Shipment $shipment
-     * @param string $when
+     * @param string   $when
      * @return mixed
      **/
     function setRegisterAt($shipment, $when = 'now')

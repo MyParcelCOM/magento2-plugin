@@ -79,32 +79,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'comment' => 'Track number of MyParcel consignment'
                 ]
             );
-
-            /**
-             * Add delivery options column for sales_order and quote (quote is for cart session)
-             **/
-            $setup->getConnection()->addColumn(
-                $setup->getTable('sales_order'),
-                'delivery_options',
-                [
-                    'type' => Table::TYPE_TEXT,
-                    'nullable' => true,
-                    'comment' => 'MyParcel delivery options',
-                ]
-            );
-        }
-
-        $tableName = $setup->getTable('quote');
-        if ($setup->getConnection()->isTableExists($tableName) == true) {
-            $setup->getConnection()->addColumn(
-                $setup->getTable('quote'),
-                'delivery_options',
-                [
-                    'type' => Table::TYPE_TEXT,
-                    'nullable' => true,
-                    'comment' => 'MyParcel delivery options',
-                ]
-            );
         }
 
         $setup->endSetup();

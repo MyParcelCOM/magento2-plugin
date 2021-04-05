@@ -17,7 +17,6 @@ morning_signature/title,Morning delivery + signature
 pickup_express/title,Extra early at a PostNL location
 evening_signature/title,Evening delivery with signature
 evening/title,Evening delivery
-checkout_validation_pickup_select_location, Please select a pickup location
 address,Address
 company,Company
 phone_number,Phone number
