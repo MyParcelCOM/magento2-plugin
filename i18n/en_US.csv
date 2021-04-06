@@ -1,22 +1,16 @@
-status_shipment_concept,Concept
-status_shipment_registered,Registered
-status_shipment_at_carrier,At Carrier
-status_shipment_at_courier,At Courier
-status_shipment_at_sorting,At Sorting
-status_shipment_delivered,Delivered
-status_shipment_completed,Completed
-status_shipment_failed,Failed
-status_shipment_inactive,Inactive
-error_shipment_pdf_not_ready,The select orders are not ready to print PDF, please try again
+shipment-at-sorting,At sorting
+shipment-concept,Concept
+shipment-created-without-tracking,Created without tracking
+shipment-delivered,Delivered
+shipment-failed,Failed
+shipment-on-the-way-to-hub,On the way to hub
+shipment-processing,Processing
+shipment-received-by-carrier,Received by carrier
+shipment-registered,Registered
+shipment-registration-failed,Registration failed
+shipment-returned-to-sender,Returned to sender
+shipment-voided,Voided
+shipment-with-courier,With courier
 error_order_has_no_shipment,No shipment can be made with this order. Shipments can not be created if the status is On Hold or if the product is digital
 error_shipment_create_fail,Some of the selected shipments have not been created.
 success_shipment_created,Selected shipments from orders: %s have been created successfully at MyParcel.com
-delivery/signature_and_only_recipient_title,Do not deliver to the neighbors + signature
-morning/title,Morning delivery
-morning_signature/title,Morning delivery + signature
-pickup_express/title,Extra early at a PostNL location
-evening_signature/title,Evening delivery with signature
-evening/title,Evening delivery
-address,Address
-company,Company
-phone_number,Phone number
