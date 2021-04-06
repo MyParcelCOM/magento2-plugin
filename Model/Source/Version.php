@@ -8,8 +8,11 @@ class Version extends Value
 {
     public function afterLoad()
     {
-        $version = $this->_resource->getDbVersion('MyParcelCOM_Magento');
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $moduleInfo = $objectManager->get('Magento\Framework\Module\ModuleList')->getOne('MyParcelCOM_Magento');
 
-        $this->setValue($version);
+        $this->setValue($moduleInfo['setup_version']);
+
+        return parent::afterLoad();
     }
 }

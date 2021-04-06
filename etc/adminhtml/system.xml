@@ -26,7 +26,7 @@
                 </field>
             </group>
             <group id="myparcel_group_setting" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Default Custom Value</label>
+                <label>Default Values</label>
                 <field id="default_hs_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>HS Code</label>
                     <comment>Classifies the goods with HS code.</comment>
