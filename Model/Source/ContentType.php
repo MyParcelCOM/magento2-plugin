@@ -12,11 +12,11 @@ class ContentType implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'gifts', 'label' => __('Gifts')],
-            ['value' => 'documents', 'label' => __('Documents')],
             ['value' => 'merchandise', 'label' => __('Merchandise')],
             ['value' => 'sample_merchandise', 'label' => __('Sample Merchandise')],
             ['value' => 'returned_merchandise', 'label' => __('Returned Merchandise')],
+            ['value' => 'gifts', 'label' => __('Gifts')],
+            ['value' => 'documents', 'label' => __('Documents')],
         ];
     }
 
@@ -26,11 +26,11 @@ class ContentType implements ArrayInterface
     public function toArray()
     {
         return [
-            'gifts'                => __('Gifts'),
-            'documents'            => __('Documents'),
             'merchandise'          => __('Merchandise'),
             'sample_merchandise'   => __('Merchandise'),
             'returned_merchandise' => __('Returned'),
+            'gifts'                => __('Gifts'),
+            'documents'            => __('Documents'),
         ];
     }
 }

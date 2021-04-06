@@ -9,7 +9,7 @@
             <label>General</label>
             <tab>myparcel_tab</tab>
             <resource>MyParcelCOM_Magento::general_configuration</resource>
-            <group id="myparcel_group_api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
+            <group id="myparcel_group_api" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>API Configuration</label>
                 <field id="api_client_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>API Client ID</label>
@@ -25,7 +25,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Default Custom Value</label>
                 <field id="default_hs_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>HS Code</label>

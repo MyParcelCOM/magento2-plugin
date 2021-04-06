@@ -2,12 +2,14 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <myparcel_section_general>
-            <myparcel_group_general>
-                <enable>1</enable>
-            </myparcel_group_general>
-            <myparcel_group_shipment>
-                <create_new_if_one_exists>0</create_new_if_one_exists>
-            </myparcel_group_shipment>
+            <myparcel_group_api>
+                <api_client_environment>1</api_client_environment>
+            </myparcel_group_api>
+            <myparcel_group_setting>
+                <content_type>merchandise</content_type>
+                <incoterm>DAP</incoterm>
+                <non_delivery>return</non_delivery>
+            </myparcel_group_setting>
         </myparcel_section_general>
     </default>
 </config>

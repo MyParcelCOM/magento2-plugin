@@ -7,21 +7,13 @@ use Magento\Sales\Model\Order;
 
 class MyParcelTrack
 {
-    const TRACK_TITLE = 'MyParcel';
-    const CARRIER_CODE = 'myparcelnl';
+    const TRACK_TITLE = 'MyParcel.com';
+    const CARRIER_CODE = 'myparcelcom';
 
-    // Track Statuses
-    const STATUS_CONCEPT    = 'shipment_concept';
-    const STATUS_REGISTERED = 'shipment_registered';
-    const STATUS_AT_CARRIER = 'shipment_at_carrier';
-    const STATUS_AT_COURIER = 'shipment_at_courier';
-    const STATUS_AT_SORTING = 'shipment_at_sorting';
-    const STATUS_DELIVERED  = 'shipment_delivered';
-    const STATUS_COMPLETED  = 'shipment_completed';
-    const STATUS_FAILED     = 'shipment_failed';
-    const STATUS_INACTIVE   = 'shipment_inactive';
+    const STATUS_CONCEPT = 'shipment-concept';
 
-    const TRACK_NUMBER_DEFAULT = 'Concept';
+    const TRACK_NUMBER_DEFAULT = '-';
+
     private $_tracks;
 
     /**
@@ -61,15 +53,14 @@ class MyParcelTrack
         $columnHtml = ['track_status' => '', 'track_number' => ''];
 
         /**
-         * @var Order\Shipment       $shipment
          * @var Order\Shipment\Track $track
          */
         foreach ($tracks as $track) {
             // Set all Track data in array
             if ($track['myparcel_status'] !== null) {
-                $data['track_status'][] = __('status_' . $track['myparcel_status']);
+                $data['track_status'][] = __($track['myparcel_status']);
             } else {
-                $data['track_status'][] = __('status_' . MyParcelTrack::STATUS_CONCEPT);
+                $data['track_status'][] = __(MyParcelTrack::STATUS_CONCEPT);
             }
 
             if ($track['track_number']) {

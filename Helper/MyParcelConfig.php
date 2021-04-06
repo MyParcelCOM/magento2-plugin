@@ -3,53 +3,64 @@
 namespace MyParcelCOM\Magento\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
-use \Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class MyParcelConfig extends AbstractHelper
 {
-    const GENERAL_PATH                              = 'myparcel_section_general/';
-    const GENERAL_API_CLIENT_ID_PATH                =  self::GENERAL_PATH . 'myparcel_group_api/api_client_id';
-    const GENERAL_API_CLIENT_SECRET_PATH            =  self::GENERAL_PATH . 'myparcel_group_api/api_client_secret_key';
-    const GENERAL_SHIPMENT_CREATE_NEW_ONE_EXISTS    =  self::GENERAL_PATH . 'myparcel_group_shipment/create_new_if_one_exists';
-
-    const OPTION_YES    = 1;
-    const OPTION_NO     = 0;
+    const PRODUCTION_API_URL = 'https://api.myparcel.com';
+    const PRODUCTION_AUTH_URL = 'https://auth.myparcel.com';
+    const SANDBOX_API_URL = 'https://sandbox-api.myparcel.com';
+    const SANDBOX_AUTH_URL = 'https://sandbox-auth.myparcel.com';
 
     /**
-     * Get MyParcel configuration value by configuration path
-     * @param string $configPath SECTION_ID/GROUP_ID/FIELD_ID
-     * @param string $scope
-     * @return mixed
-    **/
-    function get($configPath, $scope = ScopeInterface::SCOPE_STORE)
+     * @return bool
+     */
+    private function isTestMode()
     {
-        return $this->scopeConfig->getValue($configPath, $scope);
-    }
-
-    function getApiClientId()
-    {
-        return $this->scopeConfig->getValue(self::GENERAL_API_CLIENT_ID_PATH, ScopeInterface::SCOPE_STORE);
-    }
-
-    function getApiSecretKey()
-    {
-        return $this->scopeConfig->getValue(self::GENERAL_API_CLIENT_SECRET_PATH, ScopeInterface::SCOPE_STORE);
+        return $this->getGeneralConfig('myparcel_group_api/api_client_environment') === '1';
     }
 
     /**
-     * Get config value from General tab
+     * @return string
+     */
+    public function getApiClientId()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/api_client_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiSecretKey()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/api_client_secret_key');
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return $this->isTestMode() ? self::SANDBOX_API_URL : self::PRODUCTION_API_URL;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthUrl()
+    {
+        return $this->isTestMode() ? self::SANDBOX_AUTH_URL : self::PRODUCTION_AUTH_URL;
+    }
+
+    /**
      * @param string $key group_id/field_id
      * @param string $scope
-     * @return mixed
-    **/
-    function getGeneralConfig($key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
+     * @return string|array
+     **/
+    public function getGeneralConfig($key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
     {
-        $configValue = $this->scopeConfig->getValue(self::GENERAL_PATH . $key, $scope);
+        $configValue = $this->scopeConfig->getValue('myparcel_section_general/' . $key, $scope);
 
-        if ($defaultValue && empty($configValue)) {
-            return $defaultValue;
-        }
-
-        return $configValue;
+        return ($configValue === null) ? $defaultValue : $configValue;
     }
 }

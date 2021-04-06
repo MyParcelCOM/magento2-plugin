@@ -1,6 +1,6 @@
 {
     "name": "myparcelcom/magento",
-    "description": "Magento 2 module for MyParcel.com",
+    "description": "Magento 2 extension for MyParcel.com",
     "type": "magento2-module",
     "homepage": "https://www.myparcel.com",
     "keywords": ["MyParcel.com", "MyParcel", "Magento 2"],
