@@ -3,267 +3,88 @@
 namespace MyParcelCOM\Magento\Adapter;
 
 use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Customs;
 use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
-use MyParcelCom\ApiSdk\Resources\Customs;
-use MyParcelCom\ApiSdk\MyParcelComApi;
-use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\NullLogger;
 
 class MpShipment extends MpAdapter
 {
-    private $logger;
-
     private $_defaultAddressData = [
-        'street'        => '',
-        'house_number'  => '',
-        'city'          => '',
-        'postcode'      => '',
-        'first_name'    => '',
-        'last_name'     => '',
-        'country_code'  => '',
-        'email'         => ''
+        'first_name'   => '',
+        'last_name'    => '',
+        'street'       => '',
+        'city'         => '',
+        'postcode'     => '',
+        'country_code' => '',
+        'email'        => '',
+        'phone_number' => '',
     ];
 
     private $_defaultShipmentData = [
-        'weight'        => '0.1',
+        'weight' => 1000,
     ];
 
-    private $_defaultRegion = 'ENG';
-
     /**
-     * MpShipment constructor.
-     * @param ObjectManagerInterface $objectManager
-     * @param \Psr\Log\LoggerInterface|null $logger
-     */
-    function __construct(ObjectManagerInterface $objectManager, \Psr\Log\LoggerInterface $logger= null)
-    {
-        $this->logger = $logger ?: new NullLogger();
-
-        parent::__construct();
-    }
-
-    /**
-     * Prepare the necessary data and create shipment
-     * @param array $addressData
-     * @param array $shipmentData
+     * @param array  $addressData
+     * @param array  $shipmentData
      * @param string $registerAt
-     * @return object response of the api
+     * @return ShipmentInterface
      **/
-    function createShipment($addressData, $shipmentData, $registerAt = '', $description = '', $items = '', $customs = '')
+    public function createShipment($addressData, $shipmentData, $registerAt = '', $description = null, $items = [], $customs = null)
     {
-        /**
-         * Get instance of MyParcelCOM API
-         **/
-        $api = MyParcelComApi::getSingleton();
-
-        $mpCarrier  = new MpCarrier();
-        $mpShop     = new MpShop();
+        $mpShop = new MpShop();
+        $shop = $mpShop->getDefaultShop();
 
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
 
-        // Define the recipient address.
-        $recipient = new Address();
+        $physicalProperties = (new PhysicalProperties())
+            ->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
 
-        $recipient
+        $recipient = (new Address())
+            ->setFirstName($addressData['first_name'])
+            ->setLastName($addressData['last_name'])
             ->setStreet1($addressData['street'])
             ->setCity($addressData['city'])
             ->setPostalCode($addressData['postcode'])
-            ->setFirstName($addressData['first_name'])
-            ->setLastName($addressData['last_name'])
             ->setCountryCode($addressData['country_code'])
             ->setEmail($addressData['email'])
             ->setPhoneNumber($addressData['phone_number']);
 
-        if (!empty($addressData['region_code'])) {
-            $recipient->setRegionCode($addressData['region_code']);
+        $shipment = (new Shipment())
+            ->setShop($shop)
+            ->setRecipientAddress($recipient)
+            ->setSenderAddress($shop->getSenderAddress())
+            ->setReturnAddress($shop->getReturnAddress())
+            ->setPhysicalProperties($physicalProperties)
+            ->setDescription($description);
+
+        foreach ($items as $item) {
+            $shipmentItem = (new ShipmentItem())
+                ->setSku($item['sku'])
+                ->setDescription($item['description'])
+                ->setQuantity($item['quantity'])
+                ->setHsCode($item['hs_code'])
+                ->setOriginCountryCode($item['origin_country_code'])
+                ->setCurrency($item['item_value']['currency'])
+                ->setItemValue($item['item_value']['amount']);
+
+            $shipment->addItem($shipmentItem);
         }
 
-        // Define the weight.
-        $shipment = new Shipment();
-
-        $shipment->setRecipientAddress($recipient);
-        if (!empty($shipmentData['weight'])) {
-            $shipment->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_POUND);
-        }
-
-        /**
-         * SET PICKUP ADDRESS
-         * Setup pickup location data
-         **/
-        if (!empty($shipmentData['pickup'])) {
-
-            $pickupLocationCode = $shipmentData['pickup']['location_code'];
-            $pickupAddressData  = $shipmentData['pickup']['address_data'];
-
-            // Define the recipient address.
-            $pickupAddress = new Address();
-            $pickupAddress
-                ->setStreet1(       $pickupAddressData['street'])
-                ->setStreetNumber(  $pickupAddressData['house_number'])
-                ->setCity(          $pickupAddressData['city'])
-                ->setPostalCode(    $pickupAddressData['postcode'])
-                ->setCountryCode(   $pickupAddressData['country_code'])
-                ->setCompany(       $pickupAddressData['company'])
-                ->setPhoneNumber(   $pickupAddressData['phone_number']);
-
-            $shipment->setPickupLocationCode($pickupLocationCode);
-            $shipment->setPickupLocationAddress($pickupAddress);
-
-            /**
-             * Set Contract Carrier for shipment
-             **/
-            /* $carrierId = $shipmentData['pickup']['carrier_id'];
-             if (!empty($carrierId)) {
-                 $serviceContract = $mpCarrier->getServiceContract($shipment, $carrierId);
-                 if (!empty($serviceContract)) {
-                    $shipment->setServiceContract($serviceContract);
-                 }
-             }*/
-        }
-
-        /**
-         * //TODO Setup delivery location data
-         **/
-
-        /**
-         * SET SERVICE CONTRACT
-         * If service contract is not set, set it!
-         **/
-        $serviceContract = $shipment->getService();
-        if (empty($serviceContract)) {
-            try {
-                $serviceContract = $mpCarrier->getServiceContract($shipment);
-            } catch (\Throwable $e) {
-                $recipient->setRegionCode($this->_defaultRegion);
-            }
-
-            if (!empty($serviceContract)) {
-                /**
-                 * TODO Need to uncomment the right below line when MyParcel fixed their carrier authentication
-                 **/
-                $shipment->setServiceContract($serviceContract);
-            }else{
-                $recipient->setRegionCode($this->_defaultRegion);
-            }
-        }else{
-            $shipment->setServiceContract($serviceContract);
-        }
-
-        /**
-         * SET SENDER ADDRESS
-         * In some cases, sender address is required
-         **/
-        $shop = $mpShop->getDefaultShop();
-        $senderAddress = $shop->getSenderAddress();
-        $shipment->setSenderAddress($senderAddress);
-
-        /**
-         * SET RETURN ADDRESS
-         * In some cases, return  address is required
-         **/
-        $returnAddress = $shop->getReturnAddress();
-        $shipment->setReturnAddress($returnAddress);
-
-        /**
-         * Set Register At value for shipment
-         **/
-        if (!empty($registerAt)) {
-            $shipment->setRegisterAt($registerAt);
-        }
-
-        /**
-         * set relationship shop for shipment
-         */
-        $shipment->setShop($shop);
-
-
-        /**
-         * Set Description At value for shipment
-         **/
-        if (!empty($description)) {
-            $shipment->setDescription($description);
-        }
-
-        /**
-         * Set Items value for shipment.
-         */
-        if(!empty($items)){
-
-            $shipmentItems = [];
-            foreach ($items as $item){
-                $shipmentItem = new ShipmentItem();
-                $shipmentItem->setSku($item['sku']);
-                $shipmentItem->setDescription($item['description']);
-                $shipmentItem->setQuantity($item['quantity']);
-                $shipmentItem->setHsCode($item['hs_code']);
-                $shipmentItem->setOriginCountryCode($item['origin_country_code']);
-                $shipmentItem->setCurrency($item['item_value']['currency']);
-                $shipmentItem->setItemValue($item['item_value']['amount']);
-
-                $shipmentItems[] = $shipmentItem;
-            }
-            $shipment->setItems($shipmentItems);
-        }
-
-        /**
-         * Set customs value for shipment
-         */
-        if(!empty($customs)){
-            $shipmentCustoms = new Customs();
-            $shipmentCustoms->setContentType($customs['content_type']);
-            $shipmentCustoms->setInvoiceNumber($customs['invoice_number']);
-            $shipmentCustoms->setIncoterm($customs['incoterm']);
-            $shipmentCustoms->setNonDelivery($customs['non_delivery']);
+        if (!empty($customs)) {
+            $shipmentCustoms = (new Customs())
+                ->setContentType($customs['content_type'])
+                ->setInvoiceNumber($customs['invoice_number'])
+                ->setIncoterm($customs['incoterm'])
+                ->setNonDelivery($customs['non_delivery']);
 
             $shipment->setCustoms($shipmentCustoms);
         }
 
-        // Create the shipment
-        $response = $api->createShipment($shipment);
-        //$this->logger->error(print_r($response, true));
-
-        return $response;
-    }
-
-    function getShipment($shipmentId)
-    {
-        $api = MyParcelComApi::getSingleton();
-        $shipment = $api->getShipment($shipmentId);
-
-        return $shipment;
-    }
-
-    function getFiles($shipmentId)
-    {
-        $api = MyParcelComApi::getSingleton();
-        $shipment = $api->getShipment($shipmentId);
-        $files = $shipment->getFiles();
-
-        return $files;
-    }
-
-    function getStatus($shipmentId)
-    {
-        // Get the current status of the shipment.
-        $api = MyParcelComApi::getSingleton();
-        $shipment = $api->getShipment($shipmentId);
-        $status = $shipment->getStatus();
-
-        return $status;
-    }
-
-    /**
-     * @param Shipment $shipment
-     * @param string $when
-     * @return mixed
-     **/
-    function setRegisterAt($shipment, $when = 'now')
-    {
-        $api = MyParcelComApi::getSingleton();
-        $shipment->setRegisterAt($when);
-        return $api->updateShipment($shipment);
+        return $this->getApi()->createShipment($shipment);
     }
 }

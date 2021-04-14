@@ -2,50 +2,37 @@
 
 namespace MyParcelCOM\Magento\Model\Sales\Base;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Model\Order;
-use Magento\Framework\Exception\LocalizedException;
-use MyParcelCOM\Magento\Model\Sales\MyParcelTrack;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
+use MyParcelCOM\Magento\Model\Sales\MyParcelTrack;
 
 class MyParcelOrderCollectionBase
 {
-    /**
-     * @var \Magento\Sales\Model\ResourceModel\Order\Collection
-     */
+    /** @var Collection */
     protected $_orders = null;
 
-    /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
+    /** @var RequestInterface */
     public $request = null;
 
-    /**
-     * @var TrackSender
-     */
+    /** @var TrackSender */
     protected $trackSender;
 
-    /**
-     * @var ObjectManagerInterface
-     */
+    /** @var ObjectManagerInterface */
     protected $objectManager;
 
-    /**
-     * @var ObjectManagerInterface
-     */
+    /** @var ObjectManagerInterface */
     protected $myParcelTrack;
 
-    /**
-     * @var MyParcelConfig $_configHelper
-     */
+    /** @var MyParcelConfig */
     protected $configHelper;
 
     /**
-     * CreateAndPrintMyParcelTrack constructor.
-     *
      * @param ObjectManagerInterface $objectManagerInterface
-     * @param \Magento\Framework\App\RequestInterface $request
-     * @param null $areaList
+     * @param RequestInterface       $request
      */
     public function __construct(ObjectManagerInterface $objectManagerInterface, $request = null)
     {
@@ -58,7 +45,7 @@ class MyParcelOrderCollectionBase
     /**
      * Get all Magento orders
      *
-     * @return \Magento\Sales\Model\ResourceModel\Order\Collection
+     * @return Collection
      */
     public function getOrders()
     {
@@ -69,7 +56,6 @@ class MyParcelOrderCollectionBase
      * This create a shipment. Observer/NewShipment() create Magento and MyParcel Track
      *
      * @param Order $order
-     *
      * @return $this
      * @throws LocalizedException
      */
@@ -85,21 +71,16 @@ class MyParcelOrderCollectionBase
 
         // Loop through order items
         foreach ($order->getAllItems() as $orderItem) {
-            // Check if order item has qty to ship or is virtual
             if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
                 continue;
             }
 
             $qtyShipped = $orderItem->getQtyToShip();
-
-            // Create shipment item with qty
             $shipmentItem = $convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
 
-            // Add shipment item to shipment
             $shipment->addItem($shipmentItem);
         }
 
-        // Register shipment
         $shipment->register();
         $shipment->getOrder()->setStatus(Order::STATE_PROCESSING);
 
@@ -111,11 +92,8 @@ class MyParcelOrderCollectionBase
             // Send email
             $this->objectManager->create('Magento\Shipping\Model\ShipmentNotifier')
                 ->notify($shipment);
-
         } catch (\Exception $e) {
-            throw new LocalizedException(
-                __($e->getMessage())
-            );
+            throw new LocalizedException(__($e->getMessage()));
         }
     }
 
@@ -142,19 +120,17 @@ class MyParcelOrderCollectionBase
      * Check if track already exists
      *
      * @param \Magento\Sales\Model\Order\Shipment $shipment
-     *
      * @return bool
      */
     protected function shipmentHasTrack($shipment)
     {
-        return $this->getTrackByShipment($shipment)->count() == 0 ? false : true;
+        return $this->getTrackByShipment($shipment)->count() === 0 ? false : true;
     }
 
     /**
      * Get all tracks
      *
      * @param \Magento\Sales\Model\Order\Shipment $shipment
-     *
      * @return \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\Collection
      */
     protected function getTrackByShipment($shipment)
@@ -171,7 +147,6 @@ class MyParcelOrderCollectionBase
      * Create new Magento Track
      *
      * @param Order\Shipment $shipment
-     *
      * @return \Magento\Sales\Model\Order\Shipment\Track
      * @throws \Exception
      */
@@ -182,8 +157,8 @@ class MyParcelOrderCollectionBase
         $track
             ->setOrderId($shipment->getOrderId())
             ->setShipment($shipment)
-            ->setCarrierCode('myparcelnl')
-            ->setTitle('MyParcel')
+            ->setCarrierCode(MyParcelTrack::CARRIER_CODE)
+            ->setTitle(MyParcelTrack::TRACK_TITLE)
             ->setQty($shipment->getTotalQty())
             ->setTrackNumber(MyParcelTrack::TRACK_NUMBER_DEFAULT)
             ->save();
@@ -198,8 +173,7 @@ class MyParcelOrderCollectionBase
      */
     public function hasShipment()
     {
-        /** @var $order Order */
-        /** @var Order\Shipment $shipment */
+        /** @var Order $order */
         foreach ($this->getOrders() as $order) {
             if ($order->hasShipments()) {
                 return true;

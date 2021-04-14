@@ -2,56 +2,39 @@
 
 namespace MyParcelCOM\Magento\Controller\Adminhtml\System;
 
-use \Exception;
-use \Magento\Backend\App\Action\Context;
-use \Magento\Framework\App\Action\Action;
-use \Magento\Framework\Controller\ResultFactory;
-use \MyParcelCom\ApiSdk\Authentication\ClientCredentials;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\Controller\ResultFactory;
+use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
+use Throwable;
 
 class Config extends Action
 {
-    /**
-     * Config constructor.
-     *
-     * @param Context $context
-     */
-    public function __construct(Context $context)
-    {
-        parent::__construct($context);
-    }
-
     public function execute()
     {
-        $client_id = $this->getRequest()->getParam('client_id', false);
-        $secret_key = $this->getRequest()->getParam('secret_key', false);
+        $clientId = $this->getRequest()->getParam('client_id', '');
+        $secretKey = $this->getRequest()->getParam('secret_key', '');
 
-        try{
-            $auth = new ClientCredentials($client_id, $secret_key);
-            $auth->clearCache();
-            $auth_header = $auth->getAuthorizationHeader();
-            
+        try {
+            $auth = new ClientCredentials($clientId, $secretKey);
+            $auth->getAuthorizationHeader(true);
 
-            if(isset($auth_header['Authorization']) && $auth_header['Authorization'] !== ''){
-                $response = array(
-                    'status' => 'SUCCESS',
-                    'message' => __('API Client is available'),
-                );
-            }else{
-                $response = array(
-                    'status' => 'ERROR',
-                    'message' => __('Client id or client secret is invalid'),
-                );
-            }
-        }catch(Exception $e){
-            $response = array(
-                'status' => 'ERROR',
+            $response = [
+                'status'  => 'SUCCESS',
+                'message' => __('API Client is available'),
+            ];
+        } catch (RequestException $e) {
+            $response = [
+                'status'  => 'ERROR',
+                'message' => __('Client id or client secret is invalid'),
+            ];
+        } catch (Throwable $e) {
+            $response = [
+                'status'  => 'ERROR',
                 'message' => $e->getMessage(),
-            );
+            ];
         }
 
-        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        $resultJson->setData($response);
-        return $resultJson;
+        return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($response);
     }
 }
-

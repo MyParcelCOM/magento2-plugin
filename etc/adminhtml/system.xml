@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="myparcel_tab" translate="label" sortOrder="10">
-            <label>MyParcelCOM Settings</label>
+        <tab id="myparcel_tab" translate="label" sortOrder="400">
+            <label>MyParcel.com</label>
         </tab>
         <section id="myparcel_section_general" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
             <label>General</label>
             <tab>myparcel_tab</tab>
             <resource>MyParcelCOM_Magento::general_configuration</resource>
-            <group id="myparcel_group_api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
+            <group id="myparcel_group_api" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>API Configuration</label>
                 <field id="api_client_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>API Client ID</label>
@@ -21,34 +21,20 @@
                 </field>
                 <field id="api_client_environment" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Test mode</label>
-                    <comment>Enable the test environment.</comment>
+                    <comment>Communicate with the sandbox environment.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <!--<group id="myparcel_group_google" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
-                <label>Google API</label>
-                <field id="googlemap_api_key" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
-                    <label>Google Map API Key</label>
-                    <comment>Google Map API Key.</comment>
-                </field>
-            </group>
-            <group id="myparcel_group_print" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
-                <label>Print settings</label>
-                <field id="paper_type" translate="label comment" type="select" sortOrder="211" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Paper type</label>
-                    <comment>Select a standard orientation for printing labels.</comment>
-                    <source_model>MyParcelCOM\Magento\Model\Source\PaperType</source_model>
-                </field>
-            </group>-->
-            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Default Custom Value</label>
+            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Default Values</label>
                 <field id="default_hs_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>HS Code</label>
                     <comment>Classifies the goods with HS code.</comment>
                 </field>
-                <field id="default_origin_coutry_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="default_origin_coutry_code" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Origin Country Code</label>
                     <comment>Country where the goods are originated from.</comment>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 </field>
                 <field id="content_type" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Content Type</label>
@@ -66,97 +52,18 @@
                     <source_model>MyParcelCOM\Magento\Model\Source\NonDelivery</source_model>
                 </field>
             </group>
-            <group id="myparcel_support" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
+            <group id="myparcel_support" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>MyParcel.com</label>
+                <attribute type="expanded">1</attribute>
                 <field id="current_version" translate="label" type="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Current Version</label>
                     <backend_model>MyParcelCOM\Magento\Model\Source\Version</backend_model>
                 </field>
                 <field id="support_url" translate="label comment" type="label" sortOrder="211" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>MyParcel.com support</label>
-                    <comment><![CDATA[<a href="https://help.myparcel.com/a/solutions/folders/16000093114" target="_blank">https://help.myparcel.com/a/solutions/folders/16000093114</a>]]></comment>
+                    <comment><![CDATA[<a href="https://myparcel-com.odoo.com/magento" target="_blank">https://myparcel-com.odoo.com/magento</a>]]></comment>
                 </field>
-                <!--<field id="preference_url" translate="label comment" type="label" sortOrder="211" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>MyParcel.com backoffice</label>
-                    <comment><![CDATA[<a href="https://sandbox-backoffice.myparcel.com/settings" target="_blank">https://sandbox-backoffice.myparcel.com/settings</a>]]></comment>
-                </field>-->
             </group>
         </section>
-        <!--<section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
-            <group id="myparcelhomedelivery" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>MyParcel.com Home Delivery</label>
-                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Enabled for Checkout</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="2" showInWebsite="0" showInStore="0">
-                    <label>Home Delivery Title</label>
-                    <comment>Set the price for pickup shipping method.</comment>
-                </field>
-                <field id="price" translate="label" type="text" sortOrder="3" showInDefault="3" showInWebsite="0" showInStore="0">
-                    <label>Pickup Price</label>
-                    <comment>Set the price for pickup shipping method.</comment>
-                </field>
-                <field id="sallowspecific" translate="label" type="select" sortOrder="4" showInDefault="1"
-                       showInWebsite="1" showInStore="0">
-                    <label>Ship to Applicable Countries</label>
-                    <frontend_class>shipping-applicable-country</frontend_class>
-                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
-                </field>
-                <field id="specificcountry" translate="label" type="multiselect" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Ship to Specific Countries</label>
-                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-                    <can_be_empty>1</can_be_empty>
-                </field>
-                <field id="specificerrmsg" translate="label" type="textarea" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Displayed Error Message</label>
-                </field>
-                <field id="showmethod" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Show Method if Not Applicable</label>
-                    <frontend_class>shipping-skip-hide</frontend_class>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="sort_order" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Sort Order</label>
-                </field>
-            </group>
-            <group id="myparcelpickup" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>MyParcel.com Pickup</label>
-                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Enabled for Checkout</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="2" showInWebsite="0" showInStore="0">
-                    <label>Pickup Title</label>
-                    <comment>Set the price for pickup shipping method.</comment>
-                </field>
-                <field id="price" translate="label" type="text" sortOrder="3" showInDefault="3" showInWebsite="0" showInStore="0">
-                    <label>Pickup Price</label>
-                    <comment>Set the price for pickup shipping method.</comment>
-                </field>
-                <field id="sallowspecific" translate="label" type="select" sortOrder="4" showInDefault="1"
-                       showInWebsite="1" showInStore="0">
-                    <label>Ship to Applicable Countries</label>
-                    <frontend_class>shipping-applicable-country</frontend_class>
-                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
-                </field>
-                <field id="specificcountry" translate="label" type="multiselect" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Ship to Specific Countries</label>
-                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-                    <can_be_empty>1</can_be_empty>
-                </field>
-                <field id="specificerrmsg" translate="label" type="textarea" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Displayed Error Message</label>
-                </field>
-                <field id="showmethod" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Show Method if Not Applicable</label>
-                    <frontend_class>shipping-skip-hide</frontend_class>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="sort_order" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Sort Order</label>
-                </field>
-            </group>
-        </section>-->
     </system>
 </config>

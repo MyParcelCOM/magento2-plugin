@@ -2,23 +2,15 @@
 
 namespace MyParcelCOM\Magento\Adapter;
 
-use MyParcelCom\ApiSdk\MyParcelComApi;
-
 class MpShop extends MpAdapter
 {
-    function getShops()
+    public function getShops()
     {
-        $api = MyParcelComApi::getSingleton();
-        $shops = $api->getShops();
-
-        return $shops;
+        return $this->getApi()->getShops();
     }
 
-    function getDefaultShop()
+    public function getDefaultShop()
     {
-        $api = MyParcelComApi::getSingleton();
-        $shop = $api->getDefaultShop();
-
-        return $shop;
+        return $this->getApi()->getDefaultShop();
     }
 }

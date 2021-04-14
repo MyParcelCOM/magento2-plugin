@@ -2,27 +2,19 @@
 
 namespace MyParcelCOM\Magento\Controller\Adminhtml\Order;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order;
-use MyParcelCOM\Magento\Adapter\MpShipment;
 use MyParcelCOM\Magento\Model\Sales\MyParcelOrderCollection;
 
 class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
 {
-    const PATH_MODEL_ORDER = 'Magento\Sales\Model\Order';
     const PATH_URI_ORDER_INDEX = 'sales/order/index';
 
-    /**
-     * @var MyParcelOrderCollection
-     */
+    /** @var MyParcelOrderCollection */
     private $orderCollection;
 
     /**
-     * CreateAndPrintMyParcelTrack constructor.
-     *
      * @param Context $context
      */
     public function __construct(Context $context)
@@ -37,10 +29,10 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
     }
 
     /**
-     * Dispatch request
+     * Execute action based on request and return result
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
@@ -67,9 +59,8 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
             throw new LocalizedException(__('No items selected'));
         }
 
-        $this->orderCollection->addOrdersToCollection($orderIds);
-
         $this->orderCollection
+            ->addOrdersToCollection($orderIds)
             ->setNewMagentoShipment();
 
         if (!$this->orderCollection->hasShipment()) {
@@ -85,11 +76,7 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
                 ->updateGridByOrder();
 
             $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIncrementIds)));
-
-        } catch (\Throwable  $e) {
-            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
-            return $this;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }
 
