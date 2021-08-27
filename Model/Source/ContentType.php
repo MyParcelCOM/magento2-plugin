@@ -27,8 +27,8 @@ class ContentType implements ArrayInterface
     {
         return [
             'merchandise'          => __('Merchandise'),
-            'sample_merchandise'   => __('Merchandise'),
-            'returned_merchandise' => __('Returned'),
+            'sample_merchandise'   => __('Sample Merchandise'),
+            'returned_merchandise' => __('Returned Merchandise'),
             'gifts'                => __('Gifts'),
             'documents'            => __('Documents'),
         ];

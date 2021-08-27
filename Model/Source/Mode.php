@@ -4,7 +4,7 @@ namespace MyParcelCOM\Magento\Model\Source;
 
 use Magento\Framework\Option\ArrayInterface;
 
-class Incoterm implements ArrayInterface
+class Mode implements ArrayInterface
 {
     /**
      * @return array
@@ -12,8 +12,8 @@ class Incoterm implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'DAP', 'label' => __('DAP (Delivered At Place)')],
-            ['value' => 'DDP', 'label' => __('DDP (Delivered Duty Paid)')],
+            ['value' => '0', 'label' => __('Production')],
+            ['value' => '1', 'label' => __('Sandbox (test data)')],
         ];
     }
 
@@ -23,8 +23,8 @@ class Incoterm implements ArrayInterface
     public function toArray()
     {
         return [
-            'DAP' => __('DAP (Delivered At Place)'),
-            'DDP' => __('DDP (Delivered Duty Paid)'),
+            '0' => __('Production'),
+            '1' => __('Sandbox (test data)'),
         ];
     }
 }

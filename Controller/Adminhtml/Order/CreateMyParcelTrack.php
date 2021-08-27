@@ -3,11 +3,12 @@
 namespace MyParcelCOM\Magento\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\Exception\LocalizedException;
 use MyParcelCOM\Magento\Model\Sales\MyParcelOrderCollection;
+use Throwable;
 
-class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
+class CreateMyParcelTrack extends Action
 {
     const PATH_URI_ORDER_INDEX = 'sales/order/index';
 
@@ -31,8 +32,7 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
     /**
      * Execute action based on request and return result
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
@@ -76,7 +76,7 @@ class CreateMyParcelTrack extends \Magento\Framework\App\Action\Action
                 ->updateGridByOrder();
 
             $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIncrementIds)));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }
 

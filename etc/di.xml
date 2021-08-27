@@ -8,4 +8,5 @@
             </argument>
         </arguments>
     </virtualType>
+    <preference for="MyParcelCOM\Magento\Api\WebhookInterface" type="MyParcelCOM\Magento\Model\Webhook" />
 </config>

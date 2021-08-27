@@ -56,7 +56,6 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         /** @var Order\Shipment $shipment */
         foreach ($this->getShipmentsCollection() as $shipment) {
             if (!$this->shipmentHasTrack($shipment)) {
-                /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
                 $track = $this->setNewMagentoTrack($shipment);
             } else {
                 $track = $shipment->getTracksCollection()->getLastItem();
@@ -79,7 +78,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     {
         $orders = $this->getOrders();
 
-        /**@var \Magento\Sales\Model\Order $order * */
+        /** @var \Magento\Sales\Model\Order $order */
         foreach ($orders as $order) {
             /**
              * If this is printPDF mode, we don't need to create new shipment
@@ -124,12 +123,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
             switch ($unitWeight) {
                 case 'lbs':
-                    $weightInGrams = (int) round($shipmentWeight * 100 * 0.45359237);
+                    $weightInGrams = (int) round($shipmentWeight * 1000 * 0.45359237);
                     break;
 
                 case 'kgs':
                 default:
-                    $weightInGrams = (int) round($shipmentWeight * 100);
+                    $weightInGrams = (int) round($shipmentWeight * 1000);
             }
 
             $shipmentData = [
@@ -171,7 +170,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
             $customs = [
                 'content_type'   => $myparcelExportSetting['content_type'],
-                'invoice_number' => '#' . $order->getId(),
+                'invoice_number' => '#' . $order->getIncrementId(),
                 'non_delivery'   => $myparcelExportSetting['non_delivery'],
                 'incoterm'       => $myparcelExportSetting['incoterm'],
             ];
@@ -185,12 +184,10 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             $storeName = explode("\n", trim($storeName));
             $storeName = $storeName[(count($storeName) - 1)];
 
-            $orderID = $order->getIncrementId();
-
-            $description = $storeName . ' Order #' . $orderID;
+            $description = $storeName . ' Order #' . $order->getIncrementId();
 
             try {
-                $shipment = new MpShipment($this->objectManager);
+                $shipment = new MpShipment();
                 /** @var Shipment $response * */
                 $registerAt = $printMode ? 'now' : '';
                 $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description, $items, $customs);
@@ -199,13 +196,9 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             }
 
             if (!empty($response->getId())) {
-                $shipmentStatus = $response->getShipmentStatus();
-                $myParcelStatus = $shipmentStatus->getStatus()->getCode();
-                $myparcelShipmentId = $response->getId();
-
                 $track
-                    ->setData('myparcel_consignment_id', $myparcelShipmentId)
-                    ->setData('myparcel_status', $myParcelStatus)
+                    ->setData('myparcel_consignment_id', $response->getId())
+                    ->setData('myparcel_status', $response->getShipmentStatus()->getStatus()->getCode())
                     ->save();
             }
         }

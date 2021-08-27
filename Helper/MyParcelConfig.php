@@ -21,6 +21,22 @@ class MyParcelConfig extends AbstractHelper
     }
 
     /**
+     * @return bool
+     */
+    public function getWebhookActive()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_active');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getWebhookSecret()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_secret');
+    }
+
+    /**
      * @return string
      */
     public function getApiClientId()
