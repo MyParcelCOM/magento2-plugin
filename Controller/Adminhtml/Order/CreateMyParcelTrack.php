@@ -10,8 +10,6 @@ use Throwable;
 
 class CreateMyParcelTrack extends Action
 {
-    const PATH_URI_ORDER_INDEX = 'sales/order/index';
-
     /** @var MyParcelOrderCollection */
     private $orderCollection;
 
@@ -22,7 +20,6 @@ class CreateMyParcelTrack extends Action
     {
         parent::__construct($context);
 
-        $this->resultRedirectFactory = $context->getResultRedirectFactory();
         $this->orderCollection = new MyParcelOrderCollection(
             $context->getObjectManager(),
             $this->getRequest()
@@ -38,7 +35,7 @@ class CreateMyParcelTrack extends Action
     {
         $this->massAction();
 
-        return $this->resultRedirectFactory->create()->setPath(self::PATH_URI_ORDER_INDEX);
+        return $this->resultRedirectFactory->create()->setPath('sales/order/index');
     }
 
     /**
@@ -61,21 +58,22 @@ class CreateMyParcelTrack extends Action
 
         $this->orderCollection
             ->addOrdersToCollection($orderIds)
-            ->setNewMagentoShipment();
+            ->createMagentoShipments();
 
         if (!$this->orderCollection->hasShipment()) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_ORDER_HAS_NO_SHIPMENT));
             return $this;
         }
-        $orderIncrementIds = $this->orderCollection->getIncrementIds();
 
         try {
             $this->orderCollection
                 ->setMagentoTrack()
-                ->createShipmentConcepts()
-                ->updateGridByOrder();
+                ->createMyParcelShipments();
 
-            $this->messageManager->addSuccessMessage(sprintf(__(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED), implode(', ', $orderIncrementIds)));
+            $this->messageManager->addSuccessMessage(sprintf(
+                __(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED),
+                implode(', ', $this->orderCollection->getIncrementIds())
+            ));
         } catch (Throwable $e) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }

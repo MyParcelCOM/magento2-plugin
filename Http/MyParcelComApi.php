@@ -11,7 +11,7 @@ class MyParcelComApi
 {
     public function __construct()
     {
-        $configHelper = ObjectManager::getInstance()->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
+        $configHelper = ObjectManager::getInstance()->get(MyParcelConfig::class);
 
         $this->createSingletonApi($configHelper);
     }

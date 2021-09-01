@@ -3,17 +3,23 @@
 namespace MyParcelCOM\Magento\Model\Message;
 
 use Magento\Backend\Model\UrlInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Notification\MessageInterface;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
 
 class Notification implements MessageInterface
 {
-    private UrlInterface $backendUrl;
+    /** @var UrlInterface */
+    private $backendUrl;
 
-    public function __construct(UrlInterface $backendUrl)
-    {
+    /** @var MyParcelConfig */
+    private $configHelper;
+
+    public function __construct(
+        UrlInterface $backendUrl,
+        MyParcelConfig $configHelper
+    ) {
         $this->backendUrl = $backendUrl;
+        $this->configHelper = $configHelper;
     }
 
     public function getIdentity()
@@ -23,10 +29,7 @@ class Notification implements MessageInterface
 
     public function isDisplayed()
     {
-        /** @var MyParcelConfig $configHelper */
-        $configHelper = ObjectManager::getInstance()->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
-
-        return $configHelper->getWebhookActive() === null;
+        return $this->configHelper->getWebhookActive() === null;
     }
 
     public function getText()

@@ -3,10 +3,9 @@
 namespace MyParcelCOM\Magento\Adapter;
 
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Module\ModuleList;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Customs;
-use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
@@ -32,10 +31,12 @@ class MpShipment
     /**
      * @param array  $addressData
      * @param array  $shipmentData
-     * @param string $registerAt
-     * @return ShipmentInterface
-     **/
-    public function createShipment($addressData, $shipmentData, $registerAt = '', $description = null, $items = [], $customs = null)
+     * @param string $description
+     * @param array  $items
+     * @param array  $customs
+     * @return Shipment
+     */
+    public function createShipment(array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [])
     {
         $api = (new MyParcelComApi())->getInstance();
         $shop = $api->getDefaultShop();
@@ -44,7 +45,7 @@ class MpShipment
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
 
         $physicalProperties = (new PhysicalProperties())
-            ->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
+            ->setWeight($shipmentData['weight']);
 
         $recipient = (new Address())
             ->setFirstName($addressData['first_name'])
@@ -56,7 +57,8 @@ class MpShipment
             ->setEmail($addressData['email'])
             ->setPhoneNumber($addressData['phone_number']);
 
-        $moduleList = ObjectManager::getInstance()->get('Magento\Framework\Module\ModuleList');
+        /** @var ModuleList $moduleList */
+        $moduleList = ObjectManager::getInstance()->get(ModuleList::class);
         $moduleInfo = $moduleList->getOne('MyParcelCOM_Magento');
 
         $shipment = (new Shipment())
@@ -81,7 +83,7 @@ class MpShipment
             $shipment->addItem($shipmentItem);
         }
 
-        if (!empty($customs)) {
+        if ($customs) {
             $shipmentCustoms = (new Customs())
                 ->setContentType($customs['content_type'])
                 ->setInvoiceNumber($customs['invoice_number'])

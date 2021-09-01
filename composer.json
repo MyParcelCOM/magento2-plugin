@@ -9,10 +9,13 @@
         "AFL-3.0"
     ],
     "require": {
+        "ext-json": "*",
         "myparcelcom/api-sdk": "^2.10"
     },
     "autoload": {
-        "files": [ "registration.php" ],
+        "files": [
+            "registration.php"
+        ],
         "psr-4" : {
             "MyParcelCOM\\Magento\\" : ""
         }

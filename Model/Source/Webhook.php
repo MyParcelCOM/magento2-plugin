@@ -84,7 +84,7 @@ class Webhook extends Value
     /**
      * @param string $hookId
      */
-    private function deleteWebhook($hookId)
+    private function deleteWebhook(string $hookId)
     {
         try {
             $api = (new MyParcelComApi())->getInstance();
@@ -116,7 +116,7 @@ class Webhook extends Value
     /**
      * @param string|null $hookId
      */
-    private function saveHookId($hookId)
+    private function saveHookId(?string $hookId)
     {
         /** @var WriterInterface $configWriter */
         $configWriter = ObjectManager::getInstance()->get(WriterInterface::class);
@@ -130,7 +130,7 @@ class Webhook extends Value
     /**
      * @param string|null $hookSecret
      */
-    private function saveHookSecret($hookSecret)
+    private function saveHookSecret(?string $hookSecret)
     {
         /** @var WriterInterface $configWriter */
         $configWriter = ObjectManager::getInstance()->get(WriterInterface::class);

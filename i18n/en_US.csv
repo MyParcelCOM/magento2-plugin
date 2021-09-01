@@ -1,16 +1,3 @@
-shipment-at-sorting,At sorting
-shipment-concept,Concept
-shipment-created-without-tracking,Created without tracking
-shipment-delivered,Delivered
-shipment-failed,Failed
-shipment-on-the-way-to-hub,On the way to hub
-shipment-processing,Processing
-shipment-received-by-carrier,Received by carrier
-shipment-registered,Registered
-shipment-registration-failed,Registration failed
-shipment-returned-to-sender,Returned to sender
-shipment-voided,Voided
-shipment-with-courier,With courier
-error_order_has_no_shipment,No shipment can be made with this order. Shipments can not be created if the status is On Hold or if the product is digital
+error_order_has_no_shipment,No shipment can be made for this order. Shipments cannot be created if the status is On Hold or if the product is digital.
 error_shipment_create_fail,Some of the selected shipments have not been created.
-success_shipment_created,Selected shipments from orders: %s have been created successfully at MyParcel.com
+success_shipment_created,Selected shipments from orders: %s have been created at MyParcel.com
