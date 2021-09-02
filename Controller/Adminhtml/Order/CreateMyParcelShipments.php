@@ -4,11 +4,12 @@ namespace MyParcelCOM\Magento\Controller\Adminhtml\Order;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use MyParcelCOM\Magento\Model\Sales\MyParcelOrderCollection;
 use Throwable;
 
-class CreateMyParcelTrack extends Action
+class CreateMyParcelShipments extends Action
 {
     /** @var MyParcelOrderCollection */
     private $orderCollection;
@@ -20,16 +21,11 @@ class CreateMyParcelTrack extends Action
     {
         parent::__construct($context);
 
-        $this->orderCollection = new MyParcelOrderCollection(
-            $context->getObjectManager(),
-            $this->getRequest()
-        );
+        $this->orderCollection = new MyParcelOrderCollection($context->getObjectManager());
     }
 
     /**
-     * Execute action based on request and return result
-     *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      */
     public function execute()
     {
@@ -39,9 +35,6 @@ class CreateMyParcelTrack extends Action
     }
 
     /**
-     * Get selected items and process them
-     *
-     * @return $this
      * @throws LocalizedException
      */
     private function massAction()
@@ -77,7 +70,5 @@ class CreateMyParcelTrack extends Action
         } catch (Throwable $e) {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
         }
-
-        return $this;
     }
 }

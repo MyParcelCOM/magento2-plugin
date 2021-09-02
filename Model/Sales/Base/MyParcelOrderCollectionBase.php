@@ -2,15 +2,19 @@
 
 namespace MyParcelCOM\Magento\Model\Sales\Base;
 
+use Exception;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\DB\Transaction;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Sales\Model\Convert\Order as ConvertOrder;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Sales\Model\ResourceModel\Order\Shipment\Track\Collection as TrackCollection;
+use Magento\Shipping\Model\ShipmentNotifier;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
-use MyParcelCOM\Magento\Model\Sales\MyParcelTrack;
 
 class MyParcelOrderCollectionBase
 {
@@ -23,27 +27,19 @@ class MyParcelOrderCollectionBase
     /** @var ObjectManagerInterface */
     protected $objectManager;
 
-    /** @var ObjectManagerInterface */
-    protected $myParcelTrack;
-
     /** @var MyParcelConfig */
     protected $configHelper;
 
     /**
      * @param ObjectManagerInterface $objectManagerInterface
-     * @param RequestInterface       $request
      */
-    public function __construct(ObjectManagerInterface $objectManagerInterface, $request = null)
+    public function __construct(ObjectManagerInterface $objectManagerInterface)
     {
         $this->objectManager = $objectManagerInterface;
-        $this->request = $request;
-        $this->myParcelTrack = new MyParcelTrack();
-        $this->configHelper = $this->objectManager->get('MyParcelCOM\Magento\Helper\MyParcelConfig');
+        $this->configHelper = $this->objectManager->get(MyParcelConfig::class);
     }
 
     /**
-     * Get all Magento orders
-     *
      * @return Collection|Order[]
      */
     public function getOrders()
@@ -52,21 +48,15 @@ class MyParcelOrderCollectionBase
     }
 
     /**
-     * This create a shipment. Observer/NewShipment() create Magento and MyParcel Track
-     *
      * @param Order $order
      * @throws LocalizedException
      */
     protected function createMagentoShipment(Order $order)
     {
-        /**
-         * @var Shipment                     $shipment
-         * @var \Magento\Sales\Model\Convert\Order $convertOrder
-         */
-        $convertOrder = $this->objectManager->create('Magento\Sales\Model\Convert\Order');
+        /** @var ConvertOrder $convertOrder */
+        $convertOrder = $this->objectManager->create(ConvertOrder::class);
         $shipment = $convertOrder->toShipment($order);
 
-        // Loop through order items
         foreach ($order->getAllItems() as $orderItem) {
             if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
                 continue;
@@ -83,21 +73,23 @@ class MyParcelOrderCollectionBase
 
         try {
             // Save created shipment and order
-            $transaction = $this->objectManager->create('Magento\Framework\DB\Transaction');
+            /** @var Transaction $transaction */
+            $transaction = $this->objectManager->create(Transaction::class);
             $transaction->addObject($shipment)->addObject($shipment->getOrder())->save();
 
             // Send email
-            $this->objectManager->create('Magento\Shipping\Model\ShipmentNotifier')
-                ->notify($shipment);
-        } catch (\Exception $e) {
+            /** @var ShipmentNotifier $shipmentNotifier */
+            $shipmentNotifier = $this->objectManager->create(ShipmentNotifier::class);
+            $shipmentNotifier->notify($shipment);
+        } catch (Exception $e) {
             throw new LocalizedException(__($e->getMessage()));
         }
     }
 
     /**
-     * @return array|\Magento\Sales\Model\ResourceModel\order\shipment\Collection
+     * @return array
      */
-    protected function getShipmentsCollection()
+    protected function getShipments()
     {
         if ($this->_orders == null) {
             return [];
@@ -128,12 +120,12 @@ class MyParcelOrderCollectionBase
      * Get all tracks
      *
      * @param Shipment $shipment
-     * @return \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\Collection
+     * @return TrackCollection
      */
     protected function getTrackByShipment($shipment)
     {
-        /* @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track\Collection $collection */
-        $collection = $this->objectManager->create('\Magento\Sales\Model\ResourceModel\Order\Shipment\Track\Collection');
+        /* @var TrackCollection $collection */
+        $collection = $this->objectManager->create(TrackCollection::class);
         $collection
             ->addAttributeToFilter('parent_id', $shipment->getId());
 
@@ -145,7 +137,6 @@ class MyParcelOrderCollectionBase
      *
      * @param Shipment $shipment
      * @return Track
-     * @throws \Exception
      */
     protected function setNewMagentoTrack($shipment)
     {

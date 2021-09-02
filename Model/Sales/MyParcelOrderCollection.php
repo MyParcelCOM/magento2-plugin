@@ -19,6 +19,9 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
     const SUCCESS_SHIPMENT_CREATED = 'success_shipment_created';
 
+    /** @var Track[] */
+    private $_tracks = [];
+
     /**
      * @param $orderCollection Collection
      * @return $this
@@ -57,14 +60,14 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     public function setMagentoTrack()
     {
         /** @var Order\Shipment $shipment */
-        foreach ($this->getShipmentsCollection() as $shipment) {
+        foreach ($this->getShipments() as $shipment) {
             if (!$this->shipmentHasTrack($shipment)) {
                 $track = $this->setNewMagentoTrack($shipment);
             } else {
                 $track = $shipment->getTracksCollection()->getLastItem();
             }
 
-            $this->myParcelTrack->addTrack($track, $shipment->getOrderId());
+            $this->_tracks[$shipment->getOrderId()] = $track;
         }
 
         $this->getOrders()->save();
@@ -84,8 +87,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         $orders = $this->getOrders();
 
         foreach ($orders as $order) {
-            /** @var Track $track */
-            $track = $this->myParcelTrack->getTrackByOrderId($order->getId());
+            $track = $this->_tracks[$order->getId()];
 
             /** @var Data $data */
             $data = ObjectManager::getInstance()->create(Data::class);
@@ -233,9 +235,11 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     public function getIncrementIds()
     {
         $orderIncrementId = [];
+
         foreach ($this->getOrders() as $order) {
             $orderIncrementId[] = '#' . $order->getIncrementId();
         }
+
         return $orderIncrementId;
     }
 }

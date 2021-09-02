@@ -6,6 +6,8 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Phrase;
 use Magento\Framework\Webapi\Exception;
 use Magento\Framework\Webapi\Rest\Request;
+use Magento\Sales\Model\Order\Shipment\Track;
+use Magento\Sales\Model\ResourceModel\Order\Shipment\Track as TrackResource;
 use MyParcelCOM\Magento\Api\WebhookInterface;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
 use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
@@ -21,14 +23,19 @@ class Webhook implements WebhookInterface
     /** @var Request */
     private $request;
 
+    /** @var TrackResource */
+    private $trackResource;
+
     public function __construct(
         MyParcelConfig $config,
         DataResource $dataResource,
-        Request $request
+        Request $request,
+        TrackResource $trackResource
     ) {
         $this->config = $config;
         $this->dataResource = $dataResource;
         $this->request = $request;
+        $this->trackResource = $trackResource;
     }
 
     /**
@@ -60,7 +67,12 @@ class Webhook implements WebhookInterface
 
             if (isset($shipmentData['attributes']['tracking_code'])) {
                 $data->setTrackingCode($shipmentData['attributes']['tracking_code']);
-                // TODO: use setTrackNumber() on associated Track
+
+                /** @var Track $data */
+                $track = ObjectManager::getInstance()->create(Track::class);
+                $this->trackResource->load($track, $data->getTrackId());
+                $track->setTrackNumber($shipmentData['attributes']['tracking_code']);
+                $this->trackResource->save($track);
             }
             if (isset($shipmentData['attributes']['tracking_url'])) {
                 $data->setTrackingUrl($shipmentData['attributes']['tracking_url']);
