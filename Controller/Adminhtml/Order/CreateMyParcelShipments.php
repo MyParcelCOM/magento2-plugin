@@ -26,18 +26,9 @@ class CreateMyParcelShipments extends Action
 
     /**
      * @return ResultInterface
-     */
-    public function execute()
-    {
-        $this->massAction();
-
-        return $this->resultRedirectFactory->create()->setPath('sales/order/index');
-    }
-
-    /**
      * @throws LocalizedException
      */
-    private function massAction()
+    public function execute()
     {
         if ($this->getRequest()->getParam('selected_ids')) {
             $orderIds = explode(',', $this->getRequest()->getParam('selected_ids'));
@@ -53,22 +44,23 @@ class CreateMyParcelShipments extends Action
             ->addOrdersToCollection($orderIds)
             ->createMagentoShipments();
 
-        if (!$this->orderCollection->hasShipment()) {
+        if ($this->orderCollection->hasShipment()) {
+            try {
+                $this->orderCollection
+                    ->setMagentoTrack()
+                    ->createMyParcelShipments();
+
+                $this->messageManager->addSuccessMessage(sprintf(
+                    __(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED),
+                    implode(', ', $this->orderCollection->getIncrementIds())
+                ));
+            } catch (Throwable $e) {
+                $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
+            }
+        } else {
             $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_ORDER_HAS_NO_SHIPMENT));
-            return $this;
         }
 
-        try {
-            $this->orderCollection
-                ->setMagentoTrack()
-                ->createMyParcelShipments();
-
-            $this->messageManager->addSuccessMessage(sprintf(
-                __(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED),
-                implode(', ', $this->orderCollection->getIncrementIds())
-            ));
-        } catch (Throwable $e) {
-            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
-        }
+        return $this->resultRedirectFactory->create()->setPath('sales/order/index');
     }
 }

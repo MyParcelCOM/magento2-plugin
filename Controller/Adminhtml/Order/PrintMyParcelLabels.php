@@ -7,7 +7,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use MyParcelCom\ApiSdk\LabelCombiner;
@@ -38,19 +38,10 @@ class PrintMyParcelLabels extends Action
     }
 
     /**
-     * @return ResultInterface
-     */
-    public function execute()
-    {
-        $this->massAction();
-
-        return $this->resultRedirectFactory->create()->setPath('sales/order/index');
-    }
-
-    /**
+     * @return ResponseInterface
      * @throws LocalizedException
      */
-    private function massAction()
+    public function execute()
     {
         if ($this->getRequest()->getParam('selected_ids')) {
             $orderIds = explode(',', $this->getRequest()->getParam('selected_ids'));
@@ -67,7 +58,7 @@ class PrintMyParcelLabels extends Action
         $dataCollection = ObjectManager::getInstance()->create(DataCollection::class);
         $collection = $dataCollection->addFieldToFilter('order_id', ['in' => $orderIds]);
 
-        // TODO: This currently uses separate requests to get shipments and files. The SDK needs to be updated.
+        // TODO: The code below uses separate requests to get shipments and files. The SDK needs to be updated.
         $api = (new MyParcelComApi())->getInstance();
 
         $shipments = [];

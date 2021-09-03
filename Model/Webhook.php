@@ -45,7 +45,9 @@ class Webhook implements WebhookInterface
     {
         $body = $this->request->getBodyParams();
 
-        $this->verifySecret($body);
+        if (!$this->hasValidSignature($body)) {
+            throw new Exception(new Phrase('Signature mismatch'), 0, 401);
+        }
 
         $shipmentData = $body['data']['relationships']['shipment']['data'];
         $statusData = $body['data']['relationships']['status']['data'];
@@ -83,22 +85,21 @@ class Webhook implements WebhookInterface
 
             $this->dataResource->save($data);
 
-            return 1;
+            return true;
         }
 
-        return 0;
+        return false;
     }
 
     /**
      * @param array $body
-     * @throws Exception
+     * @return bool
      */
-    private function verifySecret($body)
+    private function hasValidSignature($body)
     {
+        $hash = hash_hmac('sha256', json_encode($body), $this->config->getWebhookSecret());
         $signature = $this->request->getHeader('X-MYPARCELCOM-SIGNATURE');
 
-        if (hash_hmac('sha256', json_encode($body), $this->config->getWebhookSecret()) !== $signature) {
-            throw new Exception(new Phrase('Signature mismatch'), 0, 401);
-        }
+        return $hash === $signature;
     }
 }
