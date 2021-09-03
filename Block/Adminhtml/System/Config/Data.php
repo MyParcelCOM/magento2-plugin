@@ -2,9 +2,9 @@
 
 namespace MyParcelCOM\Magento\Block\Adminhtml\System\Config;
 
-use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\Element\Template;
 
-class Data extends \Magento\Framework\View\Element\Template
+class Data extends Template
 {
     public function getAjaxUrl()
     {

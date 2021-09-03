@@ -21,6 +21,22 @@ class MyParcelConfig extends AbstractHelper
     }
 
     /**
+     * @return bool
+     */
+    public function getWebhookActive()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_active');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getWebhookSecret()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_secret');
+    }
+
+    /**
      * @return string
      */
     public function getApiClientId()
@@ -56,8 +72,8 @@ class MyParcelConfig extends AbstractHelper
      * @param string $key group_id/field_id
      * @param string $scope
      * @return string|array
-     **/
-    public function getGeneralConfig($key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
+     */
+    public function getGeneralConfig(string $key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
     {
         $configValue = $this->scopeConfig->getValue('myparcel_section_general/' . $key, $scope);
 

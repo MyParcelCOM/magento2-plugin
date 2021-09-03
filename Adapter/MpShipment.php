@@ -2,15 +2,16 @@
 
 namespace MyParcelCOM\Magento\Adapter;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Module\ModuleList;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Customs;
-use MyParcelCom\ApiSdk\Resources\Interfaces\PhysicalPropertiesInterface;
-use MyParcelCom\ApiSdk\Resources\Interfaces\ShipmentInterface;
 use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
+use MyParcelCOM\Magento\Http\MyParcelComApi;
 
-class MpShipment extends MpAdapter
+class MpShipment
 {
     private $_defaultAddressData = [
         'first_name'   => '',
@@ -30,19 +31,21 @@ class MpShipment extends MpAdapter
     /**
      * @param array  $addressData
      * @param array  $shipmentData
-     * @param string $registerAt
-     * @return ShipmentInterface
-     **/
-    public function createShipment($addressData, $shipmentData, $registerAt = '', $description = null, $items = [], $customs = null)
+     * @param string $description
+     * @param array  $items
+     * @param array  $customs
+     * @return Shipment
+     */
+    public function createShipment(array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [])
     {
-        $mpShop = new MpShop();
-        $shop = $mpShop->getDefaultShop();
+        $api = (new MyParcelComApi())->getInstance();
+        $shop = $api->getDefaultShop();
 
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);
 
         $physicalProperties = (new PhysicalProperties())
-            ->setWeight($shipmentData['weight'], PhysicalPropertiesInterface::WEIGHT_GRAM);
+            ->setWeight($shipmentData['weight']);
 
         $recipient = (new Address())
             ->setFirstName($addressData['first_name'])
@@ -54,7 +57,12 @@ class MpShipment extends MpAdapter
             ->setEmail($addressData['email'])
             ->setPhoneNumber($addressData['phone_number']);
 
+        /** @var ModuleList $moduleList */
+        $moduleList = ObjectManager::getInstance()->get(ModuleList::class);
+        $moduleInfo = $moduleList->getOne('MyParcelCOM_Magento');
+
         $shipment = (new Shipment())
+            ->setChannel('magento_' . $moduleInfo['setup_version'])
             ->setShop($shop)
             ->setRecipientAddress($recipient)
             ->setSenderAddress($shop->getSenderAddress())
@@ -70,12 +78,12 @@ class MpShipment extends MpAdapter
                 ->setHsCode($item['hs_code'])
                 ->setOriginCountryCode($item['origin_country_code'])
                 ->setCurrency($item['item_value']['currency'])
-                ->setItemValue($item['item_value']['amount']);
+                ->setItemValue($item['item_value']['amount'] * 100);
 
             $shipment->addItem($shipmentItem);
         }
 
-        if (!empty($customs)) {
+        if ($customs) {
             $shipmentCustoms = (new Customs())
                 ->setContentType($customs['content_type'])
                 ->setInvoiceNumber($customs['invoice_number'])
@@ -85,6 +93,6 @@ class MpShipment extends MpAdapter
             $shipment->setCustoms($shipmentCustoms);
         }
 
-        return $this->getApi()->createShipment($shipment);
+        return $api->createShipment($shipment);
     }
 }

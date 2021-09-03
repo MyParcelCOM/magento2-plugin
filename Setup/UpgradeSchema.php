@@ -13,65 +13,75 @@ class UpgradeSchema implements UpgradeSchemaInterface
     {
         $setup->startSetup();
 
-        $tableName = $setup->getTable('sales_shipment_track');
-        if ($setup->getConnection()->isTableExists($tableName) === true) {
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'myparcel_consignment_id',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'MyParcel id',
-                    'length'  => 255,
-                ]
-            );
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'myparcel_status',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'MyParcel status',
-                    'length'  => 255,
-                ]
-            );
-        }
+        $tableName = $setup->getTable('myparcelcom_data');
+        if (!$setup->getConnection()->isTableExists($tableName)) {
+            $table = $setup->getConnection()
+                ->newTable($tableName)
+                ->addColumn(
+                    'id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true]
+                )
+                ->addColumn(
+                    'order_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => false]
+                )
+                ->addColumn(
+                    'track_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => false]
+                )
+                ->addColumn(
+                    'shipment_id',
+                    Table::TYPE_TEXT,
+                    36
+                )
+                ->addColumn(
+                    'status_code',
+                    Table::TYPE_TEXT,
+                    255
+                )
+                ->addColumn(
+                    'status_name',
+                    Table::TYPE_TEXT,
+                    255
+                )
+                ->addColumn(
+                    'tracking_code',
+                    Table::TYPE_TEXT,
+                    255
+                )
+                ->addColumn(
+                    'tracking_url',
+                    Table::TYPE_TEXT,
+                    255
+                )
+                ->setComment('MyParcel.com Data Table')
+                ->setOption('type', 'InnoDB')
+                ->setOption('charset', 'utf8');
 
-        $tableName = $setup->getTable('sales_order');
-        if ($setup->getConnection()->isTableExists($tableName) === true) {
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'track_status',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'Status of MyParcel consignment',
-                ]
-            );
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'track_number',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'Track number of MyParcel consignment',
-                ]
-            );
-        }
+            $setup->getConnection()->createTable($table);
 
-        $tableName = $setup->getTable('sales_order_grid');
-        if ($setup->getConnection()->isTableExists($tableName) === true) {
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'track_status',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'Status of MyParcel consignment',
-                ]
+            $setup->getConnection()->addIndex(
+                $setup->getTable('myparcelcom_data'),
+                $setup->getIdxName('myparcelcom_data', ['order_id']),
+                ['order_id']
             );
-            $setup->getConnection()->addColumn(
-                $tableName,
-                'track_number',
-                [
-                    'type'    => Table::TYPE_TEXT,
-                    'comment' => 'Track number of MyParcel consignment',
-                ]
+
+            $setup->getConnection()->addIndex(
+                $setup->getTable('myparcelcom_data'),
+                $setup->getIdxName('myparcelcom_data', ['track_id']),
+                ['track_id']
+            );
+
+            $setup->getConnection()->addIndex(
+                $setup->getTable('myparcelcom_data'),
+                $setup->getIdxName('myparcelcom_data', ['shipment_id']),
+                ['shipment_id']
             );
         }
 

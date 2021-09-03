@@ -1,40 +1,27 @@
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <listingToolbar name="listing_top">
         <massaction name="listing_massaction">
-            <action name="create_myparcel_shipment">
+            <action name="create_myparcel_shipments">
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">create_myparcel_shipment</item>
-                        <item name="id" xsi:type="string">create_myparcel_shipment</item>
+                        <item name="type" xsi:type="string">create_myparcel_shipments</item>
+                        <item name="id" xsi:type="string">create_myparcel_shipments</item>
                         <item name="label" xsi:type="string" translate="true">Save orders to MyParcel.com</item>
-                        <item name="url" xsi:type="url" path="myparcelcom/order/CreateMyParcelTrack"/>
+                        <item name="url" xsi:type="url" path="myparcelcom/order/CreateMyParcelShipments"/>
                     </item>
                 </argument>
             </action>
         </massaction>
     </listingToolbar>
     <columns name="sales_order_columns">
-        <column name="track_status" class="MyParcelCOM\Magento\Ui\Component\Listing\Column\TrackStatus">
+        <column name="myparcelcom_data" class="MyParcelCOM\Magento\Ui\Component\Listing\Column\SalesOrderData">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                     <item name="visible" xsi:type="boolean">true</item>
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Shipment Status</item>
-                    <item name="sortOrder" xsi:type="number">5</item>
-                    <item name="resizeEnabled" xsi:type="boolean">true</item>
-                    <item name="resizeDefaultWidth" xsi:type="string">160</item>
-                </item>
-            </argument>
-        </column>
-        <column name="track_number" class="MyParcelCOM\Magento\Ui\Component\Listing\Column\TrackNumber">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="visible" xsi:type="boolean">true</item>
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Tracking Number</item>
-                    <item name="sortOrder" xsi:type="number">6</item>
+                    <item name="label" xsi:type="string" translate="true">MyParcel.com Data</item>
+                    <item name="sortOrder" xsi:type="number">9</item>
                     <item name="resizeEnabled" xsi:type="boolean">true</item>
                     <item name="resizeDefaultWidth" xsi:type="string">160</item>
                 </item>

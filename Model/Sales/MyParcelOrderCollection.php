@@ -2,10 +2,15 @@
 
 namespace MyParcelCOM\Magento\Model\Sales;
 
+use Exception;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
-use MyParcelCom\ApiSdk\Resources\Shipment;
+use Magento\Sales\Model\Order\Shipment\Track;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 use MyParcelCOM\Magento\Adapter\MpShipment;
+use MyParcelCOM\Magento\Model\Data;
+use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
 
 class MyParcelOrderCollection extends MyParcelOrderCollectionBase
@@ -14,8 +19,11 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
     const SUCCESS_SHIPMENT_CREATED = 'success_shipment_created';
 
+    /** @var Track[] */
+    private $_tracks = [];
+
     /**
-     * @param $orderCollection \Magento\Sales\Model\ResourceModel\Order\Collection
+     * @param $orderCollection Collection
      * @return $this
      */
     public function setOrderCollection($orderCollection)
@@ -30,12 +38,11 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
      *
      * @throws LocalizedException
      */
-    public function setNewMagentoShipment()
+    public function createMagentoShipments()
     {
-        /** @var Order $order */
         foreach ($this->getOrders() as $order) {
             if ($order->canShip() && !$order->hasShipments()) {
-                $this->createShipment($order);
+                $this->createMagentoShipment($order);
             }
         }
 
@@ -48,21 +55,19 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
     /**
      * Create new Magento Track and save order
-     * @param boolean $printMode
      * @return $this
      */
-    public function setMagentoTrack($printMode = false)
+    public function setMagentoTrack()
     {
         /** @var Order\Shipment $shipment */
-        foreach ($this->getShipmentsCollection() as $shipment) {
+        foreach ($this->getShipments() as $shipment) {
             if (!$this->shipmentHasTrack($shipment)) {
-                /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
                 $track = $this->setNewMagentoTrack($shipment);
             } else {
                 $track = $shipment->getTracksCollection()->getLastItem();
             }
 
-            $this->myParcelTrack->addTrack($track, $shipment->getOrderId());
+            $this->_tracks[$shipment->getOrderId()] = $track;
         }
 
         $this->getOrders()->save();
@@ -71,29 +76,27 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     }
 
     /**
-     * @param bool $printMode
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
-    public function createShipmentConcepts($printMode = false)
+    public function createMyParcelShipments()
     {
+        /** @var DataResource $dataResource */
+        $dataResource = ObjectManager::getInstance()->create(DataResource::class);
+
         $orders = $this->getOrders();
 
-        /**@var \Magento\Sales\Model\Order $order * */
         foreach ($orders as $order) {
-            /**
-             * If this is printPDF mode, we don't need to create new shipment
-             * for an order that has already been exported
-             **/
-            /** @var \Magento\Sales\Model\Order\Shipment\Track $track */
-            $track = $this->myParcelTrack->getTrackByOrderId($order->getId());
+            $track = $this->_tracks[$order->getId()];
 
-            $shipmentId = $track->getData('myparcel_consignment_id');
-            if ($printMode && !empty($shipmentId)) {
+            /** @var Data $data */
+            $data = ObjectManager::getInstance()->create(Data::class);
+            $dataResource->load($data, $order->getId(), 'order_id');
+
+            if ($data->getId()) {
                 continue;
             }
 
-            /**@var \Magento\Sales\Model\Order\Address $shippingAddressObj * */
             $shippingAddressObj = $order->getShippingAddress();
             $streets = $shippingAddressObj->getStreet();
             $street1 = $street2 = $street3 = $street4 = '';
@@ -116,20 +119,17 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'phone_number' => $shippingAddressObj->getTelephone(),
             ];
 
-            /**
-             * Weight
-             **/
             $shipmentWeight = $order->getWeight();
             $unitWeight = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general/locale/weight_unit');
 
             switch ($unitWeight) {
                 case 'lbs':
-                    $weightInGrams = (int) round($shipmentWeight * 100 * 0.45359237);
+                    $weightInGrams = (int) round($shipmentWeight * 1000 * 0.45359237);
                     break;
 
                 case 'kgs':
                 default:
-                    $weightInGrams = (int) round($shipmentWeight * 100);
+                    $weightInGrams = (int) round($shipmentWeight * 1000);
             }
 
             $shipmentData = [
@@ -171,74 +171,35 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
             $customs = [
                 'content_type'   => $myparcelExportSetting['content_type'],
-                'invoice_number' => '#' . $order->getId(),
+                'invoice_number' => '#' . $order->getIncrementId(),
                 'non_delivery'   => $myparcelExportSetting['non_delivery'],
                 'incoterm'       => $myparcelExportSetting['incoterm'],
             ];
 
-            /**
-             * Add Description
-             **/
-            //Send description to MyParcel. Please name it `storename` Order #`ordernumber`
-
             $storeName = $order->getStoreName();
             $storeName = explode("\n", trim($storeName));
             $storeName = $storeName[(count($storeName) - 1)];
-
-            $orderID = $order->getIncrementId();
-
-            $description = $storeName . ' Order #' . $orderID;
+            $description = $storeName . ' Order #' . $order->getIncrementId();
 
             try {
-                $shipment = new MpShipment($this->objectManager);
-                /** @var Shipment $response * */
-                $registerAt = $printMode ? 'now' : '';
-                $response = $shipment->createShipment($addressData, $shipmentData, $registerAt, $description, $items, $customs);
-            } catch (\Exception $e) {
-                throw new \Exception($e->getMessage());
+                $shipmentBuilder = new MpShipment();
+
+                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, $description, $items, $customs);
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
             }
 
-            if (!empty($response->getId())) {
-                $shipmentStatus = $response->getShipmentStatus();
-                $myParcelStatus = $shipmentStatus->getStatus()->getCode();
-                $myparcelShipmentId = $response->getId();
+            if (!empty($shipment->getId())) {
+                $data->setOrderId($order->getId());
+                $data->setTrackId($track->getId());
+                $data->setShipmentId($shipment->getId());
+                $status = $shipment->getShipmentStatus()->getStatus();
+                $data->setStatusCode($status->getCode());
+                $data->setStatusName($status->getName());
 
-                $track
-                    ->setData('myparcel_consignment_id', $myparcelShipmentId)
-                    ->setData('myparcel_status', $myParcelStatus)
-                    ->save();
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Update column track_status in sales_order_grid
-     *
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function updateGridByOrder()
-    {
-        if (empty($this->getOrders())) {
-            throw new LocalizedException(__('MagentoOrderCollection::order array is empty'));
-        }
-
-        /**
-         * @var Order $order
-         */
-        foreach ($this->getOrders() as $order) {
-            $aHtml = $this->myParcelTrack->getHtmlForGridColumns($order->getId());
-
-            if ($aHtml['track_status']) {
-                $order->setData('track_status', $aHtml['track_status']);
-            }
-            if ($aHtml['track_number']) {
-                $order->setData('track_number', $aHtml['track_number']);
+                $dataResource->save($data);
             }
         }
-        $this->getOrders()->save();
 
         return $this;
     }
@@ -246,11 +207,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     public function refreshOrdersCollection()
     {
         $orderIds = [];
-        /**@var \Magento\Sales\Model\Order $order * */
+
         foreach ($this->getOrders() as $order) {
             $orderIds[] = $order->getId();
         }
         $this->getOrders()->clear();
+
         return $this->addOrdersToCollection($orderIds);
     }
 
@@ -260,8 +222,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
      */
     public function addOrdersToCollection($orderIds)
     {
-        /** @var \Magento\Sales\Model\ResourceModel\Order\Collection $collection */
-        $collection = $this->objectManager->get('\Magento\Sales\Model\ResourceModel\Order\Collection');
+        /** @var Collection $collection */
+        $collection = $this->objectManager->get(Collection::class);
         $collection->addAttributeToFilter('entity_id', ['in' => $orderIds]);
         $this->setOrderCollection($collection);
         return $this;
@@ -273,9 +235,11 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     public function getIncrementIds()
     {
         $orderIncrementId = [];
+
         foreach ($this->getOrders() as $order) {
             $orderIncrementId[] = '#' . $order->getIncrementId();
         }
+
         return $orderIncrementId;
     }
 }

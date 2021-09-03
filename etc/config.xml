@@ -4,6 +4,8 @@
         <myparcel_section_general>
             <myparcel_group_api>
                 <api_client_environment>1</api_client_environment>
+                <webhook_id></webhook_id>
+                <webhook_secret></webhook_secret>
             </myparcel_group_api>
             <myparcel_group_setting>
                 <content_type>merchandise</content_type>

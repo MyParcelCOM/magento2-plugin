@@ -11,42 +11,47 @@
             <resource>MyParcelCOM_Magento::general_configuration</resource>
             <group id="myparcel_group_api" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>API Configuration</label>
-                <field id="api_client_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
-                    <label>API Client ID</label>
-                    <comment>API Client ID.</comment>
+                <field id="api_client_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Client ID</label>
+                    <validate>required-entry</validate>
                 </field>
-                <field id="api_client_secret_key" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
-                    <label>API Client Secret Key</label>
-                    <comment>API Client Secret Key.</comment>
+                <field id="api_client_secret_key" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Client Secret</label>
+                    <validate>required-entry</validate>
                 </field>
-                <field id="api_client_environment" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
-                    <label>Test mode</label>
-                    <comment>Communicate with the sandbox environment.</comment>
+                <field id="api_client_environment" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>API mode</label>
+                    <source_model>MyParcelCOM\Magento\Model\Source\Mode</source_model>
+                </field>
+                <field id="webhook_active" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Webhook active</label>
+                    <comment>Automatically retrieve status updates for your MyParcel.com shipments.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <backend_model>MyParcelCOM\Magento\Model\Source\Webhook</backend_model>
                 </field>
             </group>
-            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="myparcel_group_setting" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="1">
                 <label>Default Values</label>
-                <field id="default_hs_code" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="default_hs_code" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>HS Code</label>
-                    <comment>Classifies the goods with HS code.</comment>
+                    <comment>Classify your products with a default HS code.</comment>
                 </field>
-                <field id="default_origin_coutry_code" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="default_origin_coutry_code" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Origin Country Code</label>
-                    <comment>Country where the goods are originated from.</comment>
+                    <comment>Country where your products are originated from.</comment>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                 </field>
-                <field id="content_type" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="content_type" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Content Type</label>
-                    <comment>Classifies the type of goods.</comment>
+                    <comment>Classifies the type of products you are shipping.</comment>
                     <source_model>MyParcelCOM\Magento\Model\Source\ContentType</source_model>
                 </field>
-                <field id="incoterm" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="incoterm" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Incoterm</label>
                     <comment>Specifies the incoterm.</comment>
                     <source_model>MyParcelCOM\Magento\Model\Source\Incoterm</source_model>
                 </field>
-                <field id="non_delivery" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="non_delivery" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Non Delivery</label>
                     <comment>Determines what needs to be done with the goods in case of unsuccessful delivery.</comment>
                     <source_model>MyParcelCOM\Magento\Model\Source\NonDelivery</source_model>
@@ -55,11 +60,11 @@
             <group id="myparcel_support" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>MyParcel.com</label>
                 <attribute type="expanded">1</attribute>
-                <field id="current_version" translate="label" type="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="current_version" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Current Version</label>
                     <backend_model>MyParcelCOM\Magento\Model\Source\Version</backend_model>
                 </field>
-                <field id="support_url" translate="label comment" type="label" sortOrder="211" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="support_url" translate="label comment" type="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>MyParcel.com support</label>
                     <comment><![CDATA[<a href="https://myparcel-com.odoo.com/magento" target="_blank">https://myparcel-com.odoo.com/magento</a>]]></comment>
                 </field>
