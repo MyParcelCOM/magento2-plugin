@@ -11,6 +11,16 @@
                     </item>
                 </argument>
             </action>
+            <action name="print_myparcel_labels">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">print_myparcel_labels</item>
+                        <item name="id" xsi:type="string">print_myparcel_labels</item>
+                        <item name="label" xsi:type="string" translate="true">Print MyParcel.com labels</item>
+                        <item name="url" xsi:type="url" path="myparcelcom/order/PrintMyParcelLabels"/>
+                    </item>
+                </argument>
+            </action>
         </massaction>
     </listingToolbar>
     <columns name="sales_order_columns">
