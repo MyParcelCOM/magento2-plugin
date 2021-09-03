@@ -5,7 +5,7 @@ namespace MyParcelCOM\Magento\Api;
 interface WebhookInterface
 {
     /**
-     * @return int
+     * @return bool
      * @api
      */
     public function status();
