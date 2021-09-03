@@ -63,6 +63,7 @@ class MpShipment
 
         $shipment = (new Shipment())
             ->setChannel('magento_' . $moduleInfo['setup_version'])
+            ->setRegisterAt('now')
             ->setShop($shop)
             ->setRecipientAddress($recipient)
             ->setSenderAddress($shop->getSenderAddress())
