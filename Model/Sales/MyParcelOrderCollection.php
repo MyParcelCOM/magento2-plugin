@@ -185,15 +185,10 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 'incoterm'       => $myparcelExportSetting['incoterm'],
             ];
 
-            $storeName = $order->getStoreName();
-            $storeName = explode("\n", trim($storeName));
-            $storeName = $storeName[(count($storeName) - 1)];
-            $description = $storeName . ' Order #' . $order->getIncrementId();
-
             try {
                 $shipmentBuilder = new MpShipment();
 
-                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, $description, $items, $customs, [
+                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, 'Order #' . $order->getIncrementId(), $items, $customs, [
                     $order->getShippingDescription()
                 ]);
             } catch (Exception $e) {
