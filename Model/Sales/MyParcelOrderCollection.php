@@ -4,7 +4,6 @@ namespace MyParcelCOM\Magento\Model\Sales;
 
 use Exception;
 use Magento\Catalog\Model\Product;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
@@ -189,7 +188,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 $shipmentBuilder = new MpShipment();
 
                 $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, 'Order #' . $order->getIncrementId(), $items, $customs, [
-                    $order->getShippingDescription()
+                    $order->getStore()->getName(),
+                    $order->getShippingDescription(),
                 ]);
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
