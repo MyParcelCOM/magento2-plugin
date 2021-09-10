@@ -3,6 +3,9 @@
 namespace MyParcelCOM\Magento\Model\Sales;
 
 use Exception;
+use Magento\Catalog\Model\Product;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Catalog\Model\Product\Type;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
@@ -153,7 +156,13 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             $items = [];
             $orderItems = $order->getItems();
             foreach ($orderItems as $orderItem) {
+                /** @var Product $product */
                 $product = $this->objectManager->get('Magento\Catalog\Model\Product')->load($orderItem->getProductId());
+
+                if ($product->getTypeId() !== Type::TYPE_SIMPLE) {
+                    continue;
+                }
+
                 $item = [
                     'sku'                 => $product->getData('sku'),
                     'description'         => $product->getData('name'),
@@ -184,7 +193,9 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             try {
                 $shipmentBuilder = new MpShipment();
 
-                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, $description, $items, $customs);
+                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, $description, $items, $customs, [
+                    $order->getShippingDescription()
+                ]);
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
