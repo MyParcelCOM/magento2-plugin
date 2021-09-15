@@ -22,6 +22,7 @@
                 <field id="api_client_environment" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>API mode</label>
                     <source_model>MyParcelCOM\Magento\Model\Source\Mode</source_model>
+                    <backend_model>MyParcelCOM\Magento\Model\Source\Client</backend_model>
                 </field>
                 <field id="webhook_active" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Webhook active</label>
@@ -61,11 +62,11 @@
                 <label>MyParcel.com</label>
                 <attribute type="expanded">1</attribute>
                 <field id="current_version" translate="label" type="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Current Version</label>
+                    <label>Version</label>
                     <backend_model>MyParcelCOM\Magento\Model\Source\Version</backend_model>
                 </field>
                 <field id="support_url" translate="label comment" type="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>MyParcel.com support</label>
+                    <label>Support</label>
                     <comment><![CDATA[<a href="https://myparcel-com.odoo.com/magento" target="_blank">https://myparcel-com.odoo.com/magento</a>]]></comment>
                 </field>
             </group>
