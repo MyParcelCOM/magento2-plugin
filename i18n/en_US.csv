@@ -1,3 +1,0 @@
-error_order_has_no_shipment,No shipment can be made for this order. Shipments cannot be created if the status is On Hold or if the product is digital.
-error_shipment_create_fail,Some of the selected shipments have not been created.
-success_shipment_created,Selected shipments from orders: %s have been created at MyParcel.com

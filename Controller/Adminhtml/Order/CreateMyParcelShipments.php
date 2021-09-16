@@ -51,14 +51,20 @@ class CreateMyParcelShipments extends Action
                     ->createMyParcelShipments();
 
                 $this->messageManager->addSuccessMessage(sprintf(
-                    __(MyParcelOrderCollection::SUCCESS_SHIPMENT_CREATED),
+                    'Selected shipments from orders: %s have been created at MyParcel.com',
                     implode(', ', $this->orderCollection->getIncrementIds())
                 ));
             } catch (Throwable $e) {
-                $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_SHIPMENT_CREATE_FAIL) . ': ' . $e->getMessage());
+                $this->messageManager->addErrorMessage(implode(' ', [
+                    'Some of the selected shipments have not been created.',
+                    $e->getMessage(),
+                ]));
             }
         } else {
-            $this->messageManager->addErrorMessage(__(MyParcelOrderCollection::ERROR_ORDER_HAS_NO_SHIPMENT));
+            $this->messageManager->addErrorMessage(implode(' ', [
+                'No shipment can be made for this order.',
+                'Shipments cannot be created if the status is On Hold or if the product is digital.',
+            ]));
         }
 
         return $this->resultRedirectFactory->create()->setPath('sales/order/index');

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCOM\Magento\Model;
+namespace MyParcelCOM\Magento\Api;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Phrase;
@@ -8,7 +8,6 @@ use Magento\Framework\Webapi\Exception;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Track as TrackResource;
-use MyParcelCOM\Magento\Api\WebhookInterface;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
 use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 

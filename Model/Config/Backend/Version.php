@@ -1,6 +1,6 @@
 <?php
 
-namespace MyParcelCOM\Magento\Model\Source;
+namespace MyParcelCOM\Magento\Model\Config\Backend;
 
 use Magento\Framework\App\Config\Value;
 use Magento\Framework\App\ObjectManager;
