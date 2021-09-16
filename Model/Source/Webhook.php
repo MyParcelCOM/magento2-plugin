@@ -32,7 +32,7 @@ class Webhook extends Value
     {
         /** @var \Magento\Framework\Url $urlHelper */
         $urlHelper = ObjectManager::getInstance()->get('Magento\Framework\Url');
-        $url = $urlHelper->getBaseUrl() . 'myparcelcom/index/webhook';
+        $url = $urlHelper->getBaseUrl() . 'rest/V1/myparcelcom/webhook/status';
 
         $api = (new MyParcelComApi())->getInstance();
         $shopId = $api->getDefaultShop()->getId();

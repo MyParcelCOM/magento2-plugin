@@ -36,7 +36,7 @@ class MpShipment
      * @param array  $customs
      * @return Shipment
      */
-    public function createShipment(array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [])
+    public function createShipment(array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [], array $tags = [])
     {
         $api = (new MyParcelComApi())->getInstance();
         $shop = $api->getDefaultShop();
@@ -63,6 +63,8 @@ class MpShipment
 
         $shipment = (new Shipment())
             ->setChannel('magento_' . $moduleInfo['setup_version'])
+            ->setTags($tags)
+            ->setRegisterAt('now')
             ->setShop($shop)
             ->setRecipientAddress($recipient)
             ->setSenderAddress($shop->getSenderAddress())
