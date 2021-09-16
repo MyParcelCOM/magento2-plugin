@@ -18,3 +18,5 @@ composer require php-http/guzzle6-adapter
 
 - Connect to your MyParcel.com account via your admin panel: `Stores > Configuration > MyParcel.com > General`
 - Export your Magento orders to MyParcel.com via your order overview: `Sales > Orders > Actions`
+- Print your MyParcel.com shipment labels via your order overview: `Sales > Orders > Actions`
+- Automatically see status updates from MyParcel.com shipments in your order overview.

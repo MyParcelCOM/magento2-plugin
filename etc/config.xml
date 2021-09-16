@@ -3,11 +3,16 @@
     <default>
         <myparcel_section_general>
             <myparcel_group_api>
+                <api_client_id></api_client_id>
+                <api_client_secret_key></api_client_secret_key>
                 <api_client_environment>1</api_client_environment>
                 <webhook_id></webhook_id>
                 <webhook_secret></webhook_secret>
             </myparcel_group_api>
             <myparcel_group_setting>
+                <shop_id></shop_id>
+                <default_hs_code></default_hs_code>
+                <default_origin_coutry_code></default_origin_coutry_code>
                 <content_type>merchandise</content_type>
                 <incoterm>DAP</incoterm>
                 <non_delivery>return</non_delivery>

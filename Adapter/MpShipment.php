@@ -6,6 +6,7 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Module\ModuleList;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Customs;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
 use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
 use MyParcelCom\ApiSdk\Resources\Shipment;
 use MyParcelCom\ApiSdk\Resources\ShipmentItem;
@@ -36,10 +37,12 @@ class MpShipment
      * @param array  $customs
      * @return Shipment
      */
-    public function createShipment(array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [], array $tags = [])
+    public function createShipment(?string $shopId, array $addressData, array $shipmentData, string $description, array $items = [], array $customs = [], array $tags = [])
     {
         $api = (new MyParcelComApi())->getInstance();
-        $shop = $api->getDefaultShop();
+        $shop = empty($shopId)
+            ? $api->getDefaultShop()
+            : $api->getResourceById(ResourceInterface::TYPE_SHOP, $shopId);
 
         $addressData = array_merge($this->_defaultAddressData, $addressData);
         $shipmentData = array_merge($this->_defaultShipmentData, $shipmentData);

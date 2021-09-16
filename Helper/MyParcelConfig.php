@@ -15,25 +15,9 @@ class MyParcelConfig extends AbstractHelper
     /**
      * @return bool
      */
-    private function isTestMode()
+    public function isTestMode()
     {
         return $this->getGeneralConfig('myparcel_group_api/api_client_environment') === '1';
-    }
-
-    /**
-     * @return bool
-     */
-    public function getWebhookActive()
-    {
-        return $this->getGeneralConfig('myparcel_group_api/webhook_active');
-    }
-
-    /**
-     * @return bool
-     */
-    public function getWebhookSecret()
-    {
-        return $this->getGeneralConfig('myparcel_group_api/webhook_secret');
     }
 
     /**
@@ -69,11 +53,35 @@ class MyParcelConfig extends AbstractHelper
     }
 
     /**
+     * @return string
+     */
+    public function getWebhookId()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebhookSecret()
+    {
+        return $this->getGeneralConfig('myparcel_group_api/webhook_secret');
+    }
+
+    /**
+     * @return string
+     */
+    public function getShopId()
+    {
+        return $this->getGeneralConfig('myparcel_group_setting/shop_id');
+    }
+
+    /**
      * @param string $key group_id/field_id
      * @param string $scope
      * @return string|array
      */
-    public function getGeneralConfig(string $key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
+    private function getGeneralConfig(string $key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
     {
         $configValue = $this->scopeConfig->getValue('myparcel_section_general/' . $key, $scope);
 

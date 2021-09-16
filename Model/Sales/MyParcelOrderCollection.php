@@ -17,10 +17,6 @@ use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
 
 class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 {
-    const ERROR_ORDER_HAS_NO_SHIPMENT = 'error_order_has_no_shipment';
-    const ERROR_SHIPMENT_CREATE_FAIL = 'error_shipment_create_fail';
-    const SUCCESS_SHIPMENT_CREATED = 'success_shipment_created';
-
     /** @var Track[] */
     private $_tracks = [];
 
@@ -187,7 +183,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
             try {
                 $shipmentBuilder = new MpShipment();
 
-                $shipment = $shipmentBuilder->createShipment($addressData, $shipmentData, 'Order #' . $order->getIncrementId(), $items, $customs, [
+                $shipment = $shipmentBuilder->createShipment($myparcelExportSetting['shop_id'], $addressData, $shipmentData, 'Order #' . $order->getIncrementId(), $items, $customs, [
                     $order->getStore()->getName(),
                     $order->getShippingDescription(),
                 ]);

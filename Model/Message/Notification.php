@@ -29,14 +29,14 @@ class Notification implements MessageInterface
 
     public function isDisplayed()
     {
-        return $this->configHelper->getWebhookActive() === null;
+        return $this->configHelper->getShopId() === null;
     }
 
     public function getText()
     {
         $url = $this->backendUrl->getUrl('adminhtml/system_config/edit/section/myparcel_section_general');
 
-        return 'Your MyParcel.com webhook is not configured. <a href="' . $url . '">Please update and save your configuration</a>.';
+        return 'Your MyParcel.com plugin has been updated and needs to be reconfigured. <a href="' . $url . '">Please check and save your configuration</a>.';
     }
 
     public function getSeverity()
