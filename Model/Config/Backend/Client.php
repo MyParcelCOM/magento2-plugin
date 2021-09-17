@@ -24,9 +24,9 @@ class Client extends Value
                     : MyParcelConfig::PRODUCTION_AUTH_URL
             );
             $auth->getAuthorizationHeader(true);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             throw new Exception(
-                new Phrase($e->getMessage())
+                new Phrase($throwable->getMessage())
             );
         }
 
