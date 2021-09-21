@@ -3,6 +3,7 @@
 namespace MyParcelCOM\Magento\Model\Sales;
 
 use Exception;
+use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Framework\App\ObjectManager;
@@ -158,6 +159,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     continue;
                 }
 
+                /** @var Image $imageHelper */
+                $imageHelper = $this->objectManager->get('\Magento\Catalog\Helper\Image');
+                $imageUrl = $imageHelper->init($product, 'product_listing_thumbnail_preview')
+                    ->setImageFile($product->getImage())
+                    ->getUrl();
+
                 $item = [
                     'sku'                 => $product->getData('sku'),
                     'description'         => $product->getData('name'),
@@ -169,6 +176,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     'hs_code'             => (!empty($product->getData('hs_code'))) ? $product->getData('hs_code') : $defaultHsCode,
                     'origin_country_code' => (!empty($product->getData('origin_country_code'))) ? $product->getData('origin_country_code') : $defaultOriginCountryCode,
                     'nett_weight'         => ($unitWeight == 'lbs') ? intval($orderItem->getData('weight') * 0.45359237) : intval($orderItem->getData('weight')),
+                    'image_url'           => $imageUrl,
                 ];
                 $items[] = $item;
             }
