@@ -113,7 +113,7 @@ class MyParcelOrderCollectionBase
      */
     protected function shipmentHasTrack($shipment)
     {
-        return $this->getTrackByShipment($shipment)->count() === 0 ? false : true;
+        return $this->getTrackByShipment($shipment)->count() > 0;
     }
 
     /**
