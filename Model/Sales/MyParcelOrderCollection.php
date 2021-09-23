@@ -8,10 +8,17 @@ use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Type;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Module\ModuleList;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
-use MyParcelCOM\Magento\Adapter\MpShipment;
+use MyParcelCom\ApiSdk\Resources\Address;
+use MyParcelCom\ApiSdk\Resources\Customs;
+use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
+use MyParcelCom\ApiSdk\Resources\PhysicalProperties;
+use MyParcelCom\ApiSdk\Resources\Shipment;
+use MyParcelCom\ApiSdk\Resources\ShipmentItem;
+use MyParcelCOM\Magento\Http\MyParcelComApi;
 use MyParcelCOM\Magento\Model\Data;
 use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
@@ -75,6 +82,31 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
     }
 
     /**
+     * @param float $weight
+     * @return int
+     */
+    private function weightInGrams($weight)
+    {
+        switch ($this->config->getValue('general/locale/weight_unit')) {
+            case 'lbs':
+                return (int) ceil($weight * 1000 * 0.45359237);
+
+            case 'kgs':
+            default:
+                return (int) ceil($weight * 1000);
+        }
+    }
+
+    /**
+     * @param float $amount
+     * @return int
+     */
+    private function amountInCents($amount)
+    {
+        return (int) ceil($amount * 100);
+    }
+
+    /**
      * @return $this
      * @throws Exception
      */
@@ -96,105 +128,97 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                 continue;
             }
 
-            $shippingAddressObj = $order->getShippingAddress();
-            $streets = $shippingAddressObj->getStreet();
-            $street1 = $street2 = $street3 = $street4 = '';
+            $shippingAddress = $order->getShippingAddress();
+            $recipient = (new Address())
+                ->setStreet1($shippingAddress->getStreetLine(1))
+                ->setStreet2($shippingAddress->getStreetLine(2))
+                ->setPostalCode($shippingAddress->getPostcode())
+                ->setCity($shippingAddress->getCity())
+                ->setStateCode($shippingAddress->getRegionCode())
+                ->setCountryCode($shippingAddress->getCountryId())
+                ->setFirstName($shippingAddress->getFirstname())
+                ->setLastName($shippingAddress->getLastname())
+                ->setCompany($shippingAddress->getCompany())
+                ->setEmail($shippingAddress->getEmail())
+                ->setPhoneNumber($shippingAddress->getTelephone());
 
-            if (is_array($streets)) {
-                foreach ($streets as $key => $streetValue) {
-                    $streetValue = trim($streetValue, ',');
-                    ${'street' . ($key + 1)} = $streetValue;
-                }
-            }
-
-            $addressData = [
-                'street'       => $street1,
-                'city'         => $shippingAddressObj->getCity(),
-                'postcode'     => $shippingAddressObj->getPostcode(),
-                'first_name'   => $shippingAddressObj->getFirstname(),
-                'last_name'    => $shippingAddressObj->getLastname(),
-                'country_code' => $shippingAddressObj->getCountryId(),
-                'email'        => $shippingAddressObj->getEmail(),
-                'phone_number' => $shippingAddressObj->getTelephone(),
-            ];
-
-            $shipmentWeight = $order->getWeight();
-            $unitWeight = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('general/locale/weight_unit');
-
-            switch ($unitWeight) {
-                case 'lbs':
-                    $weightInGrams = (int) round($shipmentWeight * 1000 * 0.45359237);
-                    break;
-
-                case 'kgs':
-                default:
-                    $weightInGrams = (int) round($shipmentWeight * 1000);
-            }
-
-            $shipmentData = [
-                'weight' => $weightInGrams,
-            ];
-
-            /**
-             * get current currency code
-             */
-            $priceCurrency = $this->objectManager->get('\Magento\Framework\Pricing\PriceCurrencyInterface');
-            $currencyCode = $priceCurrency->getCurrency()->getCurrencyCode();
-
-            /**
-             * retrive default hs code and default origin country code
-             */
-            $myparcelExportSetting = $this->objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('myparcel_section_general/myparcel_group_setting');
-
-            $defaultHsCode = $myparcelExportSetting['default_hs_code'];
-            $defaultOriginCountryCode = $myparcelExportSetting['default_origin_coutry_code'];
+            $myparcelExportSetting = $this->config->getValue('myparcel_section_general/myparcel_group_setting');
 
             $items = [];
-            $orderItems = $order->getItems();
-            foreach ($orderItems as $orderItem) {
+            foreach ($order->getItems() as $orderItem) {
                 /** @var Product $product */
-                $product = $this->objectManager->get('Magento\Catalog\Model\Product')->load($orderItem->getProductId());
+                $product = $this->objectManager->get(Product::class)->load($orderItem->getProductId());
 
                 if ($product->getTypeId() !== Type::TYPE_SIMPLE) {
                     continue;
                 }
 
                 /** @var Image $imageHelper */
-                $imageHelper = $this->objectManager->get('\Magento\Catalog\Helper\Image');
+                $imageHelper = $this->objectManager->get(Image::class);
                 $imageUrl = $imageHelper->init($product, 'product_listing_thumbnail_preview')
                     ->setImageFile($product->getImage())
                     ->getUrl();
 
-                $item = [
-                    'sku'                 => $product->getData('sku'),
-                    'description'         => $product->getData('name'),
-                    'item_value'          => [
-                        'amount'   => ($orderItem->getPrice() > 0) ? $orderItem->getPrice() : 1,
-                        'currency' => $currencyCode,
-                    ],
-                    'quantity'            => intval($orderItem->getData('qty_ordered')),
-                    'hs_code'             => (!empty($product->getData('hs_code'))) ? $product->getData('hs_code') : $defaultHsCode,
-                    'origin_country_code' => (!empty($product->getData('origin_country_code'))) ? $product->getData('origin_country_code') : $defaultOriginCountryCode,
-                    'nett_weight'         => ($unitWeight == 'lbs') ? intval($orderItem->getData('weight') * 0.45359237) : intval($orderItem->getData('weight')),
-                    'image_url'           => $imageUrl,
-                ];
-                $items[] = $item;
+                $items[] = (new ShipmentItem())
+                    ->setSku($product->getSku())
+                    ->setDescription($product->getName())
+                    ->setImageUrl($imageUrl)
+                    ->setItemValue($this->amountInCents($orderItem->getPrice()))
+                    ->setCurrency($order->getOrderCurrencyCode())
+                    ->setQuantity((int) $orderItem->getQtyOrdered())
+                    ->setHsCode(!empty($product->getData('hs_code'))
+                        ? $product->getData('hs_code')
+                        : $myparcelExportSetting['default_hs_code']
+                    )
+                    ->setItemWeight($this->weightInGrams($orderItem->getWeight()))
+                    ->setOriginCountryCode(!empty($product->getData('country_of_manufacture'))
+                        ? $product->getData('country_of_manufacture')
+                        : $myparcelExportSetting['default_origin_country_code']
+                    )
+                    ->setVatPercentage((int) $orderItem->getTaxPercent());
             }
 
-            $customs = [
-                'content_type'   => $myparcelExportSetting['content_type'],
-                'invoice_number' => '#' . $order->getIncrementId(),
-                'non_delivery'   => $myparcelExportSetting['non_delivery'],
-                'incoterm'       => $myparcelExportSetting['incoterm'],
-            ];
+            $customs = (new Customs())
+                ->setContentType($myparcelExportSetting['content_type'])
+                ->setInvoiceNumber('#' . $order->getIncrementId())
+                ->setNonDelivery($myparcelExportSetting['non_delivery'])
+                ->setIncoterm($myparcelExportSetting['incoterm'])
+                ->setShippingValueAmount($this->amountInCents($order->getShippingAmount()))
+                ->setShippingValueCurrency($order->getOrderCurrencyCode());
 
             try {
-                $shipmentBuilder = new MpShipment();
+                $api = (new MyParcelComApi())->getInstance();
 
-                $shipment = $shipmentBuilder->createShipment($myparcelExportSetting['shop_id'], $addressData, $shipmentData, 'Order #' . $order->getIncrementId(), $items, $customs, [
-                    $order->getStore()->getName(),
-                    $order->getShippingDescription(),
-                ]);
+                $shop = empty($myparcelExportSetting['shop_id'])
+                    ? $api->getDefaultShop()
+                    : $api->getResourceById(ResourceInterface::TYPE_SHOP, $myparcelExportSetting['shop_id']);
+
+                /** @var ModuleList $moduleList */
+                $moduleList = ObjectManager::getInstance()->get(ModuleList::class);
+                $moduleInfo = $moduleList->getOne('MyParcelCOM_Magento');
+
+                $shipment = (new Shipment())
+                    ->setShop($shop)
+                    ->setSenderAddress($shop->getSenderAddress())
+                    ->setReturnAddress($shop->getReturnAddress())
+                    ->setRecipientAddress($recipient)
+                    ->setDescription('Order #' . $order->getIncrementId())
+                    ->setCustomerReference('#' . $order->getIncrementId())
+                    ->setChannel('magento_' . $moduleInfo['setup_version'])
+                    ->setPhysicalProperties((new PhysicalProperties())
+                        ->setWeight($this->weightInGrams($order->getWeight()))
+                    )
+                    ->setItems($items)
+                    ->setCustoms($customs)
+                    ->setTotalValueAmount($this->amountInCents($order->getSubtotal()))
+                    ->setTotalValueCurrency($order->getOrderCurrencyCode())
+                    ->setTags([
+                        $order->getStore()->getName(),
+                        $order->getShippingDescription(),
+                    ])
+                    ->setRegisterAt('now');
+
+                $api->createShipment($shipment);
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
