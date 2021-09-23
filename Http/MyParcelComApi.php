@@ -3,6 +3,7 @@
 namespace MyParcelCOM\Magento\Http;
 
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Url;
 use MyParcelCom\ApiSdk\Authentication\ClientCredentials;
 use MyParcelCom\ApiSdk\MyParcelComApi as Api;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
@@ -50,7 +51,7 @@ class MyParcelComApi
      */
     public function createWebhook(string $shopId, string $secret)
     {
-        /** @var \Magento\Framework\Url $urlHelper */
+        /** @var Url $urlHelper */
         $urlHelper = ObjectManager::getInstance()->get('Magento\Framework\Url');
         $url = $urlHelper->getBaseUrl() . 'rest/V1/myparcelcom/webhook/status';
 

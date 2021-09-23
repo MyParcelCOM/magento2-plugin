@@ -3,7 +3,12 @@
     "description": "Magento 2 extension for MyParcel.com",
     "type": "magento2-module",
     "homepage": "https://www.myparcel.com",
-    "keywords": ["MyParcel.com", "MyParcel", "Magento 2"],
+    "keywords": [
+        "MyParcel.com",
+        "MyParcel",
+        "Magento 2",
+        "Magento"
+    ],
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -16,8 +21,8 @@
         "files": [
             "registration.php"
         ],
-        "psr-4" : {
-            "MyParcelCOM\\Magento\\" : ""
+        "psr-4": {
+            "MyParcelCOM\\Magento\\": ""
         }
     }
 }

@@ -5,9 +5,9 @@ namespace MyParcelCOM\Magento\Model\Config\Backend;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Config\Value;
 use Magento\Framework\App\ObjectManager;
-use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCOM\Magento\Http\MyParcelComApi;
 use MyParcelCOM\Magento\Model\Config\AfterSaveConfigHelper;
+use Throwable;
 
 class Shop extends Value
 {
@@ -68,7 +68,7 @@ class Shop extends Value
         try {
             $api = (new MyParcelComApi())->getInstance();
             $api->doRequest('/hooks/' . $this->_config->getValue(self::PATH_WEBHOOK_ID), 'delete');
-        } catch (RequestException $exception) {
+        } catch (Throwable $throwable) {
             // Assume the hook could not be found because it has already been deleted.
         }
     }

@@ -9,6 +9,7 @@ use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Shipment\Track as TrackResource;
 use MyParcelCOM\Magento\Helper\MyParcelConfig;
+use MyParcelCOM\Magento\Model\Data;
 use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 
 class Webhook implements WebhookInterface

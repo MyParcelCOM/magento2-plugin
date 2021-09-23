@@ -54,10 +54,10 @@ class CreateMyParcelShipments extends Action
                     'Selected shipments from orders: %s have been created at MyParcel.com',
                     implode(', ', $this->orderCollection->getIncrementIds())
                 ));
-            } catch (Throwable $e) {
+            } catch (Throwable $throwable) {
                 $this->messageManager->addErrorMessage(implode(' ', [
                     'Some of the selected shipments have not been created.',
-                    $e->getMessage(),
+                    $throwable->getMessage(),
                 ]));
             }
         } else {

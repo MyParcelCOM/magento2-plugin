@@ -82,6 +82,7 @@ class MpShipment
                 ->setQuantity($item['quantity'])
                 ->setHsCode($item['hs_code'])
                 ->setOriginCountryCode($item['origin_country_code'])
+                ->setImageUrl($item['image_url'])
                 ->setCurrency($item['item_value']['currency'])
                 ->setItemValue($item['item_value']['amount'] * 100);
 
