@@ -15,7 +15,7 @@
     ],
     "require": {
         "ext-json": "*",
-        "myparcelcom/api-sdk": "^2.10"
+        "myparcelcom/api-sdk": "^2.13"
     },
     "autoload": {
         "files": [

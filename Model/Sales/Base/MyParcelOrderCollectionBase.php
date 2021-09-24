@@ -3,6 +3,7 @@
 namespace MyParcelCOM\Magento\Model\Sales\Base;
 
 use Exception;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\DB\Transaction;
 use Magento\Framework\Exception\LocalizedException;
@@ -27,6 +28,9 @@ class MyParcelOrderCollectionBase
     /** @var ObjectManagerInterface */
     protected $objectManager;
 
+    /** @var ScopeConfigInterface */
+    protected $config;
+
     /** @var MyParcelConfig */
     protected $configHelper;
 
@@ -36,6 +40,8 @@ class MyParcelOrderCollectionBase
     public function __construct(ObjectManagerInterface $objectManagerInterface)
     {
         $this->objectManager = $objectManagerInterface;
+
+        $this->config = $this->objectManager->get(ScopeConfigInterface::class);
         $this->configHelper = $this->objectManager->get(MyParcelConfig::class);
     }
 

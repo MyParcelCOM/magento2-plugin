@@ -12,7 +12,7 @@
             <myparcel_group_setting>
                 <shop_id></shop_id>
                 <default_hs_code></default_hs_code>
-                <default_origin_coutry_code></default_origin_coutry_code>
+                <default_origin_country_code></default_origin_country_code>
                 <content_type>merchandise</content_type>
                 <incoterm>DAP</incoterm>
                 <non_delivery>return</non_delivery>
