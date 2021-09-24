@@ -168,12 +168,12 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     ->setQuantity((int) $orderItem->getQtyOrdered())
                     ->setHsCode(!empty($product->getData('hs_code'))
                         ? $product->getData('hs_code')
-                        : $myparcelExportSetting['default_hs_code']
+                        : $myparcelExportSetting['default_hs_code'] ?: null
                     )
                     ->setItemWeight($this->weightInGrams($orderItem->getWeight()))
                     ->setOriginCountryCode(!empty($product->getData('country_of_manufacture'))
                         ? $product->getData('country_of_manufacture')
-                        : $myparcelExportSetting['default_origin_country_code']
+                        : $myparcelExportSetting['default_origin_country_code'] ?: null
                     )
                     ->setVatPercentage((int) $orderItem->getTaxPercent());
             }

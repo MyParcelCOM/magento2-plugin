@@ -37,7 +37,7 @@
                     <label>HS Code</label>
                     <comment>Classify your products with a default HS code.</comment>
                 </field>
-                <field id="default_origin_coutry_code" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
+                <field id="default_origin_country_code" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Origin Country Code</label>
                     <comment>Country where your products are originated from.</comment>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
