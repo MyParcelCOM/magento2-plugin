@@ -78,13 +78,12 @@ class MyParcelConfig extends AbstractHelper
 
     /**
      * @param string $key group_id/field_id
-     * @param string $scope
      * @return string|array
      */
-    private function getGeneralConfig(string $key, $defaultValue = null, $scope = ScopeInterface::SCOPE_STORE)
+    private function getGeneralConfig(string $key)
     {
-        $configValue = $this->scopeConfig->getValue('myparcel_section_general/' . $key, $scope);
+        $configValue = $this->scopeConfig->getValue('myparcel_section_general/' . $key, ScopeInterface::SCOPE_STORE);
 
-        return ($configValue === null) ? $defaultValue : $configValue;
+        return ($configValue === null) ? null : $configValue;
     }
 }

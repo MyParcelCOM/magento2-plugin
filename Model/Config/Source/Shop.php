@@ -14,6 +14,7 @@ class Shop implements ArrayInterface
     {
         try {
             $api = (new MyParcelComApi())->getInstance();
+            /** @var \MyParcelCom\ApiSdk\Resources\Shop $shops */
             $shops = $api->getShops();
             foreach ($shops as $shop) {
                 $this->options[] = [
