@@ -22,9 +22,6 @@ class MyParcelOrderCollectionBase
     /** @var Collection */
     protected $_orders = null;
 
-    /** @var RequestInterface */
-    public $request = null;
-
     /** @var ObjectManagerInterface */
     protected $objectManager;
 
