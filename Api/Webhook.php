@@ -38,10 +38,7 @@ class Webhook implements WebhookInterface
         $this->trackResource = $trackResource;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function status()
+    public function status(): bool
     {
         $body = $this->request->getBodyParams();
 
@@ -91,11 +88,7 @@ class Webhook implements WebhookInterface
         return false;
     }
 
-    /**
-     * @param array $body
-     * @return bool
-     */
-    private function hasValidSignature($body)
+    private function hasValidSignature(array $body): bool
     {
         $hash = hash_hmac('sha256', json_encode($body), $this->config->getWebhookSecret());
         $signature = $this->request->getHeader('X-MYPARCELCOM-SIGNATURE');

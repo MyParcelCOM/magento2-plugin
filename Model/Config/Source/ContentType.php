@@ -6,10 +6,7 @@ use Magento\Framework\Option\ArrayInterface;
 
 class ContentType implements ArrayInterface
 {
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             ['value' => 'merchandise', 'label' => __('Merchandise')],
@@ -20,10 +17,7 @@ class ContentType implements ArrayInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'merchandise'          => __('Merchandise'),

@@ -6,10 +6,7 @@ use Magento\Framework\Option\ArrayInterface;
 
 class Mode implements ArrayInterface
 {
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             ['value' => '0', 'label' => __('Production')],
@@ -17,10 +14,7 @@ class Mode implements ArrayInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             '0' => __('Production'),

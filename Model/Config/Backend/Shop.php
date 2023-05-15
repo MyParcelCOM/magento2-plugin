@@ -14,7 +14,7 @@ class Shop extends Value
     const PATH_WEBHOOK_ID = 'myparcel_section_general/myparcel_group_api/webhook_id';
     const PATH_WEBHOOK_SECRET = 'myparcel_section_general/myparcel_group_api/webhook_secret';
 
-    public function afterSave()
+    public function afterSave(): self
     {
         /** @var WriterInterface $configWriter */
         $configWriter = ObjectManager::getInstance()->get(WriterInterface::class);
@@ -46,7 +46,7 @@ class Shop extends Value
     /**
      * Use a new API instance with the new config (which is validated but in a transaction that has not been saved yet).
      */
-    private function createApiWithPostedConfig()
+    private function createApiWithPostedConfig(): MyParcelComApi
     {
         /** @var AfterSaveConfigHelper $configHelper */
         $configHelper = ObjectManager::getInstance()->get(AfterSaveConfigHelper::class);
@@ -63,7 +63,7 @@ class Shop extends Value
     /**
      * Use the regular API with the old config to delete a previously created webhook.
      */
-    private function deleteWebhook()
+    private function deleteWebhook(): void
     {
         try {
             $api = (new MyParcelComApi())->getInstance();

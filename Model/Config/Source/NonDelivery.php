@@ -6,10 +6,7 @@ use Magento\Framework\Option\ArrayInterface;
 
 class NonDelivery implements ArrayInterface
 {
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             ['value' => 'return', 'label' => __('Return')],
@@ -17,10 +14,7 @@ class NonDelivery implements ArrayInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'return'  => __('Return'),

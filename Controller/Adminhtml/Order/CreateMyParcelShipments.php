@@ -11,12 +11,8 @@ use Throwable;
 
 class CreateMyParcelShipments extends Action
 {
-    /** @var MyParcelOrderCollection */
-    private $orderCollection;
+    private MyParcelOrderCollection $orderCollection;
 
-    /**
-     * @param Context $context
-     */
     public function __construct(Context $context)
     {
         parent::__construct($context);

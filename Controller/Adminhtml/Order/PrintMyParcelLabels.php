@@ -20,15 +20,9 @@ use MyParcelCOM\Magento\Model\ResourceModel\Data\Collection as DataCollection;
 
 class PrintMyParcelLabels extends Action
 {
-    /** @var DateTime */
-    protected $dateTime;
+    protected DateTime $dateTime;
+    protected FileFactory $fileFactory;
 
-    /** @var FileFactory */
-    protected $fileFactory;
-
-    /**
-     * @param Context $context
-     */
     public function __construct(Context $context)
     {
         parent::__construct($context);
