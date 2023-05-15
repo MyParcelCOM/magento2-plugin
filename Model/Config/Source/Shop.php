@@ -23,7 +23,7 @@ class Shop implements ArrayInterface
                 ];
             }
             uasort($this->options, function ($a, $b) {
-                return strtolower($a['label']) > strtolower($b['label']);
+                return (strtolower($a['label']) < strtolower($b['label'])) ? -1 : 1;
             });
         } catch (Throwable $throwable) {
             $this->options[] = [

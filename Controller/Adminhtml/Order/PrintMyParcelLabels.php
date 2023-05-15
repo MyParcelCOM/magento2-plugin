@@ -50,7 +50,9 @@ class PrintMyParcelLabels extends Action
         }
 
         if (empty($orderIds)) {
-            throw new LocalizedException(__('No items selected'));
+            $this->messageManager->addErrorMessage('No orders selected');
+
+            return $this->resultRedirectFactory->create()->setPath('sales/order/index');
         }
 
         /** @var Data $data */
@@ -71,6 +73,12 @@ class PrintMyParcelLabels extends Action
         $files = [];
         foreach ($shipments as $shipment) {
             $files = array_merge($files, $shipment->getFiles(FileInterface::DOCUMENT_TYPE_LABEL));
+        }
+
+        if (empty($files)) {
+            $this->messageManager->addErrorMessage('No files available to be printed. Are the shipments successfully registered?');
+
+            return $this->resultRedirectFactory->create()->setPath('sales/order/index');
         }
 
         $labelCombiner = new LabelCombiner();

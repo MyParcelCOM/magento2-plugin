@@ -37,7 +37,9 @@ class CreateMyParcelShipments extends Action
         }
 
         if (empty($orderIds)) {
-            throw new LocalizedException(__('No items selected'));
+            $this->messageManager->addErrorMessage('No orders selected');
+
+            return $this->resultRedirectFactory->create()->setPath('sales/order/index');
         }
 
         $this->orderCollection

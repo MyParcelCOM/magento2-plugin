@@ -12,6 +12,7 @@ use Magento\Framework\Module\ModuleList;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Customs;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -218,16 +219,20 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     ])
                     ->setRegisterAt('now');
 
-                $api->createShipment($shipment);
+                $createdShipment = $api->createShipment($shipment);
+            } catch (RequestException $exception) {
+                $errors = json_decode((string) $exception->getResponse()?->getBody(), true);
+                $error = $errors['errors'][0] ?? $exception->getMessage();
+                throw new Exception($error['detail'] ?? $error['title'] ?? $exception->getMessage());
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
 
-            if (!empty($shipment->getId())) {
+            if (!empty($createdShipment->getId())) {
                 $data->setOrderId($order->getId());
                 $data->setTrackId($track->getId());
-                $data->setShipmentId($shipment->getId());
-                $status = $shipment->getShipmentStatus()->getStatus();
+                $data->setShipmentId($createdShipment->getId());
+                $status = $createdShipment->getShipmentStatus()->getStatus();
                 $data->setStatusCode($status->getCode());
                 $data->setStatusName($status->getName());
 
