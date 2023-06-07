@@ -8,7 +8,7 @@ use Magento\Framework\Module\ModuleList;
 
 class Version extends Value
 {
-    public function afterLoad()
+    public function afterLoad(): self
     {
         /** @var ModuleList $moduleList */
         $moduleList = ObjectManager::getInstance()->get(ModuleList::class);

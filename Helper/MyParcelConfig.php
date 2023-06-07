@@ -12,66 +12,42 @@ class MyParcelConfig extends AbstractHelper
     const SANDBOX_API_URL = 'https://sandbox-api.myparcel.com';
     const SANDBOX_AUTH_URL = 'https://sandbox-auth.myparcel.com';
 
-    /**
-     * @return bool
-     */
-    public function isTestMode()
+    public function isTestMode(): bool
     {
         return $this->getGeneralConfig('myparcel_group_api/api_client_environment') === '1';
     }
 
-    /**
-     * @return string
-     */
-    public function getApiClientId()
+    public function getApiClientId(): ?string
     {
         return $this->getGeneralConfig('myparcel_group_api/api_client_id');
     }
 
-    /**
-     * @return string
-     */
-    public function getApiSecretKey()
+    public function getApiSecretKey(): ?string
     {
         return $this->getGeneralConfig('myparcel_group_api/api_client_secret_key');
     }
 
-    /**
-     * @return string
-     */
-    public function getApiUrl()
+    public function getApiUrl(): string
     {
         return $this->isTestMode() ? self::SANDBOX_API_URL : self::PRODUCTION_API_URL;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthUrl()
+    public function getAuthUrl(): string
     {
         return $this->isTestMode() ? self::SANDBOX_AUTH_URL : self::PRODUCTION_AUTH_URL;
     }
 
-    /**
-     * @return string
-     */
-    public function getWebhookId()
+    public function getWebhookId(): ?string
     {
         return $this->getGeneralConfig('myparcel_group_api/webhook_id');
     }
 
-    /**
-     * @return string
-     */
-    public function getWebhookSecret()
+    public function getWebhookSecret(): ?string
     {
         return $this->getGeneralConfig('myparcel_group_api/webhook_secret');
     }
 
-    /**
-     * @return string
-     */
-    public function getShopId()
+    public function getShopId(): ?string
     {
         return $this->getGeneralConfig('myparcel_group_setting/shop_id');
     }

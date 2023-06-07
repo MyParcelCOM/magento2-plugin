@@ -11,7 +11,7 @@ composer require myparcelcom/magento
 If you see an exception regarding a PHP HTTP client, install one, for example:
 
 ```shell
-composer require php-http/guzzle6-adapter
+composer require php-http/guzzle7-adapter
 ```
 
 ## Usage

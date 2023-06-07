@@ -6,42 +6,28 @@ use MyParcelCOM\Magento\Helper\MyParcelConfig;
 
 class AfterSaveConfigHelper extends MyParcelConfig
 {
-    /** @var bool */
-    private $testMode;
+    private bool $testMode;
+    private string $clientId;
+    private string $clientSecret;
 
-    /**  @var string */
-    private $clientId;
-
-    /**  @var string */
-    private $clientSecret;
-
-    public function setConfig(bool $testMode, string $clientId, string $clientSecret)
+    public function setConfig(bool $testMode, string $clientId, string $clientSecret): void
     {
         $this->testMode = $testMode;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
     }
 
-    /**
-     * @return bool
-     */
-    public function isTestMode()
+    public function isTestMode(): bool
     {
         return $this->testMode;
     }
 
-    /**
-     * @return string
-     */
-    public function getApiClientId()
+    public function getApiClientId(): string
     {
         return $this->clientId;
     }
 
-    /**
-     * @return string
-     */
-    public function getApiSecretKey()
+    public function getApiSecretKey(): string
     {
         return $this->clientSecret;
     }

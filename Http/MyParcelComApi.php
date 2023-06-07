@@ -36,20 +36,12 @@ class MyParcelComApi
         );
     }
 
-    /**
-     * @return Api
-     */
-    public function getInstance()
+    public function getInstance(): Api
     {
         return Api::getSingleton();
     }
 
-    /**
-     * @param string $shopId
-     * @param string $secret
-     * @return string
-     */
-    public function createWebhook(string $shopId, string $secret)
+    public function createWebhook(string $shopId, string $secret): string
     {
         /** @var Url $urlHelper */
         $urlHelper = ObjectManager::getInstance()->get('Magento\Framework\Url');

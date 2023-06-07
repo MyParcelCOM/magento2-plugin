@@ -12,6 +12,7 @@ use Magento\Framework\Module\ModuleList;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Sales\Model\ResourceModel\Order\Collection;
+use MyParcelCom\ApiSdk\Http\Exceptions\RequestException;
 use MyParcelCom\ApiSdk\Resources\Address;
 use MyParcelCom\ApiSdk\Resources\Customs;
 use MyParcelCom\ApiSdk\Resources\Interfaces\ResourceInterface;
@@ -26,13 +27,9 @@ use MyParcelCOM\Magento\Model\Sales\Base\MyParcelOrderCollectionBase;
 class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 {
     /** @var Track[] */
-    private $_tracks = [];
+    private array $_tracks = [];
 
-    /**
-     * @param $orderCollection Collection
-     * @return $this
-     */
-    public function setOrderCollection($orderCollection)
+    public function setOrderCollection(Collection $orderCollection): self
     {
         $this->_orders = $orderCollection;
 
@@ -44,7 +41,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
      *
      * @throws LocalizedException
      */
-    public function createMagentoShipments()
+    public function createMagentoShipments(): self
     {
         foreach ($this->getOrders() as $order) {
             if ($order->canShip() && !$order->hasShipments()) {
@@ -61,9 +58,8 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
     /**
      * Create new Magento Track and save order
-     * @return $this
      */
-    public function setMagentoTrack()
+    public function setMagentoTrack(): self
     {
         /** @var Order\Shipment $shipment */
         foreach ($this->getShipments() as $shipment) {
@@ -81,36 +77,24 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         return $this;
     }
 
-    /**
-     * @param float $weight
-     * @return int
-     */
-    private function weightInGrams($weight)
+    private function weightInGrams(?float $weight): int
     {
-        switch ($this->config->getValue('general/locale/weight_unit')) {
-            case 'lbs':
-                return (int) ceil($weight * 1000 * 0.45359237);
-
-            case 'kgs':
-            default:
-                return (int) ceil($weight * 1000);
-        }
+        return match ($this->config->getValue('general/locale/weight_unit')) {
+            'lbs' => (int) ceil($weight * 1000 * 0.45359237),
+            'kgs' => (int) ceil($weight * 1000),
+            default => (int) ceil($weight * 1000),
+        };
     }
 
-    /**
-     * @param float $amount
-     * @return int
-     */
-    private function amountInCents($amount)
+    private function amountInCents(?float $amount): int
     {
         return (int) ceil($amount * 100);
     }
 
     /**
-     * @return $this
      * @throws Exception
      */
-    public function createMyParcelShipments()
+    public function createMyParcelShipments(): self
     {
         /** @var DataResource $dataResource */
         $dataResource = ObjectManager::getInstance()->create(DataResource::class);
@@ -218,16 +202,20 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
                     ])
                     ->setRegisterAt('now');
 
-                $api->createShipment($shipment);
+                $createdShipment = $api->createShipment($shipment);
+            } catch (RequestException $exception) {
+                $errors = json_decode((string) $exception->getResponse()?->getBody(), true);
+                $error = $errors['errors'][0] ?? $exception->getMessage();
+                throw new Exception($error['detail'] ?? $error['title'] ?? $exception->getMessage());
             } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
 
-            if (!empty($shipment->getId())) {
+            if (!empty($createdShipment->getId())) {
                 $data->setOrderId($order->getId());
                 $data->setTrackId($track->getId());
-                $data->setShipmentId($shipment->getId());
-                $status = $shipment->getShipmentStatus()->getStatus();
+                $data->setShipmentId($createdShipment->getId());
+                $status = $createdShipment->getShipmentStatus()->getStatus();
                 $data->setStatusCode($status->getCode());
                 $data->setStatusName($status->getName());
 
@@ -238,7 +226,7 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
         return $this;
     }
 
-    public function refreshOrdersCollection()
+    public function refreshOrdersCollection(): self
     {
         $orderIds = [];
 
@@ -252,21 +240,21 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
     /**
      * @param $orderIds int[]
-     * @return $this
      */
-    public function addOrdersToCollection($orderIds)
+    public function addOrdersToCollection(array $orderIds): self
     {
         /** @var Collection $collection */
         $collection = $this->objectManager->get(Collection::class);
         $collection->addAttributeToFilter('entity_id', ['in' => $orderIds]);
         $this->setOrderCollection($collection);
+
         return $this;
     }
 
     /**
      * @return string[]
      */
-    public function getIncrementIds()
+    public function getIncrementIds(): array
     {
         $orderIncrementId = [];
 

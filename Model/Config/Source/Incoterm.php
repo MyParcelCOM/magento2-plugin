@@ -6,10 +6,7 @@ use Magento\Framework\Option\ArrayInterface;
 
 class Incoterm implements ArrayInterface
 {
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             ['value' => 'DAP', 'label' => __('DAP (Delivered At Place)')],
@@ -17,10 +14,7 @@ class Incoterm implements ArrayInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'DAP' => __('DAP (Delivered At Place)'),

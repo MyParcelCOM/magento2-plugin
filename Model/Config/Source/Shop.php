@@ -8,7 +8,7 @@ use Throwable;
 
 class Shop implements ArrayInterface
 {
-    private $options = [];
+    private array $options = [];
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ class Shop implements ArrayInterface
                 ];
             }
             uasort($this->options, function ($a, $b) {
-                return strtolower($a['label']) > strtolower($b['label']);
+                return (strtolower($a['label']) < strtolower($b['label'])) ? -1 : 1;
             });
         } catch (Throwable $throwable) {
             $this->options[] = [
@@ -35,18 +35,12 @@ class Shop implements ArrayInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return $this->options;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         $array = [];
         foreach ($this->options as $option) {

@@ -8,7 +8,7 @@ use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 
 class Collection extends AbstractCollection
 {
-    public function _construct()
+    public function _construct(): void
     {
         $this->_init(Data::class, DataResource::class);
     }

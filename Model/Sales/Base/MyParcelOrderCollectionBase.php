@@ -19,21 +19,11 @@ use MyParcelCOM\Magento\Helper\MyParcelConfig;
 
 class MyParcelOrderCollectionBase
 {
-    /** @var Collection */
-    protected $_orders = null;
+    protected ?Collection $_orders = null;
+    protected ObjectManagerInterface $objectManager;
+    protected ScopeConfigInterface $config;
+    protected MyParcelConfig $configHelper;
 
-    /** @var ObjectManagerInterface */
-    protected $objectManager;
-
-    /** @var ScopeConfigInterface */
-    protected $config;
-
-    /** @var MyParcelConfig */
-    protected $configHelper;
-
-    /**
-     * @param ObjectManagerInterface $objectManagerInterface
-     */
     public function __construct(ObjectManagerInterface $objectManagerInterface)
     {
         $this->objectManager = $objectManagerInterface;
@@ -51,10 +41,9 @@ class MyParcelOrderCollectionBase
     }
 
     /**
-     * @param Order $order
      * @throws LocalizedException
      */
-    protected function createMagentoShipment(Order $order)
+    protected function createMagentoShipment(Order $order): void
     {
         /** @var ConvertOrder $convertOrder */
         $convertOrder = $this->objectManager->create(ConvertOrder::class);
@@ -89,10 +78,7 @@ class MyParcelOrderCollectionBase
         }
     }
 
-    /**
-     * @return array
-     */
-    protected function getShipments()
+    protected function getShipments(): array
     {
         if ($this->_orders == null) {
             return [];
@@ -110,22 +96,16 @@ class MyParcelOrderCollectionBase
 
     /**
      * Check if track already exists
-     *
-     * @param Shipment $shipment
-     * @return bool
      */
-    protected function shipmentHasTrack($shipment)
+    protected function shipmentHasTrack(Shipment $shipment): bool
     {
         return $this->getTrackByShipment($shipment)->count() > 0;
     }
 
     /**
      * Get all tracks
-     *
-     * @param Shipment $shipment
-     * @return TrackCollection
      */
-    protected function getTrackByShipment($shipment)
+    protected function getTrackByShipment(Shipment $shipment): TrackCollection
     {
         /* @var TrackCollection $collection */
         $collection = $this->objectManager->create(TrackCollection::class);
@@ -137,11 +117,8 @@ class MyParcelOrderCollectionBase
 
     /**
      * Create new Magento Track
-     *
-     * @param Shipment $shipment
-     * @return Track
      */
-    protected function setNewMagentoTrack($shipment)
+    protected function setNewMagentoTrack(Shipment $shipment): Track
     {
         /** @var Track $track */
         $track = $this->objectManager->create(Track::class);
@@ -159,10 +136,8 @@ class MyParcelOrderCollectionBase
 
     /**
      * Check if there is 1 shipment in all orders
-     *
-     * @return bool
      */
-    public function hasShipment()
+    public function hasShipment(): bool
     {
         foreach ($this->getOrders() as $order) {
             if ($order->hasShipments()) {

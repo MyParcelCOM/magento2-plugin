@@ -11,7 +11,7 @@ use Throwable;
 
 class Client extends Value
 {
-    public function validateBeforeSave()
+    public function validateBeforeSave(): self
     {
         parent::validateBeforeSave();
 

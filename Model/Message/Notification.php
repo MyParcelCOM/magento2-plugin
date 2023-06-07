@@ -8,11 +8,8 @@ use MyParcelCOM\Magento\Helper\MyParcelConfig;
 
 class Notification implements MessageInterface
 {
-    /** @var UrlInterface */
-    private $backendUrl;
-
-    /** @var MyParcelConfig */
-    private $configHelper;
+    private UrlInterface $backendUrl;
+    private MyParcelConfig $configHelper;
 
     public function __construct(
         UrlInterface $backendUrl,
@@ -22,24 +19,24 @@ class Notification implements MessageInterface
         $this->configHelper = $configHelper;
     }
 
-    public function getIdentity()
+    public function getIdentity(): string
     {
         return 'myparcelcom_webhook';
     }
 
-    public function isDisplayed()
+    public function isDisplayed(): bool
     {
         return $this->configHelper->getShopId() === null;
     }
 
-    public function getText()
+    public function getText(): string
     {
         $url = $this->backendUrl->getUrl('adminhtml/system_config/edit/section/myparcel_section_general');
 
         return 'Your MyParcel.com plugin has been updated and needs to be reconfigured. <a href="' . $url . '">Please check and save your configuration</a>.';
     }
 
-    public function getSeverity()
+    public function getSeverity(): int
     {
         return self::SEVERITY_NOTICE;
     }

@@ -9,11 +9,7 @@ use MyParcelCOM\Magento\Model\ResourceModel\Data as DataResource;
 
 class SalesOrderData extends Column
 {
-    /**
-     * @param array $dataSource
-     * @return array
-     */
-    public function prepareDataSource(array $dataSource)
+    public function prepareDataSource(array $dataSource): array
     {
         $objectManager = ObjectManager::getInstance();
 

@@ -6,7 +6,7 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class Data extends AbstractDb
 {
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init('myparcelcom_data', 'id');
     }

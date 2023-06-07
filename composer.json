@@ -15,7 +15,7 @@
     ],
     "require": {
         "ext-json": "*",
-        "myparcelcom/api-sdk": "^2.13"
+        "myparcelcom/api-sdk": "dev-feature/php-8"
     },
     "autoload": {
         "files": [
@@ -23,6 +23,11 @@
         ],
         "psr-4": {
             "MyParcelCOM\\Magento\\": ""
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
         }
     }
 }
