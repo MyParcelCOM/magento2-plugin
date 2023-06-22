@@ -15,7 +15,7 @@
     ],
     "require": {
         "ext-json": "*",
-        "myparcelcom/api-sdk": "dev-feature/php-8"
+        "myparcelcom/api-sdk": "^3.0"
     },
     "autoload": {
         "files": [
