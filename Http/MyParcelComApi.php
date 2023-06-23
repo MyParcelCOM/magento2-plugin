@@ -22,8 +22,8 @@ class MyParcelComApi
     private function createSingletonApi(MyParcelConfig $configHelper)
     {
         $authenticator = new ClientCredentials(
-            $configHelper->getApiClientId(),
-            $configHelper->getApiSecretKey(),
+            (string) $configHelper->getApiClientId(),
+            (string) $configHelper->getApiSecretKey(),
             $configHelper->getAuthUrl()
         );
 

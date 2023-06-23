@@ -17,8 +17,8 @@ class Client extends Value
 
         try {
             $auth = new ClientCredentials(
-                $this->_data['fieldset_data']['api_client_id'],
-                $this->_data['fieldset_data']['api_client_secret_key'],
+                (string) $this->_data['fieldset_data']['api_client_id'],
+                (string) $this->_data['fieldset_data']['api_client_secret_key'],
                 ($this->_data['fieldset_data']['api_client_environment'] === '1')
                     ? MyParcelConfig::SANDBOX_AUTH_URL
                     : MyParcelConfig::PRODUCTION_AUTH_URL
