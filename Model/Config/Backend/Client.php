@@ -20,7 +20,7 @@ class Client extends Value
                 (string) $this->_data['fieldset_data']['api_client_id'],
                 (string) $this->_data['fieldset_data']['api_client_secret_key'],
                 ($this->_data['fieldset_data']['api_client_environment'] === '1')
-                    ? MyParcelConfig::SANDBOX_AUTH_URL
+                    ? MyParcelConfig::STAGING_AUTH_URL
                     : MyParcelConfig::PRODUCTION_AUTH_URL
             );
             $auth->getAuthorizationHeader(true);

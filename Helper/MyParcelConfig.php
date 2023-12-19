@@ -9,8 +9,8 @@ class MyParcelConfig extends AbstractHelper
 {
     const PRODUCTION_API_URL = 'https://api.myparcel.com';
     const PRODUCTION_AUTH_URL = 'https://auth.myparcel.com';
-    const SANDBOX_API_URL = 'https://sandbox-api.myparcel.com';
-    const SANDBOX_AUTH_URL = 'https://sandbox-auth.myparcel.com';
+    const STAGING_API_URL = 'https://api.staging.myparcel.com';
+    const STAGING_AUTH_URL = 'https://auth.staging.myparcel.com';
 
     public function isTestMode(): bool
     {
@@ -29,12 +29,12 @@ class MyParcelConfig extends AbstractHelper
 
     public function getApiUrl(): string
     {
-        return $this->isTestMode() ? self::SANDBOX_API_URL : self::PRODUCTION_API_URL;
+        return $this->isTestMode() ? self::STAGING_API_URL : self::PRODUCTION_API_URL;
     }
 
     public function getAuthUrl(): string
     {
-        return $this->isTestMode() ? self::SANDBOX_AUTH_URL : self::PRODUCTION_AUTH_URL;
+        return $this->isTestMode() ? self::STAGING_AUTH_URL : self::PRODUCTION_AUTH_URL;
     }
 
     public function getWebhookId(): ?string
