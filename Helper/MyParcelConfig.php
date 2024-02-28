@@ -9,8 +9,8 @@ class MyParcelConfig extends AbstractHelper
 {
     const PRODUCTION_API_URL = 'https://api.myparcel.com';
     const PRODUCTION_AUTH_URL = 'https://auth.myparcel.com';
-    const SANDBOX_API_URL = 'https://sandbox-api.myparcel.com';
-    const SANDBOX_AUTH_URL = 'https://sandbox-auth.myparcel.com';
+    const SANDBOX_API_URL = 'https://api.sandbox.myparcel.com';
+    const SANDBOX_AUTH_URL = 'https://auth.sandbox.myparcel.com';
 
     public function isTestMode(): bool
     {
