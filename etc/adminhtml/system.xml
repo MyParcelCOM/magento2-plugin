@@ -67,7 +67,7 @@
                 </field>
                 <field id="support_url" translate="label comment" type="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Support</label>
-                    <comment><![CDATA[<a href="https://help.myparcel.com/home/integrations#Integrations-Magento" target="_blank">https://help.myparcel.com/home/integrations</a>]]></comment>
+                    <comment><![CDATA[<a href="https://help.myparcel.com/home/integrations-1#Integrations-Magento" target="_blank">https://help.myparcel.com/home/integrations-1</a>]]></comment>
                 </field>
             </group>
         </section>
