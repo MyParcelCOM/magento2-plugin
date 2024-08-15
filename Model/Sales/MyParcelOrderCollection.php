@@ -204,11 +204,39 @@ class MyParcelOrderCollection extends MyParcelOrderCollectionBase
 
                 $createdShipment = $api->createShipment($shipment);
             } catch (RequestException $exception) {
-                $errors = json_decode((string) $exception->getResponse()?->getBody(), true);
-                $error = $errors['errors'][0] ?? $exception->getMessage();
-                throw new Exception($error['detail'] ?? $error['title'] ?? $exception->getMessage());
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage());
+                $response = json_decode((string) $exception->getResponse()?->getBody(), true);
+
+                if (isset($response['errors'])) {
+                    $errorMessages = [];
+
+                    foreach ($response['errors'] as $error) {
+                        if (isset($error['meta']['json_schema_errors'])) {
+                            foreach ($error['meta']['json_schema_errors'] as $schemaError) {
+                                if (in_array($schemaError['message'], [
+                                    'Failed to match all schemas',
+                                    'Failed to match exactly one schema',
+                                ])) {
+                                    continue;
+                                }
+                                $errorMessages[] = implode(' ', [
+                                    str_replace('data.attributes.', '', $schemaError['property']),
+                                    '-',
+                                    $schemaError['message']
+                                ]);
+                            }
+                        } else if (isset($error['detail'])) {
+                            $errorMessages[] = $error['detail'];
+                        } else if (isset($error['title'])) {
+                            $errorMessages[] = $error['title'];
+                        }
+                    }
+
+                    throw new Exception(implode(' || ', $errorMessages));
+                }
+
+                throw new Exception($exception->getMessage());
+            } catch (Exception $exception) {
+                throw new Exception($exception->getMessage());
             }
 
             if (!empty($createdShipment->getId())) {
